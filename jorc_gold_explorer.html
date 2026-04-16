@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JORC Gold Resources — WA</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg-primary: #0a0e14;
+  --bg-secondary: #111820;
+  --bg-tertiary: #1a2230;
+  --bg-hover: #1e2a3a;
+  --border: #2a3545;
+  --border-light: #354560;
+  --text-primary: #c8d6e5;
+  --text-secondary: #7a8fa6;
+  --text-muted: #4a5e75;
+  --gold: #d4a017;
+  --gold-dim: #8b6914;
+  --gold-glow: rgba(212, 160, 23, 0.15);
+  --frs-tenement: rgba(65, 135, 220, 0.25);
+  --frs-border: rgba(65, 135, 220, 0.6);
+  --size-mega: #ffd700;
+  --size-vlarge: #f0c040;
+  --size-large: #d4a017;
+  --size-medium: #b8860b;
+  --size-small: #8b6914;
+  --size-tiny: #6b5210;
+  --size-micro: #4a3a0e;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  overflow: hidden;
+  height: 100vh;
+}
+
+#map {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 1;
+  background: var(--bg-primary);
+}
+
+.leaflet-tile-pane { filter: brightness(0.7) contrast(1.1) saturate(0.3); }
+.leaflet-control-zoom a {
+  background: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border) !important;
+}
+.leaflet-control-zoom a:hover { background: var(--bg-tertiary) !important; }
+.leaflet-control-attribution {
+  background: rgba(10,14,20,0.85) !important;
+  color: var(--text-muted) !important;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+}
+.leaflet-control-attribution a { color: var(--text-secondary) !important; }
+
+/* Cluster styling */
+.marker-cluster-small {
+  background: rgba(212, 160, 23, 0.2) !important;
+}
+.marker-cluster-small div {
+  background: rgba(212, 160, 23, 0.5) !important;
+  color: #fff !important;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  font-size: 11px;
+}
+.marker-cluster-medium {
+  background: rgba(212, 160, 23, 0.25) !important;
+}
+.marker-cluster-medium div {
+  background: rgba(212, 160, 23, 0.6) !important;
+  color: #fff !important;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  font-size: 12px;
+}
+.marker-cluster-large {
+  background: rgba(212, 160, 23, 0.3) !important;
+}
+.marker-cluster-large div {
+  background: rgba(212, 160, 23, 0.7) !important;
+  color: #fff !important;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+/* Header bar */
+.header-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 48px;
+  background: rgba(10, 14, 20, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 16px;
+}
+.header-bar .logo {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--gold);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.header-bar .logo span {
+  color: var(--text-muted);
+  font-weight: 400;
+  margin-left: 8px;
+  letter-spacing: 0.5px;
+  font-size: 11px;
+}
+.header-bar .divider {
+  width: 1px;
+  height: 24px;
+  background: var(--border);
+}
+.header-stats {
+  display: flex;
+  gap: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+}
+.header-stats .stat-label {
+  color: var(--text-muted);
+  margin-right: 6px;
+}
+.header-stats .stat-value {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.header-stats .stat-value.gold { color: var(--gold); }
+
+/* Search box */
+.search-box {
+  width: 100%;
+  padding: 8px 12px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.search-box:focus {
+  border-color: var(--gold-dim);
+}
+.search-box::placeholder {
+  color: var(--text-muted);
+}
+
+/* Filter panel */
+.filter-panel {
+  position: fixed;
+  top: 60px;
+  left: 12px;
+  width: 280px;
+  background: rgba(10, 14, 20, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  z-index: 1000;
+  overflow-y: auto;
+  max-height: calc(100vh - 80px);
+}
+.filter-section {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.filter-section:last-child { border-bottom: none; }
+.filter-section h3 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 10px;
+}
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.filter-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-size: 12px;
+}
+.filter-item:hover { background: var(--bg-hover); }
+.filter-item input[type="checkbox"] {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--border-light);
+  border-radius: 3px;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+}
+.filter-item input[type="checkbox"]:checked {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+.filter-item input[type="checkbox"]:checked::after {
+  content: '\2713';
+  position: absolute;
+  top: -1px;
+  left: 2px;
+  font-size: 10px;
+  color: var(--bg-primary);
+  font-weight: 700;
+}
+.filter-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.filter-label {
+  flex: 1;
+  color: var(--text-secondary);
+  font-family: 'DM Sans', sans-serif;
+}
+.filter-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+/* Toggle row */
+.toggle-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.toggle-btn {
+  flex: 1;
+  padding: 5px 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+}
+.toggle-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+/* Overlay toggle switch */
+.overlay-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.overlay-toggle:hover { background: var(--bg-hover); }
+.overlay-toggle .switch {
+  width: 32px;
+  height: 18px;
+  background: var(--bg-tertiary);
+  border: 1.5px solid var(--border-light);
+  border-radius: 10px;
+  position: relative;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.overlay-toggle .switch::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  top: 2px;
+  left: 2px;
+  transition: all 0.2s;
+}
+.overlay-toggle .switch.active {
+  background: var(--gold-glow);
+  border-color: var(--gold);
+}
+.overlay-toggle .switch.active::after {
+  background: var(--gold);
+  left: 16px;
+}
+.overlay-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* Stats summary in filter panel */
+.stats-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.stat-card {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px;
+  text-align: center;
+}
+.stat-card .stat-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1.2;
+}
+.stat-card .stat-desc {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 2px;
+}
+
+/* Popup styling */
+.leaflet-popup-content-wrapper {
+  background: rgba(17, 24, 32, 0.96) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5) !important;
+  backdrop-filter: blur(8px);
+}
+.leaflet-popup-tip { background: rgba(17, 24, 32, 0.96) !important; }
+.leaflet-popup-close-button {
+  color: var(--text-muted) !important;
+  font-size: 18px !important;
+}
+.leaflet-popup-content { margin: 12px 16px !important; }
+.deposit-popup {
+  font-family: 'DM Sans', sans-serif;
+  min-width: 260px;
+}
+.deposit-popup .popup-header {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.deposit-popup .popup-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 0;
+  font-size: 12px;
+}
+.deposit-popup .popup-row .key {
+  color: var(--text-muted);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.deposit-popup .popup-row .val {
+  color: var(--text-primary);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  text-align: right;
+}
+.deposit-popup .popup-row .val.gold-text { color: var(--gold); font-weight: 700; }
+.deposit-popup .popup-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 6px 0;
+}
+.deposit-popup .popup-link {
+  display: block;
+  margin-top: 8px;
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--gold);
+  text-decoration: none;
+  padding: 5px 0;
+  border: 1px solid var(--gold-dim);
+  border-radius: 4px;
+  transition: all 0.15s;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.deposit-popup .popup-link:hover {
+  background: var(--gold-glow);
+}
+
+/* Mill markers */
+.mill-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: rgba(17, 24, 32, 0.9);
+  border: 2px solid #e74c3c;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 1;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header-bar">
+  <div class="logo">JORC GOLD RESOURCES <span>Western Australia</span></div>
+  <div class="divider"></div>
+  <div class="header-stats">
+    <div><span class="stat-label">PROJECTS</span><span class="stat-value gold" id="h-projects">0</span></div>
+    <div><span class="stat-label">TOTAL</span><span class="stat-value gold" id="h-total-oz">0 Moz</span></div>
+    <div><span class="stat-label">VISIBLE</span><span class="stat-value" id="h-visible">0</span></div>
+    <div><span class="stat-label">VIS. Moz</span><span class="stat-value" id="h-vis-oz">0</span></div>
+  </div>
+</div>
+
+<!-- Filter panel -->
+<div class="filter-panel">
+  <!-- Search -->
+  <div class="filter-section">
+    <h3>Search</h3>
+    <input type="text" class="search-box" id="search-input" placeholder="Search project name...">
+  </div>
+
+  <!-- Size filters -->
+  <div class="filter-section">
+    <h3>Resource Size</h3>
+    <div class="toggle-row">
+      <button class="toggle-btn" onclick="toggleAllSizes(true)">All</button>
+      <button class="toggle-btn" onclick="toggleAllSizes(false)">None</button>
+    </div>
+    <div class="filter-group" id="size-filters">
+      <label class="filter-item">
+        <input type="checkbox" checked data-size="mega">
+        <span class="filter-dot" style="background: var(--size-mega)"></span>
+        <span class="filter-label">&gt; 10 Moz</span>
+        <span class="filter-count" id="count-mega">0</span>
+      </label>
+      <label class="filter-item">
+        <input type="checkbox" checked data-size="vlarge">
+        <span class="filter-dot" style="background: var(--size-vlarge)"></span>
+        <span class="filter-label">5 &ndash; 10 Moz</span>
+        <span class="filter-count" id="count-vlarge">0</span>
+      </label>
+      <label class="filter-item">
+        <input type="checkbox" checked data-size="large">
+        <span class="filter-dot" style="background: var(--size-large)"></span>
+        <span class="filter-label">2 &ndash; 5 Moz</span>
+        <span class="filter-count" id="count-large">0</span>
+      </label>
+      <label class="filter-item">
+        <input type="checkbox" checked data-size="medium">
+        <span class="filter-dot" style="background: var(--size-medium)"></span>
+        <span class="filter-label">1 &ndash; 2 Moz</span>
+        <span class="filter-count" id="count-medium">0</span>
+      </label>
+      <label class="filter-item">
+        <input type="checkbox" checked data-size="small">
+        <span class="filter-dot" style="background: var(--size-small)"></span>
+        <span class="filter-label">500k &ndash; 1 Moz</span>
+        <span class="filter-count" id="count-small">0</span>
+      </label>
+      <label class="filter-item">
+        <input type="checkbox" checked data-size="tiny">
+        <span class="filter-dot" style="background: var(--size-tiny)"></span>
+        <span class="filter-label">100k &ndash; 500k oz</span>
+        <span class="filter-count" id="count-tiny">0</span>
+      </label>
+      <label class="filter-item">
+        <input type="checkbox" checked data-size="micro">
+        <span class="filter-dot" style="background: var(--size-micro)"></span>
+        <span class="filter-label">&lt; 100k oz</span>
+        <span class="filter-count" id="count-micro">0</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Overlays -->
+  <div class="filter-section">
+    <h3>Overlays</h3>
+    <div class="overlay-toggle" id="frs-toggle" onclick="toggleFRS()">
+      <div class="switch active" id="frs-switch"></div>
+      <span class="overlay-label">FRS Tenements</span>
+    </div>
+    <div class="overlay-toggle" id="mills-toggle" onclick="toggleMills()">
+      <div class="switch active" id="mills-switch"></div>
+      <span class="overlay-label">Gold Mills</span>
+    </div>
+    <div class="overlay-toggle" id="goldten-toggle" onclick="toggleGoldTenements()">
+      <div class="switch active" id="goldten-switch"></div>
+      <span class="overlay-label">Gold Tenements (455)</span>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="filter-section">
+    <h3>Summary</h3>
+    <div class="stats-summary">
+      <div class="stat-card">
+        <div class="stat-num" id="s-visible">0</div>
+        <div class="stat-desc">Projects</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="s-moz">0</div>
+        <div class="stat-desc">Moz Au</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  // ---- Map init ----
+  const map = L.map('map', {
+    center: [-30, 121],
+    zoom: 7,
+    zoomControl: true,
+    attributionControl: true
+  });
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; OpenStreetMap &copy; CARTO',
+    maxZoom: 18
+  }).addTo(map);
+
+  // ---- Size categories ----
+  function sizeCategory(oz) {
+    if (oz >= 10000000) return 'mega';
+    if (oz >= 5000000)  return 'vlarge';
+    if (oz >= 2000000)  return 'large';
+    if (oz >= 1000000)  return 'medium';
+    if (oz >= 500000)   return 'small';
+    if (oz >= 100000)   return 'tiny';
+    return 'micro';
+  }
+
+  const sizeColors = {
+    mega:   '#ffd700',
+    vlarge: '#f0c040',
+    large:  '#d4a017',
+    medium: '#b8860b',
+    small:  '#8b6914',
+    tiny:   '#6b5210',
+    micro:  '#4a3a0e'
+  };
+
+  const sizeRadii = {
+    mega:   14,
+    vlarge: 11,
+    large:  9,
+    medium: 7,
+    small:  5.5,
+    tiny:   4,
+    micro:  3
+  };
+
+  // ---- Number formatting ----
+  function fmtOz(oz) {
+    if (oz == null || oz === 0) return '—';
+    if (oz >= 1000000) return (oz / 1000000).toFixed(2) + ' Moz';
+    if (oz >= 1000) return (oz / 1000).toFixed(0) + ' koz';
+    return Math.round(oz) + ' oz';
+  }
+
+  function fmtMt(mt) {
+    if (mt == null || mt === 0) return '—';
+    if (mt >= 1) return mt.toFixed(1) + ' Mt';
+    return (mt * 1000).toFixed(0) + ' kt';
+  }
+
+  function fmtGrade(g) {
+    if (g == null || g === 0) return '—';
+    return g.toFixed(2) + ' g/t';
+  }
+
+  function fmtMoz(oz) {
+    if (oz == null || oz === 0) return '0';
+    return (oz / 1000000).toFixed(1);
+  }
+
+  function fmtResource(mt, grade, koz) {
+    if (!mt && !koz) return '—';
+    let parts = [];
+    if (mt) parts.push(fmtMt(mt));
+    if (grade) parts.push('@ ' + fmtGrade(grade));
+    if (koz) parts.push('(' + fmtOz(koz) + ')');
+    return parts.join(' ');
+  }
+
+  // ---- Data storage ----
+  let allFeatures = [];
+  let markerMap = new Map(); // feature index -> marker
+  let clusterGroup = L.markerClusterGroup({
+    maxClusterRadius: 45,
+    spiderfyOnMaxZoom: true,
+    showCoverageOnHover: false,
+    iconCreateFunction: function(cluster) {
+      const count = cluster.getChildCount();
+      let size = 'small';
+      if (count > 50) size = 'large';
+      else if (count > 20) size = 'medium';
+      return L.divIcon({
+        html: '<div>' + count + '</div>',
+        className: 'marker-cluster marker-cluster-' + size,
+        iconSize: L.point(40, 40)
+      });
+    }
+  });
+
+  let frsLayer = null;
+  let frsVisible = true;
+  let millsLayer = L.layerGroup();
+  let millsVisible = true;
+  let goldTenLayer = null;
+  let goldTenVisible = true;
+
+  // ---- Create marker for a feature ----
+  function createMarker(feature, index) {
+    const p = feature.properties;
+    const totalKoz = p.total_oz || 0;
+    const cat = sizeCategory(totalKoz);
+    const color = sizeColors[cat];
+    const radius = sizeRadii[cat];
+
+    const marker = L.circleMarker([p.lat, p.lon], {
+      radius: radius,
+      fillColor: color,
+      fillOpacity: 0.85,
+      color: color,
+      weight: 1.5,
+      opacity: 0.6
+    });
+
+    // Popup
+    const name = p.name || p.short_name || 'Unknown';
+    let html = '<div class="deposit-popup">';
+    html += '<div class="popup-header">' + escHtml(name) + '</div>';
+
+    // Resource
+    if (p.res_mt || p.res_oz) {
+      html += '<div class="popup-row"><span class="key">Resource</span><span class="val">' +
+        fmtResource(p.res_mt, p.res_grade, p.res_oz) + '</span></div>';
+    }
+
+    // Reserve
+    if (p.rv_mt || p.rv_oz) {
+      html += '<div class="popup-row"><span class="key">Reserve</span><span class="val">' +
+        fmtResource(p.rv_mt, p.rv_grade, p.rv_oz) + '</span></div>';
+    }
+
+    html += '<div class="popup-divider"></div>';
+    html += '<div class="popup-row"><span class="key">Total Gold</span><span class="val gold-text">' +
+      fmtOz(totalKoz) + '</span></div>';
+
+    if (p.site_stage) {
+      const stageColors = {
+        'Operating': '#2ecc71', 'Under Development': '#3498db',
+        'Care and Maintenance': '#e67e22', 'Proposed': '#9b59b6',
+        'Undeveloped': '#7f8c8d', 'Shut': '#e74c3c'
+      };
+      const sc = stageColors[p.site_stage] || '#7f8c8d';
+      html += '<div class="popup-row"><span class="key">Status</span><span class="val" style="color:' +
+        sc + ';font-weight:700;">' + escHtml(p.site_stage) +
+        (p.site_type ? ' <span style="color:var(--text-muted);font-weight:400;font-size:9px;">(' + escHtml(p.site_type) + ')</span>' : '') +
+        '</span></div>';
+    }
+
+    if (p.tenement_ids) {
+      html += '<div class="popup-divider"></div>';
+      const tenIds = p.tenement_ids.split('; ');
+      const tenHolders = (p.tenement_holders || '').split('; ');
+      const tenStatus = (p.tenement_status || '').split('; ');
+      tenIds.forEach((tid, idx) => {
+        const statusBadge = tenStatus[idx] === 'LIVE'
+          ? '<span style="color:#2ecc71;font-size:9px;margin-left:4px;">LIVE</span>'
+          : tenStatus[idx] ? '<span style="color:#e67e22;font-size:9px;margin-left:4px;">' + escHtml(tenStatus[idx]) + '</span>' : '';
+        html += '<div class="popup-row"><span class="key">Tenement</span><span class="val">' +
+          escHtml(tid) + statusBadge + '</span></div>';
+        if (tenHolders[idx]) {
+          html += '<div class="popup-row"><span class="key">Holder</span><span class="val" style="font-size:9px;max-width:160px;word-wrap:break-word;">' +
+            escHtml(tenHolders[idx]) + '</span></div>';
+        }
+      });
+    }
+
+    if (p.tect_unit) {
+      html += '<div class="popup-row"><span class="key">Tect. Unit</span><span class="val">' +
+        escHtml(p.tect_unit) + '</span></div>';
+    }
+
+    if (p.url) {
+      html += '<a class="popup-link" href="' + escHtml(p.url) + '" target="_blank">View on MINEDEX</a>';
+    }
+    html += '</div>';
+
+    marker.bindPopup(html, { maxWidth: 320 });
+    marker._jorcIndex = index;
+    marker._jorcCat = cat;
+    return marker;
+  }
+
+  function escHtml(s) {
+    if (!s) return '';
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ---- Filter logic ----
+  function getActiveFilters() {
+    const sizes = new Set();
+    document.querySelectorAll('#size-filters input[type="checkbox"]').forEach(cb => {
+      if (cb.checked) sizes.add(cb.dataset.size);
+    });
+    return sizes;
+  }
+
+  function getSearchTerm() {
+    return document.getElementById('search-input').value.trim().toLowerCase();
+  }
+
+  function applyFilters() {
+    const activeSizes = getActiveFilters();
+    const search = getSearchTerm();
+
+    clusterGroup.clearLayers();
+    let visCount = 0;
+    let visKoz = 0;
+
+    const counts = { mega: 0, vlarge: 0, large: 0, medium: 0, small: 0, tiny: 0, micro: 0 };
+
+    allFeatures.forEach((f, i) => {
+      const p = f.properties;
+      const totalKoz = p.total_oz || 0;
+      const cat = sizeCategory(totalKoz);
+      counts[cat]++;
+
+      const name = (p.name || p.short_name || '').toLowerCase();
+      const matchSearch = !search || name.includes(search);
+      const matchSize = activeSizes.has(cat);
+
+      if (matchSearch && matchSize) {
+        let marker = markerMap.get(i);
+        if (!marker) {
+          marker = createMarker(f, i);
+          markerMap.set(i, marker);
+        }
+        clusterGroup.addLayer(marker);
+        visCount++;
+        visKoz += totalKoz;
+      }
+    });
+
+    // Update counts in filter panel
+    Object.keys(counts).forEach(k => {
+      const el = document.getElementById('count-' + k);
+      if (el) el.textContent = counts[k];
+    });
+
+    // Update stats
+    document.getElementById('h-visible').textContent = visCount;
+    document.getElementById('h-vis-oz').textContent = fmtMoz(visKoz) + ' Moz';
+    document.getElementById('s-visible').textContent = visCount;
+    document.getElementById('s-moz').textContent = fmtMoz(visKoz);
+  }
+
+  // ---- Toggle functions ----
+  window.toggleAllSizes = function(on) {
+    document.querySelectorAll('#size-filters input[type="checkbox"]').forEach(cb => { cb.checked = on; });
+    applyFilters();
+  };
+
+  window.toggleFRS = function() {
+    frsVisible = !frsVisible;
+    document.getElementById('frs-switch').classList.toggle('active', frsVisible);
+    if (frsVisible && frsLayer) {
+      map.addLayer(frsLayer);
+    } else if (frsLayer) {
+      map.removeLayer(frsLayer);
+    }
+  };
+
+  window.toggleMills = function() {
+    millsVisible = !millsVisible;
+    document.getElementById('mills-switch').classList.toggle('active', millsVisible);
+    if (millsVisible) {
+      map.addLayer(millsLayer);
+    } else {
+      map.removeLayer(millsLayer);
+    }
+  };
+
+  window.toggleGoldTenements = function() {
+    goldTenVisible = !goldTenVisible;
+    document.getElementById('goldten-switch').classList.toggle('active', goldTenVisible);
+    if (goldTenVisible && goldTenLayer) {
+      map.addLayer(goldTenLayer);
+    } else if (goldTenLayer) {
+      map.removeLayer(goldTenLayer);
+    }
+  };
+
+  // ---- Event listeners ----
+  document.getElementById('search-input').addEventListener('input', applyFilters);
+  document.querySelectorAll('#size-filters input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', applyFilters);
+  });
+
+  // ---- Mills ----
+  const mills = [
+    { name: 'Lake Johnston Mill (FRS)', lat: -32.3358, lon: 120.5048, owner: 'Firefly Resources' },
+    { name: 'Edna May Mill', lat: -31.4703, lon: 118.8514, owner: 'Ramelius Resources' },
+    { name: 'Higginsville Mill', lat: -31.7257, lon: 121.7167, owner: 'Westgold Resources' }
+  ];
+
+  mills.forEach(m => {
+    const icon = L.divIcon({
+      html: '<div class="mill-icon">\u2699</div>',
+      className: '',
+      iconSize: [26, 26],
+      iconAnchor: [13, 13]
+    });
+    const marker = L.marker([m.lat, m.lon], { icon: icon, zIndexOffset: 900 });
+    marker.bindPopup(
+      '<div class="deposit-popup">' +
+      '<div class="popup-header">' + escHtml(m.name) + '</div>' +
+      '<div class="popup-row"><span class="key">Type</span><span class="val">Gold Processing Mill</span></div>' +
+      '<div class="popup-row"><span class="key">Owner</span><span class="val">' + escHtml(m.owner) + '</span></div>' +
+      '</div>', { maxWidth: 280 }
+    );
+    millsLayer.addLayer(marker);
+  });
+  millsLayer.addTo(map);
+
+  // ---- Load JORC data ----
+  fetch('data/jorc_gold_resources.geojson')
+    .then(r => r.json())
+    .then(data => {
+      allFeatures = data.features || [];
+
+      // Header total stats
+      let totalKoz = 0;
+      allFeatures.forEach(f => { totalKoz += (f.properties.total_oz || 0); });
+      document.getElementById('h-projects').textContent = allFeatures.length;
+      document.getElementById('h-total-oz').textContent = fmtMoz(totalKoz) + ' Moz';
+
+      clusterGroup.addTo(map);
+      applyFilters();
+    })
+    .catch(err => {
+      console.error('Failed to load JORC gold data:', err);
+    });
+
+  // ---- Load FRS tenements ----
+  fetch('frs_tenements_complete.geojson')
+    .then(r => r.json())
+    .then(data => {
+      frsLayer = L.geoJSON(data, {
+        style: {
+          fillColor: '#4187dc',
+          fillOpacity: 0.18,
+          color: '#4187dc',
+          weight: 1.5,
+          opacity: 0.55
+        },
+        onEachFeature: function(feature, layer) {
+          const p = feature.properties || {};
+          const label = p.TITLE || p.name || p.tenement_id || '';
+          if (label) {
+            layer.bindTooltip(label, {
+              sticky: true,
+              className: 'frs-tooltip',
+              direction: 'top',
+              offset: [0, -8]
+            });
+          }
+        }
+      });
+      frsLayer.addTo(map);
+    })
+    .catch(err => {
+      console.warn('FRS tenements not loaded:', err);
+    });
+
+  // ---- Load Gold Tenement Polygons ----
+  fetch('data/gold_tenement_polygons.geojson')
+    .then(r => r.json())
+    .then(data => {
+      goldTenLayer = L.geoJSON(data, {
+        style: {
+          fillColor: '#d4a017',
+          fillOpacity: 0.08,
+          color: '#d4a017',
+          weight: 1.2,
+          opacity: 0.45
+        },
+        onEachFeature: function(feature, layer) {
+          const p = feature.properties || {};
+          const tenid = p.fmt_tenid || '';
+          const holder = p.holder1 || '';
+          const status = p.tenstatus || '';
+          if (tenid) {
+            layer.bindTooltip(
+              '<b>' + tenid + '</b>' + (status ? ' (' + status + ')' : '') +
+              (holder ? '<br>' + holder : ''),
+              { sticky: true, direction: 'top', offset: [0, -8] }
+            );
+          }
+        }
+      });
+      goldTenLayer.addTo(map);
+    })
+    .catch(err => {
+      console.warn('Gold tenement polygons not loaded:', err);
+    });
+
+})();
+</script>
+</body>
+</html>

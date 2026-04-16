@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forrestania Resources – Board of Directors</title>
+<script>document.documentElement.style.visibility='visible';</script>
+<link rel="stylesheet" href="shared.css">
+<style>
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");background-repeat:repeat;background-size:256px 256px;}
+.page-header::before{content:'';position:absolute;inset:0;pointer-events:none;opacity:0.05;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");background-repeat:repeat;background-size:256px 256px;}
+.director-card{animation:fadeSlideUp 0.4s ease-out both;}
+.director-card:nth-child(2){animation-delay:80ms;}
+.director-card:nth-child(3){animation-delay:160ms;}
+.director-card:nth-child(4){animation-delay:240ms;}
+html{height:100%}
+body{
+  background:var(--color-bg);
+  min-height:100%;
+  display:flex;
+  flex-direction:column;
+  padding-bottom:80px;
+}
+
+/* Header */
+.page-header{
+  background:linear-gradient(135deg,var(--color-dark-bg) 0%,var(--color-dark-surface) 50%,var(--color-dark-elevated) 100%);
+  color:#fff;
+  padding:36px 40px 32px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.page-header::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,transparent 40%,rgba(196,146,42,0.06) 100%);
+  pointer-events:none;
+}
+.page-header h1{font-size:28px;font-weight:700;letter-spacing:0.5px;margin-bottom:4px;position:relative;z-index:1;}
+.page-header h1 span{color:var(--color-gold)}
+.page-header .subtitle{font-size:14px;color:var(--color-dark-text-secondary);font-weight:400;letter-spacing:1.5px;text-transform:uppercase;position:relative;z-index:1;}
+
+/* Grid */
+.directors-wrapper{flex:1;padding:32px 24px 48px;max-width:1400px;margin:0 auto;width:100%;box-sizing:border-box;}
+.directors-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;}
+
+/* Card */
+.director-card{
+  background:var(--color-surface);border:1px solid var(--color-border);
+  border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;
+  transition:box-shadow 0.2s,transform 0.2s;
+}
+.director-card:hover{box-shadow:0 8px 32px rgba(0,0,0,0.10);transform:translateY(-2px);}
+
+/* Card header */
+.card-header{
+  background:linear-gradient(135deg,var(--color-dark-elevated) 0%,var(--color-dark-border) 100%);
+  padding:24px 24px 20px;position:relative;overflow:hidden;
+}
+.card-header::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 50%,rgba(196,146,42,0.08) 100%);pointer-events:none;}
+.card-header-inner{display:flex;align-items:flex-start;gap:16px;position:relative;z-index:1;}
+.director-avatar{
+  width:64px;height:64px;border-radius:50%;
+  background:linear-gradient(135deg,var(--color-gold) 0%,var(--color-gold-border) 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;font-weight:700;color:#fff;flex-shrink:0;
+  font-family:var(--font-display);letter-spacing:-0.5px;
+}
+.director-name{font-size:20px;font-weight:700;color:var(--color-dark-text);margin-bottom:3px;font-family:var(--font-display);}
+.director-role{font-size:11.5px;font-weight:600;letter-spacing:1.3px;text-transform:uppercase;color:var(--color-gold);margin-bottom:5px;}
+.director-quals{font-size:12px;color:var(--color-dark-text-secondary);line-height:1.4;}
+.appt-badge{
+  position:absolute;top:16px;right:16px;
+  background:rgba(196,146,42,0.15);border:1px solid rgba(196,146,42,0.3);
+  color:var(--color-gold-light);font-size:11px;font-weight:600;
+  padding:3px 9px;border-radius:20px;z-index:1;
+}
+
+/* Card body */
+.card-body{padding:20px 24px 24px;flex:1;display:flex;flex-direction:column;gap:18px;}
+
+/* Section label */
+.sect-label{
+  font-size:10.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;
+  color:var(--color-text-muted);margin-bottom:9px;display:flex;align-items:center;gap:6px;
+}
+.sect-label::after{content:'';flex:1;height:1px;background:var(--color-border-subtle);}
+
+/* Bio text */
+.bio-text{font-size:13.5px;line-height:1.7;color:var(--color-text-secondary);}
+.bio-text strong{color:var(--color-text);font-weight:600;}
+
+/* Timeline */
+.timeline{display:flex;flex-direction:column;}
+.tl-item{display:flex;gap:12px;padding-bottom:14px;position:relative;}
+.tl-item:not(:last-child)::before{content:'';position:absolute;left:7px;top:18px;bottom:0;width:1px;background:var(--color-border-subtle);}
+.tl-dot{width:15px;height:15px;border-radius:50%;flex-shrink:0;margin-top:2px;border:2px solid;}
+.tl-dot.gold{border-color:var(--color-gold);background:rgba(196,146,42,0.14);}
+.tl-dot.blue{border-color:var(--color-info);background:rgba(34,102,204,0.12);}
+.tl-dot.green{border-color:var(--color-success);background:rgba(27,122,61,0.12);}
+.tl-dot.purple{border-color:var(--color-phase-1);background:rgba(126,95,194,0.12);}
+.tl-dot.amber{border-color:var(--color-phase-3);background:rgba(217,123,43,0.12);}
+.tl-period{font-size:11px;color:var(--color-text-muted);margin-bottom:1px;}
+.tl-co{font-size:13px;font-weight:600;color:var(--color-text);line-height:1.3;}
+.tl-desc{font-size:12.5px;color:var(--color-text-secondary);line-height:1.55;margin-top:2px;}
+
+/* Achievements */
+.ach-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:7px;}
+.ach-list li{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--color-text-secondary);line-height:1.55;}
+.ach-list li::before{content:'▸';color:var(--color-gold);font-size:11px;margin-top:2px;flex-shrink:0;}
+
+/* Stats row */
+.stat-row{display:flex;flex-wrap:wrap;gap:12px 20px;padding:12px 0;border-top:1px solid var(--color-border-subtle);border-bottom:1px solid var(--color-border-subtle);}
+.stat-value{font-size:15px;font-weight:700;color:var(--color-text);font-family:var(--font-display);}
+.stat-desc{font-size:11px;color:var(--color-text-muted);margin-top:1px;}
+
+/* Shareholding */
+.holding-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.holding-main{font-size:15px;font-weight:700;color:var(--color-text);font-family:var(--font-display);}
+.holding-sub{font-size:12px;color:var(--color-text-muted);margin-top:2px;}
+.holding-note{font-size:11.5px;color:var(--color-text-muted);font-style:italic;}
+.holding-bar-track{height:5px;background:var(--color-border-subtle);border-radius:3px;overflow:hidden;margin-top:8px;}
+.holding-bar-fill{height:100%;background:linear-gradient(90deg,var(--color-gold),var(--color-gold-light));border-radius:3px;}
+
+/* Relevance box */
+.relevance-box{background:linear-gradient(135deg,rgba(196,146,42,0.05),rgba(196,146,42,0.02));border:1px solid rgba(196,146,42,0.18);border-radius:var(--radius-md);padding:14px 16px;}
+.relevance-label{font-size:10.5px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;color:var(--color-gold-text);margin-bottom:7px;}
+.relevance-body{font-size:13px;line-height:1.65;color:var(--color-text-secondary);}
+.relevance-body strong{color:var(--color-text);font-weight:600;}
+
+/* Quote */
+.quote-block{border-left:3px solid var(--color-gold);padding:10px 14px;background:var(--color-surface-secondary);border-radius:0 var(--radius-sm) var(--radius-sm) 0;}
+.quote-text{font-size:13px;font-style:italic;line-height:1.6;color:var(--color-text-secondary);}
+.quote-src{font-size:11px;color:var(--color-text-muted);margin-top:5px;}
+
+/* Role tags */
+.role-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.role-tag{font-size:11.5px;font-weight:500;padding:3px 9px;border-radius:4px;background:var(--color-surface-secondary);border:1px solid var(--color-border);color:var(--color-text-secondary);}
+.role-tag.current{background:rgba(27,122,61,0.07);border-color:rgba(27,122,61,0.2);color:#1B7A3D;}
+
+/* Show more toggle */
+.expandable{overflow:hidden;transition:max-height 0.35s ease;}
+.expandable.collapsed{max-height:0 !important;}
+.toggle-btn{
+  display:inline-flex;align-items:center;gap:5px;
+  background:none;border:1px solid var(--color-border);
+  color:var(--color-text-secondary);font-size:12px;font-weight:500;
+  padding:5px 12px;border-radius:20px;cursor:pointer;
+  font-family:var(--font-body);transition:all 0.15s;margin-top:2px;
+}
+.toggle-btn:hover{border-color:var(--color-gold);color:var(--color-gold-text);background:var(--color-gold-subtle);}
+.toggle-icon{font-size:10px;transition:transform 0.25s;}
+.toggle-btn.open .toggle-icon{transform:rotate(180deg);}
+
+/* Citations */
+sup.cite{font-size:9px;color:var(--color-gold-text);font-weight:600;line-height:1;vertical-align:super;}
+sup.cite a{color:inherit;text-decoration:none;}
+sup.cite a:hover{text-decoration:underline;}
+
+/* Sources section */
+.sources-section{max-width:1400px;margin:0 auto;padding:0 24px 40px;width:100%;box-sizing:border-box;}
+.sources-toggle{font-size:10.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--color-text-muted);display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;padding:4px 0;border:none;background:none;font-family:var(--font-body);width:100%;}
+.sources-toggle::after{content:'';flex:1;height:1px;background:var(--color-border-subtle);}
+.sources-toggle-icon{font-size:9px;transition:transform 0.2s;}
+.sources-body{padding-top:14px;}
+.sources-list{list-style:none;padding:0;margin:0;counter-reset:src-counter;display:flex;flex-direction:column;gap:6px;}
+.sources-list li{display:flex;gap:10px;font-size:11.5px;color:var(--color-text-muted);line-height:1.5;counter-increment:src-counter;}
+.sources-list li::before{content:counter(src-counter);color:var(--color-gold-text);font-size:10px;font-weight:700;min-width:16px;text-align:right;padding-top:1px;flex-shrink:0;}
+.sources-list a{color:var(--color-text-muted);text-decoration:none;}
+.sources-list a:hover{color:var(--color-text);text-decoration:underline;}
+
+/* Director tiles — card body hidden, shown in modal */
+.card-body{display:none !important;}
+.director-card{cursor:pointer;}
+.card-view-hint{font-size:11px;color:var(--color-gold-light);opacity:0.55;margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:5px;position:relative;z-index:1;font-weight:500;font-family:var(--font-body);transition:opacity 0.15s;}
+.director-card:hover .card-view-hint{opacity:1;}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.78);z-index:200;display:none;align-items:flex-start;justify-content:center;padding:32px 16px 100px;overflow-y:auto;}
+.modal-overlay.active{display:flex;}
+.modal-panel{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);width:100%;max-width:660px;position:relative;overflow:hidden;margin:auto;}
+.modal-close-btn{position:absolute;top:14px;right:14px;z-index:10;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.15);color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:background 0.15s;line-height:1;}
+.modal-close-btn:hover{background:rgba(255,255,255,0.25);}
+.modal-panel .card-body{display:flex !important;}
+.modal-panel .appt-badge{right:52px;}
+
+/* Bottom nav */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--color-surface);border-top:1px solid var(--color-border);padding:12px 24px;display:flex;gap:12px;justify-content:center;z-index:100;}
+.nav-btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:var(--radius-md);font-size:14px;font-weight:600;text-decoration:none;transition:background 0.15s,transform 0.1s;font-family:var(--font-body);}
+.nav-btn:active{transform:scale(0.98)}
+.nav-btn.primary{background:var(--color-dark-bg);color:var(--color-gold);border:1px solid var(--color-dark-border);}
+.nav-btn.primary:hover{background:var(--color-dark-surface)}
+.nav-btn.secondary{background:var(--color-surface-secondary);color:var(--color-text-secondary);border:1px solid var(--color-border);}
+.nav-btn.secondary:hover{background:var(--color-border-subtle)}
+.btn-icon{font-size:12px}
+
+@media(max-width:900px){
+  .directors-grid{grid-template-columns:1fr}
+  .page-header{padding:28px 20px 24px}
+  .page-header h1{font-size:22px}
+  .directors-wrapper{padding:20px 16px 48px}
+  .bottom-nav{padding:10px 16px}
+  .nav-btn{font-size:13px;padding:8px 14px}
+}
+@media(max-width:768px){
+  .page-header{display:flex;flex-direction:column;align-items:center;padding:20px 16px;}
+  .page-header img{position:static !important;max-height:24px;margin-bottom:10px;}
+  .page-header h1{font-size:20px;}
+  .directors-wrapper{padding-bottom:80px;}
+}
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <img src="assets/mst_animated.apng" alt="MST Financial" style="height:60px;width:auto;position:absolute;top:16px;left:24px;z-index:1">
+  <h1>Board of <span>Directors</span></h1>
+  <p class="subtitle">Forrestania Resources Limited &nbsp;·&nbsp; ASX: FRS &nbsp;·&nbsp; as at April 2026</p>
+</header>
+
+<div class="directors-wrapper">
+<div class="directors-grid">
+
+
+<!-- ═══════════════════ DAVID GERAGHTY ═══════════════════ -->
+<div class="director-card" onclick="openDirectorModal(this)">
+  <div class="card-header">
+    <span class="appt-badge">Executive Chairman · Jul 2025</span>
+    <div class="card-header-inner">
+      <div class="director-avatar">DG</div>
+      <div>
+        <div class="director-name">David Geraghty</div>
+        <div class="director-role">Executive Chairman</div>
+        <div class="director-quals">B.Eng (Metallurgical Engineering) &nbsp;·&nbsp; West Perth, WA</div>
+      </div>
+    </div>
+    <div class="card-view-hint">View profile &#8594;</div>
+  </div>
+
+  <div class="card-body">
+
+    <div>
+      <div class="sect-label">Background</div>
+      <p class="bio-text">
+        David Geraghty is a B.Eng-qualified metallurgical engineer with over 30 years in Western Australian resources. Before joining FRS he spent <strong>21 years at Mineral Resources Limited (ASX: MIN)</strong>, serving as <strong>Executive General Manager of Process Minerals International</strong> and then <strong>Director of Technology and Innovation</strong>.<sup class="cite"><a href="#src-8" title="BSA Ltd — Appoints Former MinRes Executive">[8]</a></sup> He was there for the full arc of MinRes growing from a private contract crushing business into one of Australia's largest diversified miners. Earlier in his career he worked in processing and orebody evaluation roles at BHP, Hamersley Iron, and Rio Tinto in the Pilbara.<sup class="cite"><a href="#src-1" title="FRS Board Changes announcement, Jul 2025">[1]</a></sup>
+      </p>
+    </div>
+
+    <div>
+      <div class="sect-label">Shareholding in FRS <span style="font-size:10px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--color-text-muted)">(Appendix 3Y, 1 Apr 2026)</span></div>
+      <div class="holding-row">
+        <div>
+          <div class="holding-main">53,473,200 ordinary shares<sup class="cite"><a href="#src-3" title="FRS Appendix 3Y — Geraghty, 1 Apr 2026">[3]</a></sup></div>
+          <div class="holding-sub">Mandarin Rock Pty Ltd (41.1M) + Roologic Pty Ltd (11.9M) + direct (490K)</div>
+        </div>
+      </div>
+      <div class="holding-bar-track"><div class="holding-bar-fill" style="width:56%"></div></div>
+      <div style="font-size:11px;color:var(--color-text-muted);margin-top:5px;">Also holds 10,625,000 performance rights and 9,800,000 unlisted options (FRSAT) at $0.50, exp. 5 Nov 2028 (5M via Mandarin Rock Pty Ltd, 4.8M via Roologic Pty Ltd)<sup class="cite"><a href="#src-3" title="FRS Appendix 3Y — Geraghty, 1 Apr 2026">[3]</a></sup></div>
+    </div>
+
+    <div>
+      <div class="sect-label">Key Achievements at MinRes</div>
+      <ul class="ach-list">
+        <li>Named inventor on patent WO2011044608A1: a commercial dense medium cyclone and WHIMS process for recovering manganese from ore fines previously discarded as tailings, deployed at scale in MinRes operations.<sup class="cite"><a href="#src-9" title="Patent WO2011044608A1, Google Patents">[9]</a></sup></li>
+        <li>Drove the design and manufacture of MinRes's 1,000 tonne-per-hour mobile crushing and screening plants, which became a primary revenue driver for the mining services business.<sup class="cite"><a href="#src-11" title="MinRes — NextGen modular crushing plant">[11]</a></sup></li>
+        <li>Led the public rollout of MinRes's world-first fully autonomous road train program for the Onslow Iron project in the Pilbara.<sup class="cite"><a href="#src-10" title="MinRes — Autonomous road trains milestone">[10]</a></sup></li>
+      </ul>
+    </div>
+
+    <button class="toggle-btn" onclick="toggleSection(this)">
+      Show more <span class="toggle-icon">&#9660;</span>
+    </button>
+
+    <div class="expandable collapsed" style="max-height:600px;display:flex;flex-direction:column;gap:18px;">
+
+      <div>
+        <div class="sect-label">Career History</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-dot blue"></div>
+            <div>
+              <div class="tl-period">Early career</div>
+              <div class="tl-co">BHP · Hamersley Iron · Rio Tinto</div>
+              <div class="tl-desc">Processing engineering and orebody evaluation across Pilbara iron ore operations.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot green"></div>
+            <div>
+              <div class="tl-period">~2000 to 2024 (21 years)</div>
+              <div class="tl-co">Mineral Resources Ltd (ASX: MIN)</div>
+              <div class="tl-desc">Executive General Manager, Process Minerals International, then Director of Technology and Innovation. Part of the team that took MinRes from a small contract crushing operator to a multi-billion-dollar ASX miner with iron ore, lithium, and services divisions.<sup class="cite"><a href="#src-8">[8]</a></sup></div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot gold"></div>
+            <div>
+              <div class="tl-period">March 2026 onwards</div>
+              <div class="tl-co">BSA Limited (ASX: BSA) — Non-Executive Chairman</div>
+              <div class="tl-desc">Concurrent role. BSA provides technical services across telco infrastructure, smart metering, and EV charging.<sup class="cite"><a href="#src-8">[8]</a></sup></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="relevance-box">
+        <div class="relevance-label">Why This Matters for FRS</div>
+        <p class="relevance-body">
+          FRS's near-term production path hinges on converting the Lake Johnston nickel processing facility to gold. That is precisely what Geraghty spent his career on: mineral processing plant design, beneficiation circuit development, and large-scale operations. His 21-year MinRes network also opens doors to contractors, offtake, and capital that would take a junior explorer decades to build independently. He has backed his conviction with over A$2.7M in personal on-market purchases.
+        </p>
+      </div>
+
+    </div>
+
+    <div>
+      <div class="sect-label">Also Serves On</div>
+      <div class="role-tags">
+        <span class="role-tag current">Chairman, BSA Ltd (ASX: BSA)</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════ BRETT HODGINS ═══════════════════ -->
+<div class="director-card" onclick="openDirectorModal(this)">
+  <div class="card-header">
+    <span class="appt-badge">Technical Director · Dec 2025</span>
+    <div class="card-header-inner">
+      <div class="director-avatar">BH</div>
+      <div>
+        <div class="director-name">Brett Hodgins</div>
+        <div class="director-role">Technical Director</div>
+        <div class="director-quals">BSc Geology (Hons) · GradDip Applied Finance (FINSIA) &nbsp;·&nbsp; Age 52, West Perth</div>
+      </div>
+    </div>
+    <div class="card-view-hint">View profile &#8594;</div>
+  </div>
+
+  <div class="card-body">
+
+    <div>
+      <div class="sect-label">Background</div>
+      <p class="bio-text">
+        Brett Hodgins is a Western Australian geologist with over 25 years across Pilbara iron ore operations, WA gold exploration, and resource sector advisory. He started his career commissioning world-scale iron ore mines for Robe River and Rio Tinto<sup class="cite"><a href="#src-16" title="Brett Hodgins biography — MarketScreener">[16]</a></sup> before spending 11 years as <strong>President and CEO of Central Iron Ore Ltd</strong> (TSX-V listed), running exploration on a high-grade gold project in the Yandal Greenstone Belt.<sup class="cite"><a href="#src-13" title="CIO/Barrick JV announcement, GlobeNewswire">[13]</a></sup> His combined BSc Geology (Hons) and GradDip Applied Finance from FINSIA is unusual for a field geologist and allows him to evaluate assets in both technical and investment terms.<sup class="cite"><a href="#src-4" title="FRS Appendix 3Y — Hodgins, 1 Apr 2026">[4]</a></sup>
+      </p>
+    </div>
+
+    <div>
+      <div class="sect-label">Shareholding in FRS <span style="font-size:10px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--color-text-muted)">(Appendix 3Y, 1 Apr 2026)</span></div>
+      <div class="holding-row">
+        <div>
+          <div class="holding-main">121,113 ordinary shares (direct)<sup class="cite"><a href="#src-4" title="FRS Appendix 3Y — Hodgins, 1 Apr 2026">[4]</a></sup></div>
+          <div class="holding-sub">Issued as share-based payment approved at 27 March 2026 GM</div>
+        </div>
+      </div>
+      <div class="holding-bar-track"><div class="holding-bar-fill" style="width:2%"></div></div>
+      <div style="font-size:11px;color:var(--color-text-muted);margin-top:5px;">Also holds 15,000,000 unlisted options via Jaybre Holdings Pty Ltd: 5M at $0.40 (FRSOPT19), 5M at $0.60 (FRSOPT20), 5M at $0.90 (FRSOPT21), all exp. 19 Jan 2029<sup class="cite"><a href="#src-27" title="FRS Appendix 3G — Hodgins options, 22 Jan 2026">[27]</a></sup></div>
+    </div>
+
+    <div>
+      <div class="sect-label">Key Achievements</div>
+      <ul class="ach-list">
+        <li>Contributed to commissioning of the West Angelas iron ore mine (Robe River JV, 2002), now subject to a A$733M expansion by Rio Tinto.<sup class="cite"><a href="#src-12" title="Rio Tinto — Robe River JV A$733M expansion">[12]</a></sup></li>
+        <li>Contributed to Hope Downs iron ore development with Rio Tinto and Hancock Prospecting, first ore 2007.<sup class="cite"><a href="#src-16" title="Brett Hodgins biography — MarketScreener">[16]</a></sup></li>
+        <li>As CEO of Central Iron Ore (2011 to 2022): negotiated a farm-in JV with Barrick Gold giving access to 1,104-hole historical drill database on tenements adjacent to the 444,000 oz Darlot mine reserve.<sup class="cite"><a href="#src-13" title="CIO/Barrick JV, GlobeNewswire 2011">[13]</a><a href="#src-14" title="CIO South Darlot drill program, GlobeNewswire 2012">[14]</a></sup></li>
+        <li>Sold the Eureka Gold Mine to Tyranna Resources for A$3.2M cash plus a 4 to 6% net smelter return royalty (2017).<sup class="cite"><a href="#src-15" title="Tyranna — Eureka Gold Mine acquisition">[15]</a></sup></li>
+      </ul>
+    </div>
+
+    <button class="toggle-btn" onclick="toggleSection(this)">
+      Show more <span class="toggle-icon">&#9660;</span>
+    </button>
+
+    <div class="expandable collapsed" style="max-height:700px;display:flex;flex-direction:column;gap:18px;">
+
+      <div>
+        <div class="sect-label">Career History</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-dot blue"></div>
+            <div>
+              <div class="tl-period">Late 1990s to early 2000s</div>
+              <div class="tl-co">Robe River Mining Co. then Rio Tinto Iron Ore</div>
+              <div class="tl-desc">Geologist on commissioning of West Angelas (Robe River JV) and Hope Downs (Rio Tinto/Hancock Prospecting). Grade control, resource definition, large-scale open-cut operations in the Pilbara.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot amber"></div>
+            <div>
+              <div class="tl-period">2008 to 2010</div>
+              <div class="tl-co">Iron Ore Holdings Ltd (ASX: IOH) — GM Project Development</div>
+              <div class="tl-desc">Led project development for Iron Valley, Bungaroo South, and Maitland River. First executive role at a listed junior. IOH was later acquired by BC Iron.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot purple"></div>
+            <div>
+              <div class="tl-period">2010 onwards</div>
+              <div class="tl-co">Jaybre Geological Consulting Pty Ltd — Principal</div>
+              <div class="tl-desc">Own geological consulting firm, multi-commodity advisory across iron ore, gold, copper, and coal for various listed clients.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot green"></div>
+            <div>
+              <div class="tl-period">2011 to November 2022 (11 years)</div>
+              <div class="tl-co">Central Iron Ore Ltd (TSX-V: CIO) — President and CEO</div>
+              <div class="tl-desc">WA gold and iron ore explorer listed on the Toronto Venture Exchange. Led exploration at South Darlot Gold Project in the Yandal Greenstone Belt, adjacent to Barrick Gold's Darlot mine.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot amber"></div>
+            <div>
+              <div class="tl-period">2023 onwards</div>
+              <div class="tl-co">Palaris Mining Pty Ltd — Senior Manager, Technical Projects</div>
+              <div class="tl-desc">International mining advisory firm. Project Manager for conceptual and pre-feasibility studies in Queensland coal.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot purple"></div>
+            <div>
+              <div class="tl-period">December 2013 to present</div>
+              <div class="tl-co">Redstone Resources (ASX: RDS) — Technical Director</div>
+              <div class="tl-desc">Longest-standing board role. Multi-commodity (Cu/Ni/Au) exploration strategy and program design.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="relevance-box">
+        <div class="relevance-label">Why This Matters for FRS</div>
+        <p class="relevance-body">
+          Hodgins explored the South Darlot project in the Yandal-Goldfields province, the same geological terrane as FRS's Bonnie Vale, Coolgardie, and Mt Palmer projects. His 11-year CEO track record means he understands the full lifecycle from JV negotiation to resource definition to capital raising. His concurrent NED role at Beacon Minerals also gave him direct prior familiarity with the MacPhersons Reward asset before FRS acquired it.
+        </p>
+      </div>
+
+      <div class="quote-block">
+        <p class="quote-text">"Endeavour is shaping up as a very important prospect for CIO — high-grade gold discovered close to surface."</p>
+        <p class="quote-src">On South Darlot Endeavour Prospect drill results, June 2020</p>
+      </div>
+
+    </div>
+
+    <div>
+      <div class="sect-label">Also Serves On</div>
+      <div class="role-tags">
+        <span class="role-tag current">Technical Director, Redstone Resources (ASX: RDS)</span>
+        <span class="role-tag current">NED, Beacon Minerals (ASX: BCN)</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════ DANIEL RAIHANI ═══════════════════ -->
+<div class="director-card" onclick="openDirectorModal(this)">
+  <div class="card-header">
+    <span class="appt-badge">NED · Feb 2025</span>
+    <div class="card-header-inner">
+      <div class="director-avatar">DR</div>
+      <div>
+        <div class="director-name">Daniel Raihani</div>
+        <div class="director-role">Non-Executive Director</div>
+        <div class="director-quals">BCom Accounting (Swinburne) · AdvDip Financial Services · MAICD · JP</div>
+      </div>
+    </div>
+    <div class="card-view-hint">View profile &#8594;</div>
+  </div>
+
+  <div class="card-body">
+
+    <div>
+      <div class="sect-label">Background</div>
+      <p class="bio-text">
+        Daniel Raihani is an accountant, registered tax agent, and entrepreneur who built a 20-year private business career spanning accounting, real estate, manufacturing, and international finance across Sydney, UAE, and Hong Kong before entering the ASX listed-company space in 2023. Since then he has taken on board positions at seven ASX companies, consistently arriving with personal capital and deal flow. His most significant transaction to date was structuring and executing the <strong>approximately A$60 million Aurumin/Brightstar Resources merger</strong><sup class="cite"><a href="#src-20" title="Aurumin/Brightstar merger scheme announcement">[20]</a></sup> as Managing Director of Aurumin, which consolidated the Sandstone Greenstone Belt under single ownership for the first time in over a decade.
+      </p>
+    </div>
+
+    <div>
+      <div class="sect-label">Shareholding in FRS <span style="font-size:10px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--color-text-muted)">(Appendix 3Y, 9 Jan 2026)</span></div>
+      <div class="holding-row">
+        <div>
+          <div class="holding-main">34,925,000 ordinary shares<sup class="cite"><a href="#src-5" title="FRS Appendix 3Y — Raihani, 9 Jan 2026">[5]</a></sup></div>
+          <div class="holding-sub">Held via 7 Enterprises Pty Ltd · 9,425,000 performance rights</div>
+        </div>
+      </div>
+      <div class="holding-bar-track"><div class="holding-bar-fill" style="width:37%"></div></div>
+    </div>
+
+    <div>
+      <div class="sect-label">The Aurumin/Brightstar Merger</div>
+      <ul class="ach-list">
+        <li>Joined Aurumin as a substantial shareholder via 7 Enterprises Pty Ltd before joining the board, the same approach used at FRS.<sup class="cite"><a href="#src-17" title="Aurumin Corporate Update — Raihani NED appointment, Dec 2023">[17]</a></sup></li>
+        <li>Elevated to MD and CEO after founder Brad Valiukas stepped down in November 2024.<sup class="cite"><a href="#src-18" title="Aurumin — Raihani appointed MD/CEO, Nov 2024">[18]</a></sup> Immediately divested A$6M of non-core assets to sharpen the portfolio.<sup class="cite"><a href="#src-19" title="Aurumin — Non-core asset divestment A$6M">[19]</a></sup></li>
+        <li>Structured an all-scrip scheme of arrangement with Brightstar Resources: 1 Brightstar share per 4 Aurumin shares, creating a combined 2.4Moz gold resource at 1.5 g/t. Deal valued at approximately A$60M.<sup class="cite"><a href="#src-20" title="Aurumin/Brightstar merger scheme">[20]</a></sup></li>
+        <li>Scheme effective 21 November 2025. Aurumin delisted 3 December 2025.<sup class="cite"><a href="#src-21" title="Aurumin merger becomes Brightstar, Mining.com.au">[21]</a></sup></li>
+      </ul>
+    </div>
+
+    <button class="toggle-btn" onclick="toggleSection(this)">
+      Show more <span class="toggle-icon">&#9660;</span>
+    </button>
+
+    <div class="expandable collapsed" style="max-height:700px;display:flex;flex-direction:column;gap:18px;">
+
+      <div>
+        <div class="sect-label">Career History</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-dot blue"></div>
+            <div>
+              <div class="tl-period">2000s onwards</div>
+              <div class="tl-co">Ultra Capital — Founder and Group CEO</div>
+              <div class="tl-desc">Financial advisory and accounting firm with offices in Sydney, UAE, and Hong Kong. Also financed infrastructure projects across agriculture, energy, waste, and water. Additional private interests in real estate, property development, manufacturing, and automotive exports.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot purple"></div>
+            <div>
+              <div class="tl-period">October 2024 onwards</div>
+              <div class="tl-co">First Au Ltd (ASX: FAU) — Non-Executive Chairman</div>
+              <div class="tl-desc">Western Australian gold exploration strategy including the Gimlet Gold Project in the Eastern Goldfields.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot green"></div>
+            <div>
+              <div class="tl-period">December 2023 to November 2025</div>
+              <div class="tl-co">Aurumin Ltd (ASX: AUN) — NED then MD and CEO</div>
+              <div class="tl-desc">Joined as NED, elevated to MD/CEO November 2024. Restructured portfolio, divested non-core assets for A$6M, executed the Brightstar merger. Aurumin delisted December 2025.<sup class="cite"><a href="#src-17">[17]</a><a href="#src-18">[18]</a><a href="#src-21">[21]</a></sup></div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot amber"></div>
+            <div>
+              <div class="tl-period">November 2025 onwards</div>
+              <div class="tl-co">Altech Batteries Ltd (ASX: ATC) — MD and CEO</div>
+              <div class="tl-desc">Battery technology company commercialising CERENERGY sodium-chloride solid-state batteries and Silumina Anodes. Secured conditional approval for a 46.11M euro German government grant shortly after his appointment.<sup class="cite"><a href="#src-22">[22]</a><a href="#src-23">[23]</a></sup></div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot purple"></div>
+            <div>
+              <div class="tl-period">April 2025 onwards</div>
+              <div class="tl-co">Middle Island Resources (ASX: MDI) — Non-Executive Chairman</div>
+              <div class="tl-desc">Led a A$3.4M capital raise and the Konstantin Resources acquisition (Bobija polymetallic project, Serbia).<sup class="cite"><a href="#src-24">[24]</a><a href="#src-25">[25]</a></sup></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="relevance-box">
+        <div class="relevance-label">Why This Matters for FRS</div>
+        <p class="relevance-body">
+          Raihani has already run the exact playbook FRS is executing: a regional goldfield consolidation transaction structured as an all-scrip scheme, creating a resource of scale from two previously separate juniors. The Aurumin/Brightstar deal is a direct precedent for FRS's Lake Johnston hub strategy.<sup class="cite"><a href="#src-20">[20]</a></sup> His accounting and tax credentials add financial governance depth to the board, and his pattern of personal capital commitment across every board role aligns his interests squarely with shareholders.
+        </p>
+      </div>
+
+      <div class="quote-block">
+        <p class="quote-text">"This merger reduces risks associated with holding a single project and delivers substantial synergy benefits that wouldn't be possible as separate entities."</p>
+        <p class="quote-src">On the Aurumin/Brightstar scheme of arrangement, 2025</p>
+      </div>
+
+    </div>
+
+    <div>
+      <div class="sect-label">Also Serves On</div>
+      <div class="role-tags">
+        <span class="role-tag current">Chair, First Au (ASX: FAU)</span>
+        <span class="role-tag current">Chair, Voltaic Strategic Resources (ASX: VSR)</span>
+        <span class="role-tag current">Chair, Middle Island Resources (ASX: MDI)</span>
+        <span class="role-tag current">MD and CEO, Altech Batteries (ASX: ATC)</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════ ADAM TURNBULL ═══════════════════ -->
+<div class="director-card" onclick="openDirectorModal(this)">
+  <div class="card-header">
+    <span class="appt-badge">NED · Jul 2025</span>
+    <div class="card-header-inner">
+      <div class="director-avatar">AT</div>
+      <div>
+        <div class="director-name">Adam Turnbull</div>
+        <div class="director-role">Non-Executive Director</div>
+        <div class="director-quals">20+ years · Construction, Infrastructure and Capital Markets &nbsp;·&nbsp; Sydney, NSW</div>
+      </div>
+    </div>
+    <div class="card-view-hint">View profile &#8594;</div>
+  </div>
+
+  <div class="card-body">
+
+    <div>
+      <div class="sect-label">Background</div>
+      <p class="bio-text">
+        Adam Turnbull is a Sydney-based company director with over 20 years leading private enterprises across construction, infrastructure, minerals, luxury goods, and capital markets. His career has been built through private companies rather than listed vehicles, so the operational track record is largely undisclosed publicly. He came to the FRS board as an early-stage investor who already held a significant position in the company.
+      </p>
+    </div>
+
+    <div>
+      <div class="sect-label">Shareholding in FRS <span style="font-size:10px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--color-text-muted)">(Appendix 3Y, 25 Feb 2026)</span></div>
+      <div class="holding-row">
+        <div>
+          <div class="holding-main">47,829,128 ordinary shares<sup class="cite"><a href="#src-6" title="FRS Appendix 3Y — Turnbull, 25 Feb 2026">[6]</a></sup></div>
+          <div class="holding-sub">Direct: 44,256,763 · Via Premier Waterproofing Pty Ltd: 3,572,365 · 9,425,000 performance rights</div>
+        </div>
+      </div>
+      <div class="holding-bar-track"><div class="holding-bar-fill" style="width:50%"></div></div>
+      <div style="font-size:11px;color:var(--color-text-muted);margin-top:5px;">Includes 10,000,000 shares from exercise of unlisted $0.15 options on 25 February 2026 ($1,500,000 total).</div>
+    </div>
+
+  </div>
+</div>
+
+
+</div>
+</div>
+
+<!-- Director Modal -->
+<div id="director-modal" class="modal-overlay" onclick="if(event.target===this)closeDirectorModal()">
+  <div class="modal-panel">
+    <button class="modal-close-btn" onclick="closeDirectorModal()" title="Close">&#10005;</button>
+    <div id="modal-inner"></div>
+  </div>
+</div>
+
+<!-- Sources & References -->
+<div class="sources-section">
+  <div class="sect-label" style="margin-bottom:16px;">Sources &amp; References</div>
+  <div class="sources-body">
+    <ol class="sources-list">
+      <li id="src-1"><a href="https://announcements.asx.com.au/asxpdf/20250724/pdf/06m3ckdr63tdkv.pdf" target="_blank" rel="noopener">FRS – Board Changes (Geraghty &amp; Turnbull appointments), ASX announcement, 24 Jul 2025</a></li>
+      <li id="src-2"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03071293" target="_blank" rel="noopener">FRS – Half-Year Financial Report to 31 Dec 2025 (director titles confirmed), ASX, 12 Mar 2026</a></li>
+      <li id="src-3"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03078778" target="_blank" rel="noopener">FRS – Appendix 3Y Change of Director's Interest Notice (David Geraghty), ASX, 1 Apr 2026</a></li>
+      <li id="src-4"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03078779" target="_blank" rel="noopener">FRS – Appendix 3Y Change of Director's Interest Notice (Brett Hodgins), ASX, 1 Apr 2026</a></li>
+      <li id="src-5"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03060920" target="_blank" rel="noopener">FRS – Appendix 3Y Change of Director's Interest Notice (Daniel Raihani), ASX, change date 9 Jan 2026 (filing ID 03060920). Holdings: 34,925,000 ordinary shares via 7 Enterprises Pty Ltd; 9,425,000 performance rights.</a></li>
+      <li id="src-6"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03066614" target="_blank" rel="noopener">FRS – Appendix 3Y Change of Director's Interest Notice (Adam Turnbull), ASX, change date 25 Feb 2026 (filing ID 03066614). Holdings after change: 44,256,763 ordinary shares direct; 3,572,365 via Premier Waterproofing Pty Ltd; 9,425,000 performance rights.</a></li>
+      <li id="src-7"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02972472" target="_blank" rel="noopener">FRS – Appendix 3X Initial Director's Interest Notice (Adam Turnbull), ASX, 24 Jul 2025 (filing ID 02972472). Holdings at appointment: 27,855,000 ordinary shares direct; 2,156,777 via Premier Waterproofing Pty Ltd.</a></li>
+      <li id="src-8"><a href="https://www.proactiveinvestors.com/companies/news/1088189/bsa-appoints-former-minres-exec-1088189.html" target="_blank" rel="noopener">BSA Limited – Appoints Former MinRes Executive as Non-Executive Chairman (Geraghty), ProActive Investors, Mar 2026</a></li>
+      <li id="src-9"><a href="https://patents.google.com/patent/WO2011044608A1/en" target="_blank" rel="noopener">Patent WO2011044608A1 – Method for processing manganese ore fines (inventor: D.M. Geraghty; assignee: Process Minerals International), Google Patents</a></li>
+      <li id="src-10"><a href="https://www.mineralresources.com.au/news/major-milestone-for-world-first-fully-autonomous-road-trains/" target="_blank" rel="noopener">MinRes – Major milestone for world-first fully autonomous road trains (Onslow Iron), Mineral Resources Ltd</a></li>
+      <li id="src-11"><a href="https://www.mineralresources.com.au/our-business/mining-services/innovation/nextgen-modular-crushing-plant/" target="_blank" rel="noopener">MinRes – NextGen modular crushing plant, Mineral Resources Ltd</a></li>
+      <li id="src-12"><a href="https://www.riotinto.com/en/news/releases/2025/robe-river-joint-venture-to-invest-733-million-to-extend-west-angelas-iron-ore-mine-in-western-australia" target="_blank" rel="noopener">Rio Tinto – Robe River JV to invest A$733M to extend West Angelas iron ore mine, 2025</a></li>
+      <li id="src-13"><a href="https://www.globenewswire.com/news-release/2011/02/28/1503007/0/en/CIO-Enters-Into-a-Farm-in-Joint-Venture-With-Barrick-South-Darlot-Gold-Project.html" target="_blank" rel="noopener">Central Iron Ore – Farm-in Joint Venture with Barrick at South Darlot Gold Project (Hodgins as President &amp; CEO), GlobeNewswire, Feb 2011</a></li>
+      <li id="src-14"><a href="https://www.globenewswire.com/en/news-release/2012/09/18/1503046/0/en/Central-Iron-Ore-Ltd-Drill-Program-Commencing-at-South-Darlot-Gold-Project.html" target="_blank" rel="noopener">Central Iron Ore – Drill program commencing at South Darlot (1,104-hole historical database), GlobeNewswire, Sep 2012</a></li>
+      <li id="src-15"><a href="https://www.proactiveinvestors.com.au/companies/news/188087/tyranna-resources-transitioning-from-gold-explorer-to-producer-through-acquisition-188087.html" target="_blank" rel="noopener">Tyranna Resources – Acquisition of Eureka Gold Mine for A$3.2M + NSR royalty, ProActive Investors, 2017</a></li>
+      <li id="src-16"><a href="https://www.marketscreener.com/business-leaders/Brett-Hodgins-0B57TL-E/biography/" target="_blank" rel="noopener">Brett Hodgins – Executive biography (Robe River, Rio Tinto, IOH, CIO career history), MarketScreener</a></li>
+      <li id="src-17"><a href="https://aurumin.com.au/wp-content/uploads/61184202.pdf" target="_blank" rel="noopener">Aurumin Ltd – Corporate Update (Raihani NED appointment), ASX:AUN, Dec 2023</a></li>
+      <li id="src-18"><a href="https://www.proactiveinvestors.com.au/companies/news/1061258/aurumin-announces-leadership-changes-and-board-appointments-as-md-steps-down-1061258.html" target="_blank" rel="noopener">Aurumin – Leadership changes, Raihani appointed MD and CEO, ProActive Investors, Nov 2024</a></li>
+      <li id="src-19"><a href="https://announcements.asx.com.au/asxpdf/20250911/pdf/06p333tvv9jt07.pdf" target="_blank" rel="noopener">Aurumin – Non-core asset divestment A$6M, ASX announcement, Sep 2025</a></li>
+      <li id="src-20"><a href="https://announcements.asx.com.au/asxpdf/20250630/pdf/06l7xntfr9j9rr.pdf" target="_blank" rel="noopener">Aurumin/Brightstar – Merger scheme announcement (1:4 ratio, 2.4Moz at 1.5 g/t, ~A$60M), ASX, Jun 2025</a></li>
+      <li id="src-21"><a href="https://mining.com.au/aurumin-merger-becomes-brightstar/" target="_blank" rel="noopener">Aurumin merger becomes Brightstar – scheme effective 21 Nov 2025, delisted 3 Dec 2025, Mining.com.au</a></li>
+      <li id="src-22"><a href="https://www.abnnewswire.net/press/en/136605/Altech-Batteries-Ltd-(ASX-ATC)-Board-Renewal-and-Strategic-Focus.html" target="_blank" rel="noopener">Altech Batteries – Board renewal and strategic focus (Raihani appointed MD &amp; CEO), ABN Newswire, Nov 2025</a></li>
+      <li id="src-23"><a href="https://www.proactiveinvestors.com/companies/news/1085163/altech-s-cerenergy-battery-project-secures-conditional-46-11m-german-government-grant-approval-1085163.html" target="_blank" rel="noopener">Altech Batteries – CERENERGY project secures conditional €46.11M German government grant, ProActive Investors</a></li>
+      <li id="src-24"><a href="https://www.tipranks.com/news/company-announcements/middle-island-resources-appoints-new-director-with-significant-shareholding" target="_blank" rel="noopener">Middle Island Resources – Appoints Raihani as director (significant shareholding), TipRanks / ASX announcement, Apr 2025</a></li>
+      <li id="src-25"><a href="https://smallcaps.com.au/article/middle-island-resources-fast-track-serbian-polymetallic-portfolio-konstantin-acquisition" target="_blank" rel="noopener">Middle Island Resources – Konstantin Resources acquisition and A$3.4M capital raise, SmallCaps.com.au</a></li>
+      <li id="src-26"><a href="https://www.americanbankingnews.com/2026/03/03/forrestania-resources-asxfrs-insider-adam-turnbull-buys-10000000-shares.html" target="_blank" rel="noopener">Adam Turnbull – exercise of 10,000,000 unlisted options at A$0.15 per option on 25 Feb 2026 (reported as insider acquisition), American Banking News, Mar 2026</a></li>
+      <li id="src-27"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03052015" target="_blank" rel="noopener">FRS – Appendix 3G Notification of Issue, unquoted equity securities (Brett Hodgins options), ASX, 22 Jan 2026 (filing ID 03052015). Confirmed: FRSOPT19 5M at $0.40, FRSOPT20 5M at $0.60, FRSOPT21 5M at $0.90, all exp. 19 Jan 2029, issued to Jaybre Holdings Pty Ltd, approved by shareholders 12 Jan 2026.</a></li>
+    </ol>
+  </div>
+</div>
+
+<!-- Bottom Navigation -->
+<nav class="bottom-nav">
+  <a class="nav-btn primary" href="frs_company_snapshot.html">
+    <span class="btn-icon">&#8592;</span>
+    Company Snapshot
+  </a>
+  <a class="nav-btn secondary" href="frs_tenement_timeline_map.html">
+    <span class="btn-icon">&#9783;</span>
+    Tenement Map
+  </a>
+</nav>
+
+<script>
+function openDirectorModal(card) {
+  const header = card.querySelector('.card-header').cloneNode(true);
+  const hint = header.querySelector('.card-view-hint');
+  if (hint) hint.remove();
+  const body = card.querySelector('.card-body').cloneNode(true);
+  body.style.display = 'flex';
+  const inner = document.getElementById('modal-inner');
+  inner.innerHTML = '';
+  inner.appendChild(header);
+  inner.appendChild(body);
+  document.getElementById('director-modal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDirectorModal() {
+  document.getElementById('director-modal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeDirectorModal();
+});
+
+function toggleSection(btn) {
+  const expandable = btn.nextElementSibling;
+  const isOpen = !expandable.classList.contains('collapsed');
+  if (isOpen) {
+    expandable.classList.add('collapsed');
+    btn.classList.remove('open');
+    btn.innerHTML = 'Show more <span class="toggle-icon">&#9660;</span>';
+  } else {
+    expandable.classList.remove('collapsed');
+    btn.classList.add('open');
+    btn.innerHTML = 'Show less <span class="toggle-icon open" style="transform:rotate(180deg)">&#9660;</span>';
+  }
+}
+</script>
+
+</body>
+</html>

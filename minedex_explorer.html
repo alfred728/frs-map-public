@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MINEDEX Explorer — WA Mineral Deposits</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg-primary: #0a0e14;
+  --bg-secondary: #111820;
+  --bg-tertiary: #1a2230;
+  --bg-hover: #1e2a3a;
+  --border: #2a3545;
+  --border-light: #354560;
+  --text-primary: #c8d6e5;
+  --text-secondary: #7a8fa6;
+  --text-muted: #4a5e75;
+  --gold: #d4a017;
+  --gold-dim: #8b6914;
+  --gold-glow: rgba(212, 160, 23, 0.15);
+  --nickel: #5cb85c;
+  --iron: #c0392b;
+  --lithium: #9b59b6;
+  --copper: #e67e22;
+  --construction: #7f8c8d;
+  --other: #546e7a;
+  --operating: #27ae60;
+  --shut: #636e72;
+  --proposed: #2980b9;
+  --care: #e67e22;
+  --undeveloped: #8e44ad;
+  --underdev: #16a085;
+  --frs-tenement: rgba(65, 135, 220, 0.25);
+  --frs-border: rgba(65, 135, 220, 0.6);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  overflow: hidden;
+  height: 100vh;
+}
+
+#map {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 1;
+  background: var(--bg-primary);
+}
+
+/* Override Leaflet tiles for dark theme */
+.leaflet-tile-pane { filter: brightness(0.7) contrast(1.1) saturate(0.3); }
+.leaflet-control-zoom a {
+  background: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border) !important;
+}
+.leaflet-control-zoom a:hover { background: var(--bg-tertiary) !important; }
+.leaflet-control-attribution {
+  background: rgba(10,14,20,0.85) !important;
+  color: var(--text-muted) !important;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+}
+.leaflet-control-attribution a { color: var(--text-secondary) !important; }
+
+/* Cluster styling */
+.marker-cluster-small {
+  background: rgba(212, 160, 23, 0.2) !important;
+}
+.marker-cluster-small div {
+  background: rgba(212, 160, 23, 0.5) !important;
+  color: #fff !important;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  font-size: 11px;
+}
+.marker-cluster-medium {
+  background: rgba(212, 160, 23, 0.25) !important;
+}
+.marker-cluster-medium div {
+  background: rgba(212, 160, 23, 0.6) !important;
+  color: #fff !important;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  font-size: 12px;
+}
+.marker-cluster-large {
+  background: rgba(212, 160, 23, 0.3) !important;
+}
+.marker-cluster-large div {
+  background: rgba(212, 160, 23, 0.7) !important;
+  color: #fff !important;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+/* Header bar */
+.header-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 48px;
+  background: rgba(10, 14, 20, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 16px;
+}
+.header-bar .logo {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--gold);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.header-bar .logo span {
+  color: var(--text-muted);
+  font-weight: 400;
+  margin-left: 8px;
+  letter-spacing: 0.5px;
+  font-size: 11px;
+}
+.header-bar .divider {
+  width: 1px;
+  height: 24px;
+  background: var(--border);
+}
+.header-stats {
+  display: flex;
+  gap: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+}
+.header-stats .stat-label {
+  color: var(--text-muted);
+  margin-right: 6px;
+}
+.header-stats .stat-value {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.header-stats .stat-value.gold { color: var(--gold); }
+
+/* Filter panel */
+.filter-panel {
+  position: fixed;
+  top: 60px;
+  left: 12px;
+  width: 280px;
+  background: rgba(10, 14, 20, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  z-index: 1000;
+  overflow: hidden;
+}
+.filter-section {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.filter-section:last-child { border-bottom: none; }
+.filter-section h3 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 10px;
+}
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.filter-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-size: 12px;
+}
+.filter-item:hover { background: var(--bg-hover); }
+.filter-item input[type="checkbox"] {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--border-light);
+  border-radius: 3px;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+}
+.filter-item input[type="checkbox"]:checked {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+.filter-item input[type="checkbox"]:checked::after {
+  content: '✓';
+  position: absolute;
+  top: -1px;
+  left: 2px;
+  font-size: 10px;
+  color: var(--bg-primary);
+  font-weight: 700;
+}
+.filter-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.filter-label {
+  flex: 1;
+  color: var(--text-secondary);
+  font-family: 'DM Sans', sans-serif;
+}
+.filter-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+/* Toggle buttons row */
+.toggle-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.toggle-btn {
+  flex: 1;
+  padding: 5px 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+}
+.toggle-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+/* FRS overlay toggle */
+.overlay-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.overlay-toggle:hover { background: var(--bg-hover); }
+.overlay-toggle .switch {
+  width: 32px;
+  height: 18px;
+  background: var(--bg-tertiary);
+  border: 1.5px solid var(--border-light);
+  border-radius: 10px;
+  position: relative;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.overlay-toggle .switch::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  top: 2px;
+  left: 2px;
+  transition: all 0.2s;
+}
+.overlay-toggle .switch.active {
+  background: var(--gold-glow);
+  border-color: var(--gold);
+}
+.overlay-toggle .switch.active::after {
+  background: var(--gold);
+  left: 16px;
+}
+.overlay-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* Popup styling */
+.leaflet-popup-content-wrapper {
+  background: rgba(17, 24, 32, 0.96) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5) !important;
+  backdrop-filter: blur(8px);
+}
+.leaflet-popup-tip { background: rgba(17, 24, 32, 0.96) !important; }
+.leaflet-popup-close-button {
+  color: var(--text-muted) !important;
+  font-size: 18px !important;
+}
+.deposit-popup {
+  font-family: 'DM Sans', sans-serif;
+  min-width: 240px;
+}
+.deposit-popup .popup-header {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.deposit-popup .popup-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 0;
+  font-size: 12px;
+}
+.deposit-popup .popup-row .key {
+  color: var(--text-muted);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.deposit-popup .popup-row .val {
+  color: var(--text-primary);
+  font-weight: 500;
+  text-align: right;
+  max-width: 160px;
+}
+.deposit-popup .popup-link {
+  display: block;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+.deposit-popup .popup-link a {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--gold);
+  text-decoration: none;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.deposit-popup .popup-link a:hover { text-decoration: underline; }
+
+/* Stage badges */
+.stage-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.stage-operating { background: rgba(39,174,96,0.2); color: var(--operating); }
+.stage-shut { background: rgba(99,110,114,0.2); color: var(--shut); }
+.stage-proposed { background: rgba(41,128,185,0.2); color: var(--proposed); }
+.stage-care { background: rgba(230,126,34,0.2); color: var(--care); }
+.stage-undeveloped { background: rgba(142,68,173,0.2); color: var(--undeveloped); }
+.stage-underdev { background: rgba(22,160,133,0.2); color: var(--underdev); }
+
+/* Search box */
+.search-box {
+  position: relative;
+}
+.search-box input {
+  width: 100%;
+  padding: 8px 10px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--text-primary);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.search-box input::placeholder { color: var(--text-muted); }
+.search-box input:focus { border-color: var(--gold-dim); }
+
+/* Mill markers */
+.mill-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  font-size: 14px;
+  border: 2px solid;
+  background: rgba(10, 14, 20, 0.9);
+}
+
+/* Legend */
+.color-by-toggle {
+  display: flex;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.color-by-toggle button {
+  flex: 1;
+  padding: 6px 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.color-by-toggle button.active {
+  background: var(--gold-glow);
+  color: var(--gold);
+}
+.color-by-toggle button:hover:not(.active) {
+  color: var(--text-secondary);
+}
+
+/* Scrollable filter content */
+.filter-scroll {
+  max-height: calc(100vh - 300px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.filter-scroll::-webkit-scrollbar { width: 4px; }
+.filter-scroll::-webkit-scrollbar-track { background: transparent; }
+.filter-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .filter-panel { width: 240px; left: 8px; }
+  .header-stats { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="header-bar">
+  <div class="logo">MINEDEX<span>WA Mineral Deposits Explorer</span></div>
+  <div class="divider"></div>
+  <div class="header-stats">
+    <div><span class="stat-label">VISIBLE</span><span class="stat-value gold" id="visible-count">—</span></div>
+    <div><span class="stat-label">TOTAL</span><span class="stat-value" id="total-count">—</span></div>
+    <div><span class="stat-label">GOLD</span><span class="stat-value gold" id="gold-count">—</span></div>
+  </div>
+</div>
+
+<div class="filter-panel">
+  <div class="filter-section">
+    <div class="search-box">
+      <input type="text" id="search-input" placeholder="Search deposit name..." />
+    </div>
+  </div>
+
+  <div class="filter-section">
+    <h3>Color by</h3>
+    <div class="color-by-toggle">
+      <button class="active" onclick="setColorBy('commodity')">Commodity</button>
+      <button onclick="setColorBy('stage')">Stage</button>
+    </div>
+  </div>
+
+  <div class="filter-section">
+    <h3>Commodity</h3>
+    <div class="toggle-row">
+      <button class="toggle-btn" onclick="toggleAll('commodity', true)">All</button>
+      <button class="toggle-btn" onclick="toggleAll('commodity', false)">None</button>
+      <button class="toggle-btn" onclick="toggleOnly('commodity', 'GOLD')">Gold only</button>
+    </div>
+    <div class="filter-group" id="commodity-filters"></div>
+  </div>
+
+  <div class="filter-scroll">
+    <div class="filter-section">
+      <h3>Stage</h3>
+      <div class="toggle-row">
+        <button class="toggle-btn" onclick="toggleAll('stage', true)">All</button>
+        <button class="toggle-btn" onclick="toggleAll('stage', false)">None</button>
+      </div>
+      <div class="filter-group" id="stage-filters"></div>
+    </div>
+
+    <div class="filter-section">
+      <h3>Overlays</h3>
+      <div class="overlay-toggle" onclick="toggleFRS()">
+        <div class="switch active" id="frs-switch"></div>
+        <span class="overlay-label">FRS Tenements</span>
+      </div>
+      <div class="overlay-toggle" onclick="toggleMills()">
+        <div class="switch active" id="mills-switch"></div>
+        <span class="overlay-label">Processing Mills</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script>
+// ── Config ──────────────────────────────────────────────
+const COMMODITY_COLORS = {
+  'GOLD': '#d4a017',
+  'NICKEL': '#5cb85c',
+  'IRON ORE': '#c0392b',
+  'TIN - TANTALUM - LITHIUM': '#9b59b6',
+  'COPPER - LEAD - ZINC': '#e67e22',
+  'CONSTRUCTION MATERIALS': '#7f8c8d',
+  'RARE EARTHS': '#e74c3c',
+  'GEM & SEMI-PRECIOUS STONES': '#1abc9c',
+  'INDUSTRIAL PEGMATITE MINERALS': '#3498db',
+  'GYPSUM': '#95a5a6',
+  'TUNGSTEN - MOLYBDENUM': '#2c3e50',
+  'CLAYS': '#a0522d',
+  'MAGNESITE': '#bdc3c7',
+  'UNASSIGNED': '#546e7a',
+  'OTHER': '#546e7a'
+};
+
+const STAGE_COLORS = {
+  'Operating': '#27ae60',
+  'Shut': '#636e72',
+  'Proposed': '#2980b9',
+  'Care and Maintenance': '#e67e22',
+  'Undeveloped': '#8e44ad',
+  'Under Development': '#16a085'
+};
+
+const STAGE_CLASSES = {
+  'Operating': 'stage-operating',
+  'Shut': 'stage-shut',
+  'Proposed': 'stage-proposed',
+  'Care and Maintenance': 'stage-care',
+  'Undeveloped': 'stage-undeveloped',
+  'Under Development': 'stage-underdev'
+};
+
+const MILLS = [
+  { name: 'Lake Johnston Mill', lat: -32.208405, lng: 120.489175, owner: 'FRS', capacity: '3.2 Mtpa', color: '#27ae60' },
+  { name: 'Edna May Mill', lat: -31.305, lng: 118.698, owner: 'Ramelius', capacity: '2.9 Mtpa', color: '#e67e22' },
+  { name: 'Westgold Higginsville Mill', lat: -31.740, lng: 121.725, owner: 'Westgold', capacity: '—', color: '#d4a017' }
+];
+
+// ── State ───────────────────────────────────────────────
+let allFeatures = [];
+let colorBy = 'commodity';
+let filters = { commodity: {}, stage: {} };
+let searchTerm = '';
+
+// ── Map setup ───────────────────────────────────────────
+const map = L.map('map', {
+  center: [-31.5, 120.5],
+  zoom: 7,
+  zoomControl: true,
+  attributionControl: true
+});
+
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; OpenStreetMap &copy; CARTO | MINEDEX &copy; DMIRS WA Gov',
+  subdomains: 'abcd',
+  maxZoom: 19
+}).addTo(map);
+
+// Offset map center for filter panel
+map.panBy([-100, 24], { animate: false });
+
+// ── Marker cluster group ────────────────────────────────
+const clusterGroup = L.markerClusterGroup({
+  maxClusterRadius: 45,
+  spiderfyOnMaxZoom: true,
+  showCoverageOnHover: false,
+  disableClusteringAtZoom: 14,
+  chunkedLoading: true,
+  chunkInterval: 100
+});
+map.addLayer(clusterGroup);
+
+// ── FRS tenements layer ─────────────────────────────────
+let frsLayer = null;
+let frsVisible = true;
+
+fetch('frs_tenements_complete.geojson')
+  .then(r => r.json())
+  .then(data => {
+    frsLayer = L.geoJSON(data, {
+      style: () => ({
+        fillColor: '#4187dc',
+        fillOpacity: 0.12,
+        color: '#4187dc',
+        weight: 1.5,
+        opacity: 0.5
+      }),
+      onEachFeature: (feature, layer) => {
+        const p = feature.properties;
+        if (p && p.tenement_id) {
+          layer.bindTooltip(p.tenement_id, {
+            className: 'tenement-tooltip',
+            direction: 'center',
+            permanent: false
+          });
+        }
+      }
+    });
+    frsLayer.addTo(map);
+  })
+  .catch(() => console.log('FRS tenements not loaded'));
+
+// ── Mills layer ─────────────────────────────────────────
+let millsLayer = L.layerGroup();
+let millsVisible = true;
+
+MILLS.forEach(mill => {
+  const icon = L.divIcon({
+    className: '',
+    html: `<div class="mill-icon" style="border-color: ${mill.color}; color: ${mill.color};">⚙</div>`,
+    iconSize: [28, 28],
+    iconAnchor: [14, 14]
+  });
+  const marker = L.marker([mill.lat, mill.lng], { icon });
+  marker.bindPopup(`
+    <div class="deposit-popup">
+      <div class="popup-header">${mill.name}</div>
+      <div class="popup-row"><span class="key">Owner</span><span class="val">${mill.owner}</span></div>
+      <div class="popup-row"><span class="key">Capacity</span><span class="val">${mill.capacity}</span></div>
+    </div>
+  `);
+  millsLayer.addLayer(marker);
+});
+millsLayer.addTo(map);
+
+// ── Load MINEDEX data ───────────────────────────────────
+fetch('minedex_data.geojson')
+  .then(r => r.json())
+  .then(data => {
+    allFeatures = data.features;
+    document.getElementById('total-count').textContent = allFeatures.length.toLocaleString();
+
+    // Count commodities and stages
+    const commodityCounts = {};
+    const stageCounts = {};
+    allFeatures.forEach(f => {
+      const com = f.properties.target_com || 'OTHER';
+      const stage = f.properties.site_stage || 'Unknown';
+      commodityCounts[com] = (commodityCounts[com] || 0) + 1;
+      stageCounts[stage] = (stageCounts[stage] || 0) + 1;
+    });
+
+    document.getElementById('gold-count').textContent = (commodityCounts['GOLD'] || 0).toLocaleString();
+
+    // Sort by count descending
+    const sortedCommodities = Object.entries(commodityCounts).sort((a, b) => b[1] - a[1]);
+    const sortedStages = Object.entries(stageCounts).sort((a, b) => b[1] - a[1]);
+
+    // Initialize filters (all on)
+    sortedCommodities.forEach(([c]) => filters.commodity[c] = true);
+    sortedStages.forEach(([s]) => filters.stage[s] = true);
+
+    // Build filter UI
+    buildFilterUI('commodity-filters', sortedCommodities, 'commodity', COMMODITY_COLORS);
+    buildFilterUI('stage-filters', sortedStages, 'stage', STAGE_COLORS);
+
+    // Create markers
+    rebuildMarkers();
+  });
+
+// ── Build filter checkboxes ─────────────────────────────
+function buildFilterUI(containerId, entries, filterType, colorMap) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  entries.forEach(([key, count]) => {
+    const color = colorMap[key] || '#546e7a';
+    const label = key.length > 22 ? key.slice(0, 20) + '…' : key;
+    const item = document.createElement('label');
+    item.className = 'filter-item';
+    item.innerHTML = `
+      <input type="checkbox" checked data-type="${filterType}" data-key="${key}" />
+      <span class="filter-dot" style="background: ${color}"></span>
+      <span class="filter-label">${label}</span>
+      <span class="filter-count">${count.toLocaleString()}</span>
+    `;
+    item.querySelector('input').addEventListener('change', (e) => {
+      filters[filterType][key] = e.target.checked;
+      rebuildMarkers();
+    });
+    container.appendChild(item);
+  });
+}
+
+// ── Create circle markers ───────────────────────────────
+function getColor(feature) {
+  if (colorBy === 'commodity') {
+    return COMMODITY_COLORS[feature.properties.target_com] || '#546e7a';
+  } else {
+    return STAGE_COLORS[feature.properties.site_stage] || '#546e7a';
+  }
+}
+
+function getStageClass(stage) {
+  return STAGE_CLASSES[stage] || 'stage-shut';
+}
+
+function rebuildMarkers() {
+  clusterGroup.clearLayers();
+  let visibleCount = 0;
+
+  allFeatures.forEach(f => {
+    const com = f.properties.target_com || 'OTHER';
+    const stage = f.properties.site_stage || 'Unknown';
+    const name = (f.properties.site_title || '').toLowerCase();
+
+    // Apply filters
+    if (!filters.commodity[com]) return;
+    if (!filters.stage[stage]) return;
+    if (searchTerm && !name.includes(searchTerm)) return;
+
+    const coords = f.geometry.coordinates;
+    const color = getColor(f);
+
+    const marker = L.circleMarker([coords[1], coords[0]], {
+      radius: 5,
+      fillColor: color,
+      fillOpacity: 0.7,
+      color: color,
+      weight: 1,
+      opacity: 0.9
+    });
+
+    const p = f.properties;
+    const stageClass = getStageClass(p.site_stage);
+
+    marker.bindPopup(`
+      <div class="deposit-popup">
+        <div class="popup-header">${p.site_title || p.short_name || 'Unknown'}</div>
+        <div class="popup-row"><span class="key">Type</span><span class="val">${p.site_type_ || '—'}</span></div>
+        <div class="popup-row"><span class="key">Sub-type</span><span class="val">${p.site_sub_t || '—'}</span></div>
+        <div class="popup-row"><span class="key">Stage</span><span class="val"><span class="stage-badge ${stageClass}">${p.site_stage || '—'}</span></span></div>
+        <div class="popup-row"><span class="key">Commodity</span><span class="val">${p.site_commo || '—'}</span></div>
+        <div class="popup-row"><span class="key">Target</span><span class="val">${p.target_com || '—'}</span></div>
+        <div class="popup-row"><span class="key">Project</span><span class="val">${p.proj_title || '—'}</span></div>
+        <div class="popup-row"><span class="key">Coords</span><span class="val">${p.latitude?.toFixed(4)}, ${p.longitude?.toFixed(4)}</span></div>
+        ${p.web_link ? `<div class="popup-link"><a href="${p.web_link}" target="_blank">View on MINEDEX →</a></div>` : ''}
+      </div>
+    `);
+
+    clusterGroup.addLayer(marker);
+    visibleCount++;
+  });
+
+  document.getElementById('visible-count').textContent = visibleCount.toLocaleString();
+}
+
+// ── Controls ────────────────────────────────────────────
+function setColorBy(mode) {
+  colorBy = mode;
+  document.querySelectorAll('.color-by-toggle button').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.toLowerCase() === mode);
+  });
+  rebuildMarkers();
+}
+
+function toggleAll(filterType, state) {
+  Object.keys(filters[filterType]).forEach(k => filters[filterType][k] = state);
+  document.querySelectorAll(`input[data-type="${filterType}"]`).forEach(cb => cb.checked = state);
+  rebuildMarkers();
+}
+
+function toggleOnly(filterType, key) {
+  Object.keys(filters[filterType]).forEach(k => filters[filterType][k] = (k === key));
+  document.querySelectorAll(`input[data-type="${filterType}"]`).forEach(cb => {
+    cb.checked = cb.dataset.key === key;
+  });
+  rebuildMarkers();
+}
+
+function toggleFRS() {
+  frsVisible = !frsVisible;
+  document.getElementById('frs-switch').classList.toggle('active', frsVisible);
+  if (frsLayer) {
+    frsVisible ? frsLayer.addTo(map) : map.removeLayer(frsLayer);
+  }
+}
+
+function toggleMills() {
+  millsVisible = !millsVisible;
+  document.getElementById('mills-switch').classList.toggle('active', millsVisible);
+  millsVisible ? millsLayer.addTo(map) : map.removeLayer(millsLayer);
+}
+
+// ── Search ──────────────────────────────────────────────
+let searchTimeout;
+document.getElementById('search-input').addEventListener('input', (e) => {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    searchTerm = e.target.value.toLowerCase().trim();
+    rebuildMarkers();
+  }, 300);
+});
+</script>
+</body>
+</html>

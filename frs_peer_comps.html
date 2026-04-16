@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FRS — ASX Gold Producer Comparables</title>
+<script>document.documentElement.style.visibility='visible';</script>
+<link rel="stylesheet" href="shared.css">
+<style>
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");background-repeat:repeat;background-size:256px 256px;}
+.page-header::before{content:'';position:absolute;inset:0;pointer-events:none;opacity:0.05;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");background-repeat:repeat;background-size:256px 256px;}
+.chart-card{animation:fadeSlideUp 0.4s ease-out both;}
+.chart-card:nth-child(2){animation-delay:80ms;}
+.chart-card:nth-child(3){animation-delay:160ms;}
+.chart-card:nth-child(4){animation-delay:240ms;}
+html{height:100%}
+body{
+  background:var(--color-bg);
+  min-height:100%;
+  display:flex;
+  flex-direction:column;
+}
+
+/* ── Header ── */
+.page-header{
+  background:linear-gradient(135deg,var(--color-dark-bg) 0%,var(--color-dark-surface) 50%,var(--color-dark-elevated) 100%);
+  color:#fff;
+  padding:36px 40px 32px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.page-header::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg,transparent 40%,rgba(196,146,42,0.06) 100%);
+  pointer-events:none;
+}
+.page-header h1{
+  font-size:28px;font-weight:700;letter-spacing:0.5px;margin-bottom:4px;position:relative;z-index:1;
+}
+.page-header h1 span{color:var(--color-gold)}
+.page-header .subtitle{
+  font-size:14px;color:var(--color-dark-text-secondary);font-weight:400;letter-spacing:1.5px;text-transform:uppercase;position:relative;z-index:1;
+}
+
+/* ── Content ── */
+.content{
+  max-width:1280px;
+  margin:0 auto;
+  padding:28px 32px 60px;
+  width:100%;
+}
+
+/* ── FRS Tile ── */
+.frs-tile{
+  background:var(--color-surface);
+  border:2px solid var(--color-gold);
+  border-radius:var(--radius-lg);
+  padding:24px 28px;
+  margin-bottom:32px;
+  display:flex;
+  align-items:center;
+  gap:24px;
+  box-shadow:0 0 0 4px var(--color-gold-subtle),var(--shadow-md);
+}
+.frs-tile .frs-logo{
+  width:56px;height:56px;
+  background:var(--color-gold);
+  border-radius:var(--radius-md);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--color-dark-bg);
+  flex-shrink:0;
+}
+.frs-tile .frs-info h2{
+  font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--color-text);margin-bottom:2px;
+}
+.frs-tile .frs-info p{
+  font-size:13px;color:var(--color-text-secondary);
+}
+.frs-tile .frs-stats{
+  margin-left:auto;
+  display:flex;gap:32px;
+}
+.frs-tile .frs-stat{text-align:center}
+.frs-tile .frs-stat .val{
+  font-family:var(--font-display);font-size:24px;font-weight:700;color:var(--color-gold-text);
+  font-variant-numeric:tabular-nums;
+}
+.frs-tile .frs-stat .lbl{
+  font-size:11px;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.8px;font-weight:600;
+}
+
+/* ── Section ── */
+.section-title{
+  font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--color-text);
+  margin:32px 0 6px;display:flex;align-items:center;gap:10px;
+}
+.section-title .icon{font-size:20px}
+.section-desc{font-size:13px;color:var(--color-text-secondary);margin-bottom:16px}
+
+/* ── Chart Cards ── */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:28px}
+@media(max-width:900px){.chart-grid{grid-template-columns:1fr}}
+.chart-card{
+  background:var(--color-surface);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-lg);
+  padding:20px 24px;
+  box-shadow:var(--shadow-sm);
+}
+.chart-card.full{grid-column:1/-1}
+.chart-card h3{
+  font-family:var(--font-display);font-size:14px;font-weight:700;color:var(--color-text);margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+.chart-card h3 .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* ── Horizontal Bar Chart ── */
+.hbar{display:flex;flex-direction:column;gap:6px}
+.hbar-row{display:flex;align-items:center;gap:8px}
+.hbar-label{
+  width:48px;font-size:12px;font-weight:600;color:var(--color-text-secondary);text-align:right;
+  font-variant-numeric:tabular-nums;flex-shrink:0;
+}
+.hbar-track{
+  flex:1;height:26px;background:var(--color-surface-secondary);border-radius:var(--radius-sm);overflow:hidden;position:relative;
+}
+.hbar-fill{
+  height:100%;border-radius:var(--radius-sm);display:flex;align-items:center;padding:0 8px;
+  font-size:11px;font-weight:600;color:#fff;white-space:nowrap;
+  transition:width 0.8s cubic-bezier(0.22,1,0.36,1);
+}
+.hbar-value{
+  font-size:12px;font-weight:600;color:var(--color-text);width:80px;text-align:right;
+  font-variant-numeric:tabular-nums;flex-shrink:0;
+}
+
+/* Bar Colors */
+.bar-gold{background:linear-gradient(90deg,var(--color-gold),#B8860B)}
+.bar-blue{background:linear-gradient(90deg,var(--color-phase-4),#1a57a8)}
+.bar-green{background:linear-gradient(90deg,var(--color-success),#2e7d32)}
+.bar-purple{background:linear-gradient(90deg,var(--color-phase-1),#5a3d8a)}
+.bar-amber{background:linear-gradient(90deg,var(--color-warning),#c26600)}
+.bar-red{background:linear-gradient(90deg,var(--color-error),#a11d28)}
+
+/* ── Scatter Plot ── */
+.scatter-container{position:relative;width:100%;height:340px}
+.scatter-svg{width:100%;height:100%}
+.scatter-dot{cursor:pointer;transition:r 0.15s ease}
+.scatter-dot:hover{r:8}
+.scatter-label{font-family:var(--font-body);font-size:10px;fill:var(--color-text-secondary);font-weight:600}
+.scatter-axis{stroke:var(--color-border);stroke-width:1}
+.scatter-grid{stroke:var(--color-border-subtle);stroke-width:0.5;stroke-dasharray:4 4}
+.scatter-axis-label{font-family:var(--font-body);font-size:11px;fill:var(--color-text-muted);font-weight:500}
+.scatter-tooltip{
+  position:absolute;background:var(--color-dark-surface);color:var(--color-dark-text);
+  border:1px solid var(--color-dark-border);border-radius:var(--radius-md);padding:10px 14px;
+  font-size:12px;pointer-events:none;opacity:0;transition:opacity 0.15s;z-index:10;
+  box-shadow:var(--shadow-lg);
+}
+.scatter-tooltip.show{opacity:1}
+.scatter-tooltip .tt-ticker{font-weight:700;color:var(--color-gold);font-size:13px}
+.scatter-tooltip .tt-row{display:flex;justify-content:space-between;gap:16px;margin-top:3px}
+.scatter-tooltip .tt-val{font-weight:600;font-variant-numeric:tabular-nums}
+
+/* ── Data Table ── */
+.data-table-wrap{overflow-x:auto;border-radius:var(--radius-md)}
+.data-table{width:100%;border-collapse:collapse;font-size:12px}
+.data-table th{
+  background:var(--color-dark-surface);color:var(--color-gold);
+  padding:10px 10px;text-align:right;font-weight:600;white-space:nowrap;
+  border-bottom:2px solid var(--color-dark-border);font-size:11px;letter-spacing:0.3px;
+}
+.data-table th:first-child,.data-table th:nth-child(2){text-align:left}
+.data-table td{
+  padding:8px 10px;text-align:right;border-bottom:1px solid var(--color-border-subtle);
+  font-variant-numeric:tabular-nums;color:var(--color-text);
+}
+.data-table td:first-child,.data-table td:nth-child(2){text-align:left}
+.data-table td:first-child{font-weight:700;color:var(--color-gold-text)}
+.data-table tr:hover{background:var(--color-gold-subtle)}
+.data-table .row-avg{background:var(--color-info-subtle);font-style:italic}
+.data-table .row-avg td{color:var(--color-text-secondary);font-weight:500}
+.data-table .row-med{background:var(--color-success-subtle);font-style:italic}
+.data-table .row-med td{color:var(--color-text-secondary);font-weight:500}
+
+/* ── Metric Summary Cards ── */
+.metric-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:28px}
+.metric-card{
+  background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-md);
+  padding:16px;text-align:center;
+}
+.metric-card .mc-val{
+  font-family:var(--font-display);font-size:28px;font-weight:700;color:var(--color-text);
+  font-variant-numeric:tabular-nums;
+}
+.metric-card .mc-label{font-size:11px;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-top:2px;font-weight:600}
+.metric-card .mc-sub{font-size:11px;color:var(--color-text-secondary);margin-top:4px}
+
+/* ── Footer Nav ── */
+.footer-nav{
+  display:flex;justify-content:center;gap:12px;padding:28px 0 0;
+  border-top:1px solid var(--color-border-subtle);margin-top:20px;
+}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .page-header{
+    padding:20px 20px 18px;
+    display:flex;flex-direction:column;align-items:center;gap:8px;
+  }
+  .page-header img{
+    position:static !important;max-height:24px !important;height:24px !important;width:auto !important;
+  }
+  .page-header h1{font-size:20px}
+  .page-header .subtitle{font-size:12px;letter-spacing:1px}
+  .hbar{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .data-table{min-width:600px;font-size:11px}
+  .data-table th{font-size:10px;padding:8px 6px}
+  .data-table td{font-size:11px;padding:6px 6px}
+}
+@media(max-width:640px){
+  .frs-tile{flex-direction:column;text-align:center;padding:16px 14px}
+  .frs-tile .frs-stats{margin-left:0;flex-wrap:wrap;justify-content:center;gap:16px}
+  .content{padding:20px 16px 40px}
+  .metric-strip{gap:8px}
+  .metric-card{padding:12px 8px}
+  .metric-card .mc-val{font-size:22px}
+  .chart-card{padding:14px 12px}
+}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <img src="assets/mst_animated.apng" alt="MST Financial" style="height:60px;width:auto;position:absolute;top:16px;left:24px;z-index:1">
+  <h1>ASX Gold Producer <span>Comparables</span></h1>
+  <div class="subtitle">Australian Gold Producers &middot; April 2026 &middot; All figures in A$</div>
+</div>
+
+<div class="content">
+
+  <!-- FRS Tile -->
+  <div class="frs-tile">
+    <div class="frs-logo">FRS</div>
+    <div class="frs-info">
+      <h2>Forrestania Resources <span style="color:var(--color-text-muted);font-weight:400;font-size:14px">ASX:FRS</span></h2>
+      <p>Pre-production gold developer &middot; WA Goldfields &middot; Lake Johnston CIL plant</p>
+    </div>
+    <div class="frs-stats">
+      <div class="frs-stat"><div class="val">826k</div><div class="lbl">Resource oz</div></div>
+      <div class="frs-stat"><div class="val">307</div><div class="lbl">Tenements</div></div>
+      <div class="frs-stat"><div class="val">3.2</div><div class="lbl">Mtpa Plant</div></div>
+    </div>
+  </div>
+
+  <!-- Peer Summary Strip -->
+  <div class="section-title"><span class="icon">&#x25C8;</span> Australian Gold Producer Summary</div>
+  <div class="section-desc">13 ASX-listed domestic gold producers &mdash; aggregate metrics across the peer set</div>
+  <div class="metric-strip" id="metricStrip"></div>
+
+  <!-- Charts Row 1: Market Cap + TEV/EBITDA -->
+  <div class="section-title"><span class="icon">&#x25B2;</span> Scale &amp; Valuation</div>
+  <div class="section-desc">Market capitalisation, enterprise value, and earnings multiples</div>
+  <div class="chart-grid">
+    <div class="chart-card">
+      <h3><span class="dot" style="background:var(--color-gold)"></span>Market Capitalisation (A$M)</h3>
+      <div class="hbar" id="chartMktCap"></div>
+    </div>
+    <div class="chart-card">
+      <h3><span class="dot" style="background:var(--color-phase-4)"></span>TEV / EBITDA (x)</h3>
+      <div class="hbar" id="chartTevEbitda"></div>
+    </div>
+  </div>
+
+  <!-- Charts Row 2: Production + AISC -->
+  <div class="section-title"><span class="icon">&#x25CF;</span> Production &amp; Costs</div>
+  <div class="section-desc">Consensus production estimates and all-in sustaining cost profiles</div>
+  <div class="chart-grid">
+    <div class="chart-card">
+      <h3><span class="dot" style="background:var(--color-success)"></span>FY+1 Production Estimate (koz)</h3>
+      <div class="hbar" id="chartProd"></div>
+    </div>
+    <div class="chart-card">
+      <h3><span class="dot" style="background:var(--color-warning)"></span>AISC (A$/oz)</h3>
+      <div class="hbar" id="chartAisc"></div>
+    </div>
+  </div>
+
+  <!-- Scatter: Production vs Market Cap -->
+  <div class="section-title"><span class="icon">&#x2B21;</span> Production vs Market Cap</div>
+  <div class="section-desc">Bubble size reflects total recoverable resources where available</div>
+  <div class="chart-grid">
+    <div class="chart-card full">
+      <div class="scatter-container" id="scatterProdMcap">
+        <div class="scatter-tooltip" id="scatterTooltip"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Row 3: Resources + Growth -->
+  <div class="section-title"><span class="icon">&#x25C6;</span> Resources &amp; Growth</div>
+  <div class="section-desc">Total recoverable resource base and production growth trajectory</div>
+  <div class="chart-grid">
+    <div class="chart-card">
+      <h3><span class="dot" style="background:var(--color-phase-1)"></span>Total Recoverable Resources (koz)</h3>
+      <div class="hbar" id="chartResources"></div>
+    </div>
+    <div class="chart-card">
+      <h3><span class="dot" style="background:var(--color-success)"></span>Production Growth FY0 &rarr; FY+1 (%)</h3>
+      <div class="hbar" id="chartGrowth"></div>
+    </div>
+  </div>
+
+  <!-- EV per Resource Ounce + EV per Production Ounce -->
+  <div class="section-title"><span class="icon">&#x2B22;</span> Unit Valuation Metrics</div>
+  <div class="section-desc">Enterprise value expressed per resource ounce and per production ounce</div>
+  <div class="chart-grid">
+    <div class="chart-card">
+      <h3><span class="dot" style="background:var(--color-gold)"></span>EV / Resource Ounce (A$/oz)</h3>
+      <div class="hbar" id="chartEvRes"></div>
+    </div>
+    <div class="chart-card">
+      <h3><span class="dot" style="background:var(--color-phase-4)"></span>EV / Production Ounce (A$/oz)</h3>
+      <div class="hbar" id="chartEvProd"></div>
+    </div>
+  </div>
+
+  <!-- Full Data Table -->
+  <div class="section-title"><span class="icon">&#x2637;</span> Full Peer Data Table</div>
+  <div class="section-desc">Sortable &mdash; click any column header to sort</div>
+  <div class="chart-card full" style="padding:0;overflow:hidden">
+    <div class="data-table-wrap">
+      <table class="data-table" id="peerTable">
+        <thead><tr>
+          <th data-key="ticker">Ticker</th>
+          <th data-key="name">Company</th>
+          <th data-key="prodFY1">Prod FY+1<br>(koz)</th>
+          <th data-key="prodFY0">Prod FY0<br>(koz)</th>
+          <th data-key="mktCap">Mkt Cap<br>(A$M)</th>
+          <th data-key="tev">TEV<br>(A$M)</th>
+          <th data-key="ebitda">EBITDA<br>(A$k)</th>
+          <th data-key="tevEbitda">TEV/EBITDA</th>
+          <th data-key="resources">Resources<br>(koz)</th>
+          <th data-key="aisc">AISC<br>(A$/oz)</th>
+          <th data-key="evRes">EV/Res oz<br>(A$)</th>
+          <th data-key="evProd">EV/Prod oz<br>(A$)</th>
+        </tr></thead>
+        <tbody id="peerTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="footnote" style="font-size:11px;color:var(--color-text-muted);margin-top:16px;font-style:italic">
+    Source: S&amp;P Capital IQ (peer data). All financial data in Australian Dollars. Peer data as at April 2026.
+    Resource figures are Total Recoverable Resources from S&amp;P Capital IQ / SNL.
+  </div>
+
+  <!-- Footer Nav -->
+  <div class="footer-nav">
+    <a class="nav-btn secondary" href="frs_tenement_timeline_map.html"><span class="btn-icon">&larr;</span> Map</a>
+    <a class="nav-btn secondary" href="frs_company_snapshot.html">Snapshot</a>
+    <a class="nav-btn secondary" href="frs_resource_growth.html">Production Pathway</a>
+  </div>
+</div>
+
+<script>
+// ── Data ──
+const peers = [
+  {ticker:"ALK",name:"Alkane Resources",prodFY1:163.95,prodFY0:70.70,mktCap:2459.17,tev:2267.1,ebitda:92997,tevEbitda:9.53,resources:null,aisc:1659},
+  {ticker:"BGL",name:"Bellevue Gold",prodFY1:141.43,prodFY0:126.68,mktCap:2694.09,tev:2868.7,ebitda:95625,tevEbitda:22.46,resources:3100,aisc:1569},
+  {ticker:"BC8",name:"Black Cat Syndicate",prodFY1:92.60,prodFY0:null,mktCap:903.06,tev:870.9,ebitda:-6891,tevEbitda:11.64,resources:2488,aisc:null},
+  {ticker:"CMM",name:"Capricorn Metals",prodFY1:123.18,prodFY0:117.02,mktCap:5586.27,tev:5169.6,ebitda:238762,tevEbitda:14.27,resources:6752,aisc:951},
+  {ticker:"CYL",name:"Catalyst Metals",prodFY1:106.00,prodFY0:109.67,mktCap:1777.04,tev:1562.1,ebitda:153437,tevEbitda:7.41,resources:1443,aisc:1616},
+  {ticker:"GMD",name:"Genesis Minerals",prodFY1:283.16,prodFY0:204.85,mktCap:7470.83,tev:7230.6,ebitda:450791,tevEbitda:10.13,resources:18843,aisc:1553},
+  {ticker:"GGP",name:"Greatland Resources",prodFY1:316.77,prodFY0:201.83,mktCap:9784.06,tev:8864.0,ebitda:453294,tevEbitda:8.79,resources:10200,aisc:1198},
+  {ticker:"OBM",name:"Ora Banda Mining",prodFY1:138.20,prodFY0:93.70,mktCap:2582.48,tev:2455.4,ebitda:165481,tevEbitda:8.98,resources:null,aisc:1745},
+  {ticker:"PNR",name:"Pantoro Gold",prodFY1:88.26,prodFY0:82.75,mktCap:1520.48,tev:1413.7,ebitda:162719,tevEbitda:5.45,resources:4601,aisc:null},
+  {ticker:"RMS",name:"Ramelius Resources",prodFY1:193.23,prodFY0:297.34,mktCap:7458.51,tev:6887.8,ebitda:804409,tevEbitda:8.21,resources:2276,aisc:1005},
+  {ticker:"RRL",name:"Regis Resources",prodFY1:370.37,prodFY0:372.83,mktCap:5626.38,tev:4867.6,ebitda:764652,tevEbitda:4.69,resources:7540,aisc:1640},
+  {ticker:"VAU",name:"Vault Minerals",prodFY1:341.25,prodFY0:383.53,mktCap:4779.69,tev:4323.8,ebitda:574698,tevEbitda:6.14,resources:null,aisc:1569},
+  {ticker:"WGX",name:"Westgold Resources",prodFY1:386.43,prodFY0:329.10,mktCap:6291.84,tev:5928.6,ebitda:498152,tevEbitda:7.18,resources:2300,aisc:1727}
+];
+
+// Derived metrics
+peers.forEach(p => {
+  p.evRes = p.resources ? Math.round(p.tev / p.resources * 1000) : null;
+  p.evProd = p.prodFY1 ? Math.round(p.tev / p.prodFY1 * 1000) : null;
+  p.growth = (p.prodFY0 && p.prodFY1) ? +((p.prodFY1 / p.prodFY0 - 1) * 100).toFixed(1) : null;
+});
+
+// ── Helpers ──
+const fmt = (v, d=0) => v == null ? '—' : v.toLocaleString('en-AU',{maximumFractionDigits:d,minimumFractionDigits:d});
+const fmtD = (v) => v == null ? '—' : '$'+v.toLocaleString('en-AU',{maximumFractionDigits:0});
+
+function avg(arr) { return arr.length ? arr.reduce((s,v)=>s+v,0)/arr.length : 0; }
+function med(arr) {
+  if(!arr.length) return 0;
+  const s = [...arr].sort((a,b)=>a-b);
+  const m = Math.floor(s.length/2);
+  return s.length%2 ? s[m] : (s[m-1]+s[m])/2;
+}
+
+// Color assignment by rank position
+const barColors = ['bar-green','bar-gold','bar-blue','bar-purple','bar-amber'];
+function pickColor(i, n) { return barColors[Math.floor(i / n * barColors.length)] || 'bar-blue'; }
+
+// ── Metric Strip ──
+const strip = document.getElementById('metricStrip');
+const allMktCap = peers.map(p=>p.mktCap);
+const allProd = peers.map(p=>p.prodFY1);
+const allAisc = peers.filter(p=>p.aisc).map(p=>p.aisc);
+const allTevEb = peers.map(p=>p.tevEbitda);
+const allRes = peers.filter(p=>p.resources).map(p=>p.resources);
+
+strip.innerHTML = [
+  {val:'13',label:'Peers',sub:'ASX gold producers'},
+  {val:'A$'+fmt(avg(allMktCap)/1000,1)+'B',label:'Avg Mkt Cap',sub:'Range: '+fmt(Math.min(...allMktCap),0)+'–'+fmt(Math.max(...allMktCap),0)+'M'},
+  {val:fmt(med(allProd),0)+'k',label:'Median Prod',sub:'oz FY+1 estimate'},
+  {val:'A$'+fmt(med(allAisc),0),label:'Median AISC',sub:'per oz all-in sustaining'},
+  {val:fmt(med(allTevEb),1)+'x',label:'Median TEV/EBITDA',sub:'enterprise multiple'},
+  {val:fmt(med(allRes)/1000,1)+'M',label:'Median Resources',sub:'total recoverable oz'}
+].map(m=>`<div class="metric-card"><div class="mc-val">${m.val}</div><div class="mc-label">${m.label}</div><div class="mc-sub">${m.sub}</div></div>`).join('');
+
+// ── Horizontal Bar Builder ──
+function buildBars(containerId, data, valueFn, formatFn, colorClass, sortDir='desc') {
+  const el = document.getElementById(containerId);
+  const items = data.filter(d => valueFn(d) != null).map(d => ({ticker:d.ticker, val:valueFn(d)}));
+  items.sort((a,b) => sortDir==='desc' ? b.val-a.val : a.val-b.val);
+  const maxVal = Math.max(...items.map(d=>Math.abs(d.val)), 1);
+
+  el.innerHTML = items.map((d,i) => {
+    const pct = Math.max(Math.abs(d.val)/maxVal*100, 2);
+    const color = colorClass || pickColor(i, items.length);
+    return `<div class="hbar-row">
+      <div class="hbar-label">${d.ticker}</div>
+      <div class="hbar-track"><div class="hbar-fill ${color}" style="width:${pct}%"></div></div>
+      <div class="hbar-value">${formatFn(d.val)}</div>
+    </div>`;
+  }).join('');
+}
+
+// Build all bar charts
+buildBars('chartMktCap', peers, p=>p.mktCap, v=>'A$'+fmt(v,0)+'M', 'bar-gold');
+buildBars('chartTevEbitda', peers, p=>p.tevEbitda, v=>fmt(v,1)+'x', 'bar-blue');
+buildBars('chartProd', peers, p=>p.prodFY1, v=>fmt(v,0)+' koz', 'bar-green');
+buildBars('chartAisc', peers, p=>p.aisc, v=>'A$'+fmt(v,0)+'/oz', 'bar-amber', 'asc');
+buildBars('chartResources', peers, p=>p.resources, v=>fmt(v,0)+' koz', 'bar-purple');
+buildBars('chartGrowth', peers, p=>p.growth, v=>(v>0?'+':'')+fmt(v,1)+'%', null);
+buildBars('chartEvRes', peers, p=>p.evRes, v=>'A$'+fmt(v,0)+'/oz', 'bar-gold');
+buildBars('chartEvProd', peers, p=>p.evProd, v=>'A$'+fmt(v,0)+'/oz', 'bar-blue');
+
+// ── Scatter Plot ──
+requestAnimationFrame(function(){
+  const container = document.getElementById('scatterProdMcap');
+  const tooltip = document.getElementById('scatterTooltip');
+  const W = 900, H = 340;
+  const pad = {top:20,right:30,bottom:44,left:60};
+  const pw = W-pad.left-pad.right, ph = H-pad.top-pad.bottom;
+
+  const xVals = peers.map(p=>p.prodFY1);
+  const yVals = peers.map(p=>p.mktCap);
+  const xMin = 0, xMax = Math.ceil(Math.max(...xVals)/50)*50;
+  const yMin = 0, yMax = Math.ceil(Math.max(...yVals)/1000)*1000;
+
+  const sx = v => pad.left + (v-xMin)/(xMax-xMin)*pw;
+  const sy = v => pad.top + ph - (v-yMin)/(yMax-yMin)*ph;
+
+  let svg = `<svg class="scatter-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
+
+  // Grid lines
+  for(let i=0;i<=5;i++){
+    const y = pad.top + ph/5*i;
+    const yv = yMax - (yMax-yMin)/5*i;
+    svg+=`<line x1="${pad.left}" y1="${y}" x2="${W-pad.right}" y2="${y}" class="scatter-grid"/>`;
+    svg+=`<text x="${pad.left-8}" y="${y+4}" class="scatter-axis-label" text-anchor="end">${(yv/1000).toFixed(0)}B</text>`;
+  }
+  for(let i=0;i<=4;i++){
+    const x = pad.left + pw/4*i;
+    const xv = xMin + (xMax-xMin)/4*i;
+    svg+=`<line x1="${x}" y1="${pad.top}" x2="${x}" y2="${H-pad.bottom}" class="scatter-grid"/>`;
+    svg+=`<text x="${x}" y="${H-pad.bottom+16}" class="scatter-axis-label" text-anchor="middle">${xv.toFixed(0)}</text>`;
+  }
+
+  // Axes
+  svg+=`<line x1="${pad.left}" y1="${H-pad.bottom}" x2="${W-pad.right}" y2="${H-pad.bottom}" class="scatter-axis"/>`;
+  svg+=`<line x1="${pad.left}" y1="${pad.top}" x2="${pad.left}" y2="${H-pad.bottom}" class="scatter-axis"/>`;
+  svg+=`<text x="${W/2}" y="${H-4}" class="scatter-axis-label" text-anchor="middle">FY+1 Production (koz)</text>`;
+  svg+=`<text x="14" y="${H/2}" class="scatter-axis-label" text-anchor="middle" transform="rotate(-90,14,${H/2})">Market Cap (A$)</text>`;
+
+  // Dots
+  const colors = ['#C4922A','#2266CC','#1B7A3D','#7E5FC2','#D97B2B','#CF222E','#4D8FE0','#E8C868','#3FB950','#B8860B','#5a3d8a','#c26600','#F85149'];
+  peers.forEach((p,i) => {
+    const cx = sx(p.prodFY1), cy = sy(p.mktCap);
+    const r = p.resources ? Math.max(4, Math.min(18, Math.sqrt(p.resources/80))) : 5;
+    svg+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${colors[i%colors.length]}" fill-opacity="0.7" stroke="${colors[i%colors.length]}" stroke-width="1.5" class="scatter-dot" data-i="${i}"/>`;
+    svg+=`<text x="${cx}" y="${cy-r-4}" class="scatter-label" text-anchor="middle">${p.ticker}</text>`;
+  });
+
+  svg+=`</svg>`;
+  container.insertAdjacentHTML('afterbegin', svg);
+
+  // Tooltip
+  container.addEventListener('mouseover', e => {
+    const dot = e.target.closest('.scatter-dot');
+    if(!dot) { tooltip.classList.remove('show'); return; }
+    const p = peers[dot.dataset.i];
+    tooltip.innerHTML = `<div class="tt-ticker">${p.ticker} — ${p.name}</div>
+      <div class="tt-row"><span>Mkt Cap</span><span class="tt-val">A$${fmt(p.mktCap,0)}M</span></div>
+      <div class="tt-row"><span>Prod FY+1</span><span class="tt-val">${fmt(p.prodFY1,0)} koz</span></div>
+      <div class="tt-row"><span>TEV/EBITDA</span><span class="tt-val">${fmt(p.tevEbitda,1)}x</span></div>
+      ${p.resources?`<div class="tt-row"><span>Resources</span><span class="tt-val">${fmt(p.resources,0)} koz</span></div>`:''}
+      ${p.aisc?`<div class="tt-row"><span>AISC</span><span class="tt-val">A$${fmt(p.aisc,0)}/oz</span></div>`:''}`;
+    tooltip.classList.add('show');
+    const rect = container.getBoundingClientRect();
+    const cx = +dot.getAttribute('cx'), cy = +dot.getAttribute('cy');
+    tooltip.style.left = Math.min(cx+12, rect.width-200) + 'px';
+    tooltip.style.top = Math.max(cy-80, 4) + 'px';
+  });
+  container.addEventListener('mouseleave', () => tooltip.classList.remove('show'));
+});
+
+// ── Sortable Data Table ──
+let sortKey = 'mktCap', sortAsc = false;
+
+function renderTable() {
+  const sorted = [...peers].sort((a,b) => {
+    let va = a[sortKey], vb = b[sortKey];
+    if(va == null) return 1; if(vb == null) return -1;
+    if(typeof va === 'string') return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
+    return sortAsc ? va-vb : vb-va;
+  });
+
+  const tbody = document.getElementById('peerTableBody');
+  tbody.innerHTML = sorted.map(p => `<tr>
+    <td>${p.ticker}</td>
+    <td>${p.name}</td>
+    <td>${fmt(p.prodFY1,0)}</td>
+    <td>${p.prodFY0 != null ? fmt(p.prodFY0,0) : '—'}</td>
+    <td>${fmt(p.mktCap,0)}</td>
+    <td>${fmt(p.tev,0)}</td>
+    <td>${fmt(p.ebitda,0)}</td>
+    <td>${fmt(p.tevEbitda,1)}x</td>
+    <td>${p.resources ? fmt(p.resources,0) : '—'}</td>
+    <td>${p.aisc ? 'A$'+fmt(p.aisc,0) : '—'}</td>
+    <td>${p.evRes ? 'A$'+fmt(p.evRes,0) : '—'}</td>
+    <td>${p.evProd ? 'A$'+fmt(p.evProd,0) : '—'}</td>
+  </tr>`).join('');
+
+  // Avg row
+  const avgRow = (key, vals) => vals.length ? avg(vals) : null;
+  const medRow = (key, vals) => vals.length ? med(vals) : null;
+  const keys = ['prodFY1','prodFY0','mktCap','tev','ebitda','tevEbitda','resources','aisc','evRes','evProd'];
+  const avgVals = keys.map(k => {const v=peers.filter(p=>p[k]!=null).map(p=>p[k]); return v.length?avg(v):null;});
+  const medVals = keys.map(k => {const v=peers.filter(p=>p[k]!=null).map(p=>p[k]); return v.length?med(v):null;});
+
+  const fmtCell = (v,k) => {
+    if(v==null) return '—';
+    if(k==='tevEbitda') return fmt(v,1)+'x';
+    if(k==='aisc'||k==='evRes'||k==='evProd') return 'A$'+fmt(v,0);
+    return fmt(v,0);
+  };
+
+  tbody.innerHTML += `<tr class="row-avg"><td></td><td>Peer Average</td>${keys.map((k,i)=>`<td>${fmtCell(avgVals[i],k)}</td>`).join('')}</tr>`;
+  tbody.innerHTML += `<tr class="row-med"><td></td><td>Peer Median</td>${keys.map((k,i)=>`<td>${fmtCell(medVals[i],k)}</td>`).join('')}</tr>`;
+}
+
+renderTable();
+
+// Sort on header click
+document.querySelectorAll('#peerTable th[data-key]').forEach(th => {
+  th.style.cursor = 'pointer';
+  th.addEventListener('click', () => {
+    const key = th.dataset.key;
+    if(sortKey === key) sortAsc = !sortAsc;
+    else { sortKey = key; sortAsc = false; }
+    document.querySelectorAll('#peerTable th').forEach(h => h.style.borderBottom = '2px solid var(--color-dark-border)');
+    th.style.borderBottom = '2px solid var(--color-gold)';
+    renderTable();
+  });
+});
+
+// ── Animate bars on scroll ──
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting) {
+      e.target.querySelectorAll('.hbar-fill').forEach((bar,i) => {
+        const w = bar.style.width;
+        bar.style.width = '0%';
+        setTimeout(() => bar.style.width = w, i * 40);
+      });
+      observer.unobserve(e.target);
+    }
+  });
+}, {threshold:0.2});
+document.querySelectorAll('.hbar').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

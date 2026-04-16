@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FRS Gold Producer Comps Analysis</title>
+<style>
+  body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");background-repeat:repeat;background-size:256px 256px;}
+  .card{animation:fadeSlideUp 0.4s ease-out both;}
+  .card:nth-child(2){animation-delay:80ms;}
+  .card:nth-child(3){animation-delay:160ms;}
+  .card:nth-child(4){animation-delay:240ms;}
+  :root { --bg: #0a0e17; --card: #131a2b; --border: #1e2a42; --text: #e0e6f0; --muted: #8892a6; --gold: #d4a843; --green: #4caf50; --red: #e74c3c; --blue: #3498db; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); padding: 24px; }
+  h1 { color: var(--gold); font-size: 1.8em; margin-bottom: 4px; }
+  h2 { color: var(--gold); font-size: 1.3em; margin: 28px 0 14px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+  h3 { color: var(--blue); font-size: 1.05em; margin: 16px 0 8px; }
+  .subtitle { color: var(--muted); font-size: 0.9em; margin-bottom: 20px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 18px; margin-bottom: 16px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-bottom: 16px; }
+  .metric { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; text-align: center; }
+  .metric .value { font-size: 1.8em; font-weight: 700; color: var(--gold); }
+  .metric .label { font-size: 0.8em; color: var(--muted); margin-top: 2px; }
+  .metric .sub { font-size: 0.75em; color: var(--muted); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.82em; margin: 10px 0; }
+  th { background: #1a2236; color: var(--gold); padding: 8px 6px; text-align: right; border-bottom: 2px solid var(--border); white-space: nowrap; }
+  th:first-child, th:nth-child(2) { text-align: left; }
+  td { padding: 7px 6px; text-align: right; border-bottom: 1px solid var(--border); }
+  td:first-child, td:nth-child(2) { text-align: left; }
+  tr:hover { background: rgba(212,168,67,0.05); }
+  tr.frs { background: rgba(212,168,67,0.12); font-weight: 600; }
+  tr.frs td { border-top: 2px solid var(--gold); border-bottom: 2px solid var(--gold); }
+  tr.avg { background: rgba(52,152,219,0.1); font-style: italic; }
+  tr.median { background: rgba(76,175,80,0.1); font-style: italic; }
+  .highlight { color: var(--gold); font-weight: 600; }
+  .green { color: var(--green); }
+  .red { color: var(--red); }
+  .bar-container { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
+  .bar-label { width: 50px; font-size: 0.8em; text-align: right; color: var(--muted); }
+  .bar-wrap { flex: 1; height: 22px; background: #1a2236; border-radius: 4px; overflow: hidden; position: relative; }
+  .bar { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 6px; font-size: 0.72em; font-weight: 600; color: white; }
+  .bar.gold { background: linear-gradient(90deg, var(--gold), #c4922a); }
+  .bar.blue { background: linear-gradient(90deg, var(--blue), #2980b9); }
+  .bar.green { background: linear-gradient(90deg, var(--green), #388e3c); }
+  .bar.frs-bar { background: linear-gradient(90deg, #e74c3c, #c0392b); border: 1px solid #e74c3c; }
+  .footnote { font-size: 0.75em; color: var(--muted); margin-top: 12px; font-style: italic; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 768px) {
+    .two-col { grid-template-columns: 1fr; }
+    .mobile-header-logo { display: block; text-align: center; margin-bottom: 10px; }
+    .mobile-header-logo img { max-height: 24px !important; height: 24px !important; }
+    h1 { font-size: 20px !important; }
+    .subtitle { font-size: 0.78em; }
+    body { padding: 14px; }
+    .grid { grid-template-columns: repeat(2, 1fr) !important; }
+    table { min-width: 600px; font-size: 11px; }
+    th { font-size: 11px; padding: 6px 4px; }
+    td { font-size: 11px; padding: 5px 4px; }
+    .table-scroll-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .card { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.7em; font-weight: 600; }
+  .pill-green { background: rgba(76,175,80,0.2); color: var(--green); }
+  .pill-gold { background: rgba(212,168,67,0.2); color: var(--gold); }
+  .pill-red { background: rgba(231,76,60,0.2); color: var(--red); }
+</style>
+</head>
+<body>
+
+<div class="mobile-header-logo" style="text-align:center;margin-bottom:16px">
+  <img src="assets/mst_animated.apng" alt="MST Financial" style="height:52px;width:auto">
+</div>
+
+<h1>Forrestania Resources (ASX:FRS)</h1>
+<div class="subtitle">Comparable Company Analysis — ASX Domestic Gold Producers | April 2026 | All figures in A$</div>
+
+<!-- FRS Key Metrics -->
+<div class="grid" style="grid-template-columns: repeat(5, 1fr);">
+  <div class="metric">
+    <div class="value">826k</div>
+    <div class="label">Total Resource (oz)</div>
+    <div class="sub">11 deposits, 1.37 g/t</div>
+  </div>
+  <div class="metric">
+    <div class="value">~100k</div>
+    <div class="label">Target Production (oz p.a.)</div>
+    <div class="sub">Lake Johnston 3.2 Mtpa, commissioning Nov 2026</div>
+  </div>
+  <div class="metric">
+    <div class="value">200k</div>
+    <div class="label">Pathway Production (oz p.a.)</div>
+    <div class="sub">Via Edna May acquisition</div>
+  </div>
+  <div class="metric">
+    <div class="value">307</div>
+    <div class="label">Tenements</div>
+    <div class="sub">86 km&sup2; mining leases</div>
+  </div>
+  <div class="metric">
+    <div class="value">2041</div>
+    <div class="label">Plant Licensed To</div>
+    <div class="sub">Long mine life potential</div>
+  </div>
+</div>
+
+<h2>1. Peer Comps Table</h2>
+<div class="card" style="overflow-x: auto;">
+<table id="compsTable">
+<thead>
+<tr>
+  <th>Ticker</th>
+  <th>Company</th>
+  <th>Prod FY+1<br>(koz)</th>
+  <th>Prod FY0<br>(koz)</th>
+  <th>Mkt Cap<br>(A$M)</th>
+  <th>TEV<br>(A$M)</th>
+  <th>EBITDA<br>(A$000)</th>
+  <th>TEV/<br>EBITDA</th>
+  <th>Resources<br>(koz)</th>
+  <th>EV/Resource<br>(A$/oz)</th>
+  <th>EV/Prod<br>(A$/oz)</th>
+  <th>AISC<br>(A$/oz)</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+</div>
+
+<h2>2. EV/Resource Ounce — Where FRS Sits</h2>
+<div class="two-col">
+  <div class="card">
+    <h3>EV per Resource Ounce (A$/oz)</h3>
+    <div id="evResourceBars"></div>
+    <p class="footnote">Lower = cheaper per ounce in the ground. FRS implied at peer average/median shown for reference.</p>
+  </div>
+  <div class="card">
+    <h3>Implied FRS Valuation at Peer Multiples</h3>
+    <div id="impliedValuation"></div>
+  </div>
+</div>
+
+<h2>3. AISC Cost Curve</h2>
+<div class="card">
+  <h3>All-In Sustaining Cost vs Production (A$/oz)</h3>
+  <div id="aiscBars"></div>
+  <p class="footnote">Lower AISC = higher margin. FRS target AISC to be determined from scoping study. Peer median shown as benchmark.</p>
+</div>
+
+<h2>4. TEV/EBITDA Comparison</h2>
+<div class="card">
+  <h3>Enterprise Value / EBITDA (x)</h3>
+  <div id="evEbitdaBars"></div>
+</div>
+
+<h2>5. Production Growth Profile</h2>
+<div class="card">
+  <h3>FY0 → FY+1 Production Growth (%)</h3>
+  <div id="growthBars"></div>
+  <p class="footnote">Shows consensus production growth estimates. FRS's commissioning ramp-up in FY27 would represent a step-change from zero to ~100koz.</p>
+</div>
+
+<h2>6. Key Takeaways for FRS Positioning</h2>
+<div class="grid" style="grid-template-columns: 1fr 1fr;">
+  <div class="card">
+    <h3>Strengths vs Peers</h3>
+    <ul style="list-style: none; padding: 0; font-size: 0.9em; line-height: 1.8;">
+      <li><span class="pill pill-green">Resource</span> 826koz resource base — comparable to Catalyst (CYL), growing via acquisitions</li>
+      <li><span class="pill pill-green">Infrastructure</span> Acquired 3.2 Mtpa CIL plant — peers like BGL built from scratch at higher capex</li>
+      <li><span class="pill pill-green">Pipeline</span> 2.2 Moz potential resource base including acquisition targets (Edna May 991koz, Bounty 421koz)</li>
+      <li><span class="pill pill-green">Location</span> All assets in WA Goldfields — established mining jurisdiction, close to infrastructure</li>
+      <li><span class="pill pill-green">Backing</span> Cornerstone shareholders: Tim Roberts & Kerry Stokes</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Valuation Gap Opportunity</h3>
+    <ul style="list-style: none; padding: 0; font-size: 0.9em; line-height: 1.8;">
+      <li><span class="pill pill-gold">Re-rate Trigger 1</span> First gold pour at Lake Johnston (Nov 2026) — transition from explorer to producer</li>
+      <li><span class="pill pill-gold">Re-rate Trigger 2</span> Steady-state production at ~100koz p.a. — enters peer group comps range</li>
+      <li><span class="pill pill-gold">Re-rate Trigger 3</span> Edna May acquisition — doubles production to ~200koz, re-rates into mid-tier space</li>
+      <li><span class="pill pill-gold">Re-rate Trigger 4</span> Resource growth via Lake Rebecca (16 tenements) and ongoing drilling</li>
+    </ul>
+    <div id="valuationSummary" style="margin-top: 12px;"></div>
+  </div>
+</div>
+
+<div class="footnote" style="margin-top: 20px;">
+  Source: S&P Capital IQ (peer data), FRS ASX announcements (FRS data). All financial data in Australian Dollars.
+  Peer data as at April 2026. Resource figures are Total Recoverable Resources from S&P Capital IQ / SNL.
+  FRS resource figures from latest JORC compliant estimates.
+</div>
+
+<script>
+const peers = [
+  { ticker: "ALK", name: "Alkane Resources", prodFY1: 163.95, prodFY0: 70.70, mktCap: 2459.17, tev: 2267.1, ebitda: 92997, tevEbitda: 9.53, resources: null, aisc: 1659 },
+  { ticker: "BGL", name: "Bellevue Gold", prodFY1: 141.43, prodFY0: 126.68, mktCap: 2694.09, tev: 2868.7, ebitda: 95625, tevEbitda: 22.46, resources: 3100, aisc: 1569 },
+  { ticker: "BC8", name: "Black Cat Syndicate", prodFY1: 92.60, prodFY0: null, mktCap: 903.06, tev: 870.9, ebitda: -6891, tevEbitda: 11.64, resources: 2488, aisc: null },
+  { ticker: "CMM", name: "Capricorn Metals", prodFY1: 123.18, prodFY0: 117.02, mktCap: 5586.27, tev: 5169.6, ebitda: 238762, tevEbitda: 14.27, resources: 6752, aisc: 951 },
+  { ticker: "CYL", name: "Catalyst Metals", prodFY1: 106.00, prodFY0: 109.67, mktCap: 1777.04, tev: 1562.1, ebitda: 153437, tevEbitda: 7.41, resources: 1443, aisc: 1616 },
+  { ticker: "GMD", name: "Genesis Minerals", prodFY1: 283.16, prodFY0: 204.85, mktCap: 7470.83, tev: 7230.6, ebitda: 450791, tevEbitda: 10.13, resources: 18843, aisc: 1553 },
+  { ticker: "GGP", name: "Greatland (De Grey)", prodFY1: 316.77, prodFY0: 201.83, mktCap: 9784.06, tev: 8864.0, ebitda: 453294, tevEbitda: 8.79, resources: 10200, aisc: 1198 },
+  { ticker: "OBM", name: "Ora Banda Mining", prodFY1: 138.20, prodFY0: 93.70, mktCap: 2582.48, tev: 2455.4, ebitda: 165481, tevEbitda: 8.98, resources: null, aisc: 1745 },
+  { ticker: "PNR", name: "Pantoro Gold", prodFY1: 88.26, prodFY0: 82.75, mktCap: 1520.48, tev: 1413.7, ebitda: 162719, tevEbitda: 5.45, resources: 4601, aisc: null },
+  { ticker: "RMS", name: "Ramelius Resources", prodFY1: 193.23, prodFY0: 297.34, mktCap: 7458.51, tev: 6887.8, ebitda: 804409, tevEbitda: 8.21, resources: 2276, aisc: 1005 },
+  { ticker: "RRL", name: "Regis Resources", prodFY1: 370.37, prodFY0: 372.83, mktCap: 5626.38, tev: 4867.6, ebitda: 764652, tevEbitda: 4.69, resources: 7540, aisc: 1640 },
+  { ticker: "VAU", name: "Vault Minerals", prodFY1: 341.25, prodFY0: 383.53, mktCap: 4779.69, tev: 4323.8, ebitda: 574698, tevEbitda: 6.14, resources: null, aisc: 1569 },
+  { ticker: "WGX", name: "Westgold Resources", prodFY1: 386.43, prodFY0: 329.10, mktCap: 6291.84, tev: 5928.6, ebitda: 498152, tevEbitda: 7.18, resources: 2300, aisc: 1727 }
+];
+
+// Calculate derived metrics
+peers.forEach(p => {
+  p.evResourceOz = (p.resources && p.resources > 0) ? (p.tev / p.resources * 1000).toFixed(0) : null;
+  p.evProdOz = p.prodFY1 ? (p.tev / p.prodFY1 * 1000).toFixed(0) : null;
+  p.growth = (p.prodFY0 && p.prodFY1) ? ((p.prodFY1 / p.prodFY0 - 1) * 100).toFixed(1) : null;
+});
+
+// Comps table
+const tbody = document.querySelector('#compsTable tbody');
+peers.forEach(p => {
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><strong>${p.ticker}</strong></td>
+    <td>${p.name}</td>
+    <td>${p.prodFY1.toFixed(0)}</td>
+    <td>${p.prodFY0 ? p.prodFY0.toFixed(0) : 'N/A'}</td>
+    <td>${p.mktCap.toLocaleString('en', {maximumFractionDigits:0})}</td>
+    <td>${p.tev.toLocaleString('en', {maximumFractionDigits:0})}</td>
+    <td>${p.ebitda.toLocaleString('en', {maximumFractionDigits:0})}</td>
+    <td>${p.tevEbitda.toFixed(1)}x</td>
+    <td>${p.resources ? p.resources.toLocaleString('en') : 'N/A'}</td>
+    <td>${p.evResourceOz ? '$'+Number(p.evResourceOz).toLocaleString('en') : 'N/A'}</td>
+    <td>${p.evProdOz ? '$'+Number(p.evProdOz).toLocaleString('en') : 'N/A'}</td>
+    <td>${p.aisc ? '$'+p.aisc.toLocaleString('en') : 'N/A'}</td>`;
+  tbody.appendChild(tr);
+});
+
+// Add averages and FRS row
+const withResources = peers.filter(p => p.evResourceOz);
+const avgEvRes = withResources.reduce((s, p) => s + Number(p.evResourceOz), 0) / withResources.length;
+const medEvRes = withResources.map(p => Number(p.evResourceOz)).sort((a,b) => a-b)[Math.floor(withResources.length/2)];
+const avgTevEbitda = peers.reduce((s, p) => s + p.tevEbitda, 0) / peers.length;
+const medTevEbitda = peers.map(p => p.tevEbitda).sort((a,b) => a-b)[Math.floor(peers.length/2)];
+const withAisc = peers.filter(p => p.aisc);
+const avgAisc = withAisc.reduce((s, p) => s + p.aisc, 0) / withAisc.length;
+const medAisc = withAisc.map(p => p.aisc).sort((a,b) => a-b)[Math.floor(withAisc.length/2)];
+const avgEvProd = peers.filter(p => p.evProdOz).reduce((s,p) => s + Number(p.evProdOz), 0) / peers.filter(p => p.evProdOz).length;
+
+// Average row
+let avgRow = document.createElement('tr');
+avgRow.className = 'avg';
+avgRow.innerHTML = `<td></td><td><em>Peer Average</em></td><td></td><td></td><td></td><td></td><td></td><td>${avgTevEbitda.toFixed(1)}x</td><td></td><td>$${avgEvRes.toLocaleString('en',{maximumFractionDigits:0})}</td><td>$${avgEvProd.toLocaleString('en',{maximumFractionDigits:0})}</td><td>$${avgAisc.toLocaleString('en',{maximumFractionDigits:0})}</td>`;
+tbody.appendChild(avgRow);
+
+// Median row
+let medRow = document.createElement('tr');
+medRow.className = 'median';
+medRow.innerHTML = `<td></td><td><em>Peer Median</em></td><td></td><td></td><td></td><td></td><td></td><td>${medTevEbitda.toFixed(1)}x</td><td></td><td>$${medEvRes.toLocaleString('en',{maximumFractionDigits:0})}</td><td></td><td>$${medAisc.toLocaleString('en',{maximumFractionDigits:0})}</td>`;
+tbody.appendChild(medRow);
+
+// FRS row
+let frsRow = document.createElement('tr');
+frsRow.className = 'frs';
+const frsImpliedEvAvg = (avgEvRes * 826).toFixed(0);
+const frsImpliedEvMed = (medEvRes * 826).toFixed(0);
+frsRow.innerHTML = `<td><strong>FRS</strong></td><td><strong>Forrestania Resources</strong></td><td>~100</td><td>0</td><td>TBD</td><td>TBD</td><td>Pre-prod</td><td>N/A</td><td>826</td><td class="highlight">Implied</td><td class="highlight">Implied</td><td>TBD</td>`;
+tbody.appendChild(frsRow);
+
+// EV/Resource bars
+const barDiv = document.getElementById('evResourceBars');
+const evResData = withResources.map(p => ({ticker: p.ticker, val: Number(p.evResourceOz)})).sort((a,b) => a.val - b.val);
+const maxEvRes = Math.max(...evResData.map(d => d.val));
+evResData.forEach(d => {
+  const pct = (d.val / maxEvRes * 100).toFixed(0);
+  barDiv.innerHTML += `<div class="bar-container"><div class="bar-label">${d.ticker}</div><div class="bar-wrap"><div class="bar gold" style="width:${pct}%">A$${d.val.toLocaleString('en')}/oz</div></div></div>`;
+});
+barDiv.innerHTML += `<div class="bar-container"><div class="bar-label" style="color:var(--blue);font-weight:600">Avg</div><div class="bar-wrap"><div class="bar blue" style="width:${(avgEvRes/maxEvRes*100).toFixed(0)}%">A$${avgEvRes.toLocaleString('en',{maximumFractionDigits:0})}/oz</div></div></div>`;
+
+// Implied valuation
+const valDiv = document.getElementById('impliedValuation');
+valDiv.innerHTML = `
+  <table>
+    <tr><th style="text-align:left">Scenario</th><th>EV/Res oz</th><th>FRS Resources</th><th>Implied EV</th></tr>
+    <tr><td style="text-align:left">Peer Average</td><td>A$${avgEvRes.toLocaleString('en',{maximumFractionDigits:0})}</td><td>826 koz</td><td class="highlight">A$${(avgEvRes*826/1000).toLocaleString('en',{maximumFractionDigits:0})}M</td></tr>
+    <tr><td style="text-align:left">Peer Median</td><td>A$${medEvRes.toLocaleString('en',{maximumFractionDigits:0})}</td><td>826 koz</td><td class="highlight">A$${(medEvRes*826/1000).toLocaleString('en',{maximumFractionDigits:0})}M</td></tr>
+    <tr><td style="text-align:left">Low-end (CYL)</td><td>A$${Math.min(...evResData.map(d=>d.val)).toLocaleString('en')}</td><td>826 koz</td><td>A$${(Math.min(...evResData.map(d=>d.val))*826/1000).toLocaleString('en',{maximumFractionDigits:0})}M</td></tr>
+    <tr><td style="text-align:left">High-end (CMM)</td><td>A$${Math.max(...evResData.map(d=>d.val)).toLocaleString('en')}</td><td>826 koz</td><td>A$${(Math.max(...evResData.map(d=>d.val))*826/1000).toLocaleString('en',{maximumFractionDigits:0})}M</td></tr>
+    <tr class="frs"><td style="text-align:left"><strong>With 2.2 Moz scenario</strong></td><td>A$${avgEvRes.toLocaleString('en',{maximumFractionDigits:0})}</td><td>2,200 koz</td><td class="highlight">A$${(avgEvRes*2200/1000).toLocaleString('en',{maximumFractionDigits:0})}M</td></tr>
+  </table>
+`;
+
+// AISC bars
+const aiscDiv = document.getElementById('aiscBars');
+const aiscData = withAisc.map(p => ({ticker: p.ticker, val: p.aisc, prod: p.prodFY1})).sort((a,b) => a.val - b.val);
+const maxAisc = Math.max(...aiscData.map(d => d.val));
+aiscData.forEach(d => {
+  const pct = (d.val / maxAisc * 100).toFixed(0);
+  const col = d.val < 1200 ? 'green' : d.val < 1600 ? 'gold' : 'blue';
+  aiscDiv.innerHTML += `<div class="bar-container"><div class="bar-label">${d.ticker}</div><div class="bar-wrap"><div class="bar ${col}" style="width:${pct}%">A$${d.val}/oz (${d.prod.toFixed(0)}koz)</div></div></div>`;
+});
+aiscDiv.innerHTML += `<div class="bar-container"><div class="bar-label" style="color:var(--muted);font-weight:600">Median</div><div class="bar-wrap"><div class="bar blue" style="width:${(medAisc/maxAisc*100).toFixed(0)}%;opacity:0.6">A$${medAisc}/oz</div></div></div>`;
+
+// TEV/EBITDA bars
+const evEbDiv = document.getElementById('evEbitdaBars');
+const evEbData = peers.filter(p => p.tevEbitda > 0).map(p => ({ticker: p.ticker, val: p.tevEbitda})).sort((a,b) => a.val - b.val);
+const maxEvEb = Math.max(...evEbData.map(d => d.val));
+evEbData.forEach(d => {
+  const pct = (d.val / maxEvEb * 100).toFixed(0);
+  const col = d.val < 7 ? 'green' : d.val < 10 ? 'gold' : 'blue';
+  evEbDiv.innerHTML += `<div class="bar-container"><div class="bar-label">${d.ticker}</div><div class="bar-wrap"><div class="bar ${col}" style="width:${pct}%">${d.val.toFixed(1)}x</div></div></div>`;
+});
+
+// Growth bars
+const growthDiv = document.getElementById('growthBars');
+const growthData = peers.filter(p => p.growth !== null).map(p => ({ticker: p.ticker, val: Number(p.growth)})).sort((a,b) => b.val - a.val);
+const maxGrowth = Math.max(...growthData.map(d => Math.abs(d.val)));
+growthData.forEach(d => {
+  const pct = Math.min((Math.abs(d.val) / maxGrowth * 100), 100).toFixed(0);
+  const col = d.val > 0 ? 'green' : 'blue';
+  growthDiv.innerHTML += `<div class="bar-container"><div class="bar-label">${d.ticker}</div><div class="bar-wrap"><div class="bar ${col}" style="width:${pct}%">${d.val > 0 ? '+' : ''}${d.val}%</div></div></div>`;
+});
+growthDiv.innerHTML += `<div class="bar-container"><div class="bar-label" style="color:var(--gold);font-weight:700">FRS</div><div class="bar-wrap"><div class="bar frs-bar" style="width:100%">0 → 100koz (new producer)</div></div></div>`;
+
+// Valuation summary
+const valSumDiv = document.getElementById('valuationSummary');
+valSumDiv.innerHTML = `
+  <div style="background:rgba(212,168,67,0.1);border:1px solid var(--gold);border-radius:6px;padding:12px;font-size:0.88em;">
+    <strong style="color:var(--gold);">Implied FRS Enterprise Value Range:</strong><br>
+    <span style="font-size:1.3em;font-weight:700;color:var(--gold);">A$${(Math.min(...evResData.map(d=>d.val))*826/1000).toLocaleString('en',{maximumFractionDigits:0})}M — A$${(Math.max(...evResData.map(d=>d.val))*826/1000).toLocaleString('en',{maximumFractionDigits:0})}M</span><br>
+    <span style="color:var(--muted);">Based on 826koz resource at peer EV/Resource oz range</span><br><br>
+    <strong style="color:var(--gold);">At 2.2 Moz potential resource:</strong><br>
+    <span style="font-size:1.3em;font-weight:700;color:var(--gold);">A$${(Math.min(...evResData.map(d=>d.val))*2200/1000).toLocaleString('en',{maximumFractionDigits:0})}M — A$${(Math.max(...evResData.map(d=>d.val))*2200/1000).toLocaleString('en',{maximumFractionDigits:0})}M</span>
+  </div>
+`;
+</script>
+</body>
+</html>

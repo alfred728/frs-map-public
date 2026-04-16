@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forrestania Resources – Resource Growth</title>
+<script>document.documentElement.style.visibility='visible';</script>
+<link rel="stylesheet" href="shared.css">
+<style>
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");background-repeat:repeat;background-size:256px 256px;}
+.page-header::before{content:'';position:absolute;inset:0;pointer-events:none;opacity:0.05;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");background-repeat:repeat;background-size:256px 256px;}
+.mill-card{animation:fadeSlideUp 0.4s ease-out both;}
+.mill-card:nth-child(2){animation-delay:80ms;}
+.mill-card:nth-child(3){animation-delay:160ms;}
+.mill-card:nth-child(4){animation-delay:240ms;}
+html{height:100%}
+body{background:var(--color-bg);min-height:100%;display:flex;flex-direction:column}
+
+/* ── Header ── */
+.page-header{
+  background:linear-gradient(135deg,var(--color-dark-bg) 0%,var(--color-dark-surface) 50%,var(--color-dark-elevated) 100%);
+  color:#fff;padding:32px 40px 28px;text-align:center;position:relative;overflow:hidden;
+}
+.page-header::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 40%,rgba(196,146,42,0.06) 100%);pointer-events:none}
+.page-header h1{font-size:26px;font-weight:700;letter-spacing:0.5px;margin-bottom:3px;position:relative;z-index:1}
+.page-header h1 span{color:var(--color-gold)}
+.page-header .subtitle{font-size:13px;color:var(--color-dark-text-secondary);font-weight:400;letter-spacing:1.5px;text-transform:uppercase;position:relative;z-index:1}
+
+/* ── Narrative ── */
+.narrative{
+  text-align:center;padding:var(--space-5) var(--space-6) var(--space-2);max-width:900px;margin:0 auto;
+}
+.step-title{
+  font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--color-text);
+  margin-bottom:4px;transition:all 0.35s ease;
+}
+.step-desc{
+  font-family:var(--font-body);font-size:14px;color:var(--color-text-secondary);line-height:1.6;
+  transition:all 0.35s ease;
+}
+
+/* ── Main Layout ── */
+.main-grid{
+  display:grid;grid-template-columns:1fr 340px;gap:var(--space-4);
+  padding:0 var(--space-5) var(--space-3);max-width:1300px;margin:0 auto;width:100%;
+  min-height:480px;
+}
+
+/* ── Chart Panel (left) ── */
+.chart-panel{
+  background:var(--color-surface);border:1px solid var(--color-border-subtle);
+  border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);
+  padding:var(--space-4) var(--space-3) var(--space-2);overflow:hidden;
+}
+.chart-panel svg{width:100%;height:auto;display:block;min-height:380px}
+
+/* ── Pathway Panel (right) ── */
+.pathway-panel{
+  display:flex;flex-direction:column;gap:var(--space-3);
+}
+
+/* ── Production Counter ── */
+.prod-counter{
+  background:var(--color-surface);border:1px solid var(--color-border-subtle);
+  border-radius:var(--radius-lg);padding:var(--space-4);text-align:center;
+  box-shadow:var(--shadow-sm);
+}
+.prod-counter .counter-label{font-family:var(--font-body);font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--color-text-secondary);margin-bottom:2px}
+.prod-counter .counter-value{font-family:var(--font-display);font-size:36px;font-weight:700;color:var(--color-text);transition:all 0.5s ease;font-variant-numeric:tabular-nums}
+.prod-counter .counter-unit{font-family:var(--font-body);font-size:14px;color:var(--color-text-secondary);font-weight:500}
+.prod-counter[data-val="0"] .counter-value{color:var(--color-text-muted)}
+
+/* ── Mill Card ── */
+.mill-card{
+  background:var(--color-surface);border:1px solid var(--color-border-subtle);
+  border-radius:var(--radius-lg);padding:var(--space-4);position:relative;
+  box-shadow:var(--shadow-sm);
+  opacity:0;transform:translateY(16px);
+  transition:opacity 0.45s ease,transform 0.45s ease;
+}
+.mill-card.visible{opacity:1;transform:translateY(0)}
+.mill-card .mill-stripe{position:absolute;top:0;left:0;right:0;height:4px;border-radius:var(--radius-lg) var(--radius-lg) 0 0}
+.mill-card.confirmed .mill-stripe{background:var(--color-phase-4)}
+.mill-card.potential{border-style:dashed}
+.mill-card.potential .mill-stripe{background:var(--color-phase-2)}
+.mill-card .mill-name{font-family:var(--font-display);font-size:14px;font-weight:700;color:var(--color-text);margin-top:4px}
+.mill-card .mill-badge{display:inline-block;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:6px;vertical-align:middle}
+.mill-card.confirmed .mill-badge{background:rgba(34,102,204,0.1);color:var(--color-phase-4)}
+.mill-card.potential .mill-badge{background:rgba(27,122,61,0.1);color:var(--color-phase-2)}
+.mill-card .mill-specs{font-size:12px;color:var(--color-text-secondary);line-height:1.6;margin-top:4px}
+.mill-card .mill-prod{font-family:var(--font-display);font-size:22px;font-weight:700;margin-top:8px}
+.mill-card.confirmed .mill-prod{color:var(--color-phase-4)}
+.mill-card.potential .mill-prod{color:var(--color-phase-2)}
+.mill-card .mill-prod-unit{font-family:var(--font-body);font-size:12px;font-weight:500;color:var(--color-text-secondary)}
+
+/* ── Bounty Feed Card ── */
+.feed-card{
+  background:var(--color-surface-secondary);border:1px dashed var(--color-border);
+  border-radius:var(--radius-lg);padding:var(--space-3) var(--space-4);
+  opacity:0;transform:translateY(16px);
+  transition:opacity 0.45s ease,transform 0.45s ease;
+}
+.feed-card.visible{opacity:1;transform:translateY(0)}
+.feed-card .feed-title{font-family:var(--font-display);font-size:13px;font-weight:700;color:var(--color-text)}
+.feed-card .feed-detail{font-size:12px;color:var(--color-text-secondary);line-height:1.5;margin-top:3px}
+.feed-card .feed-arrow{font-size:11px;color:var(--color-gold-text);font-weight:600;margin-top:6px}
+
+/* ── No Infra placeholder ── */
+.no-infra{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  background:var(--color-surface);border:1px solid var(--color-border-subtle);
+  border-radius:var(--radius-lg);
+  transition:opacity 0.3s ease;
+}
+.no-infra p{font-size:13px;color:var(--color-text-muted);text-align:center;padding:var(--space-6);line-height:1.6}
+.no-infra .big-icon{font-size:32px;display:block;margin-bottom:8px;opacity:0.3}
+
+/* ── Step Controls ── */
+.step-controls{
+  display:flex;align-items:center;justify-content:center;gap:var(--space-4);
+  padding:var(--space-4) var(--space-6);
+}
+.step-btn{
+  width:36px;height:36px;border-radius:50%;border:1px solid var(--color-border);
+  background:var(--color-surface);color:var(--color-text);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+  transition:all var(--transition-fast);
+}
+.step-btn:hover{background:var(--color-surface-secondary);border-color:var(--color-gold)}
+.step-btn:disabled{opacity:0.3;cursor:default;border-color:var(--color-border)}
+.step-dots{display:flex;gap:var(--space-2);align-items:center}
+.step-dot{
+  width:10px;height:10px;border-radius:50%;border:2px solid var(--color-border);
+  background:transparent;cursor:pointer;transition:all 0.25s ease;padding:0;
+}
+.step-dot.active{background:var(--color-gold);border-color:var(--color-gold);transform:scale(1.2)}
+.step-dot:hover{border-color:var(--color-gold)}
+.step-label{font-family:var(--font-body);font-size:10px;color:var(--color-text-muted);letter-spacing:0.5px}
+
+/* ── Bottom Nav ── */
+.bottom-nav{display:flex;justify-content:center;gap:var(--space-4);padding:var(--space-2) var(--space-6) var(--space-6)}
+
+/* ── Tooltip ── */
+.chart-tooltip{
+  position:fixed;pointer-events:none;background:var(--color-dark-surface);color:var(--color-dark-text);
+  border:1px solid var(--color-dark-border);border-radius:var(--radius-md);
+  padding:10px 14px;font-family:var(--font-body);font-size:12px;line-height:1.6;
+  box-shadow:var(--shadow-lg);z-index:100;opacity:0;transition:opacity 0.15s ease;max-width:260px;
+}
+.chart-tooltip.visible{opacity:1}
+.chart-tooltip .tt-date{font-weight:600;color:var(--color-gold-light)}
+.chart-tooltip .tt-oz{font-family:var(--font-display);font-size:16px;font-weight:700;color:#fff}
+.chart-tooltip .tt-add{color:var(--color-dark-text-secondary);margin-top:2px}
+
+/* ── Bar Animations ── */
+@keyframes bar-grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes fade-in{from{opacity:0}to{opacity:1}}
+@keyframes line-draw{from{stroke-dashoffset:4000}to{stroke-dashoffset:0}}
+.bar-anim{transform-origin:bottom center;transform:scaleY(0)}
+.bar-anim.animate-in{animation:bar-grow 0.5s cubic-bezier(0.22,1,0.36,1) forwards}
+.label-anim{opacity:0}
+.label-anim.animate-in{animation:fade-in 0.35s ease forwards}
+.step-line-anim{stroke-dasharray:4000;stroke-dashoffset:4000}
+.step-line-anim.animate-in{animation:line-draw 1.5s ease forwards}
+
+@media(prefers-reduced-motion:reduce){
+  .bar-anim,.label-anim,.step-line-anim,.mill-card,.feed-card{
+    opacity:1!important;transform:none!important;stroke-dashoffset:0!important;animation:none!important;
+  }
+}
+
+/* ── Mobile responsive ── */
+@media(max-width:768px){
+  /* Header: stack vertically */
+  .page-header{padding:20px 16px 16px;text-align:center}
+  .page-header img{position:static !important;display:block;margin:0 auto 8px;height:24px !important}
+  .page-header h1{font-size:20px}
+  .page-header .subtitle{font-size:11px;letter-spacing:1px}
+
+  /* Grid: single column */
+  .main-grid{grid-template-columns:1fr;min-height:auto;padding:0 var(--space-3) var(--space-3)}
+
+  /* Chart panel: reduce min-height */
+  .chart-panel svg{min-height:300px}
+
+  /* Step controls: centered, tappable touch targets */
+  .step-controls{padding:var(--space-3) var(--space-4)}
+  .step-btn{width:44px;height:44px;font-size:18px}
+  .step-dots{gap:var(--space-3)}
+  .step-dot{width:12px;height:12px}
+
+  /* Narrative: tighter on mobile */
+  .narrative{padding:var(--space-3) var(--space-4) var(--space-1)}
+  .step-title{font-size:16px}
+  .step-desc{font-size:13px}
+}
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <img src="assets/mst_animated.apng" alt="MST Financial" style="height:60px;width:auto;position:absolute;top:16px;left:24px;z-index:1">
+  <h1>Resource <span>Growth</span> &amp; Production Pathway</h1>
+  <div class="subtitle">Forrestania Resources (ASX: FRS) &mdash; The Journey from Explorer to Producer</div>
+</header>
+
+<div id="app" data-step="1">
+
+  <div class="narrative">
+    <div class="step-title" id="stepTitle">Resource Discovery</div>
+    <div class="step-desc" id="stepDesc">In 12 months, FRS assembled 826,000 oz Au of JORC resources through 7 strategic acquisitions</div>
+  </div>
+
+  <div class="main-grid">
+    <!-- LEFT: Resource Bar Chart -->
+    <div class="chart-panel">
+      <svg id="growth-chart" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+
+    <!-- RIGHT: Production Pathway -->
+    <div class="pathway-panel">
+
+      <div class="prod-counter" id="prodCounter" data-val="0">
+        <div class="counter-label">Production Capability</div>
+        <div class="counter-value" id="counterNum">0</div>
+        <div class="counter-unit">oz Au per annum</div>
+      </div>
+
+      <!-- No infra placeholder (step 1) -->
+      <div class="no-infra" id="noInfra">
+        <p><span class="big-icon">&#9881;</span>No processing infrastructure<br>Resources need a mill to become production</p>
+      </div>
+
+      <!-- Lake Johnston card (step 2+) -->
+      <div class="mill-card confirmed" id="ljCard">
+        <div class="mill-stripe"></div>
+        <div class="mill-name">Lake Johnston Processing Plant <span class="mill-badge">CONFIRMED</span></div>
+        <div class="mill-specs">
+          3.2 Mtpa CIL circuit &middot; Commissioning Nov 2026<br>
+          Acquired for $35M &middot; Funded by $37M capital raise<br>
+          86 km&sup2; mining leases &middot; Licensed to 2041
+        </div>
+        <div class="mill-prod">100,000 <span class="mill-prod-unit">oz Au / year</span></div>
+      </div>
+
+      <!-- Edna May card (step 3+) -->
+      <div class="mill-card potential" id="emCard">
+        <div class="mill-stripe"></div>
+        <div class="mill-name">Edna May Mill <span class="mill-badge">POTENTIAL</span></div>
+        <div class="mill-specs">
+          2.9 Mtpa CIL &middot; Ramelius Resources<br>
+          C&amp;M since Apr 2025 &middot; Sale process Q2-Q3 2026<br>
+          <strong>Adds resources AND processing capacity</strong>
+        </div>
+        <div class="mill-prod">+100,000 <span class="mill-prod-unit">oz Au / year</span></div>
+      </div>
+
+      <!-- Bounty feed card (step 4) -->
+      <div class="feed-card" id="bountyCard">
+        <div class="feed-title">Bounty Gold Mine &mdash; Resource Feed</div>
+        <div class="feed-detail">
+          421k oz @ 2.25 g/t &middot; Historical ~1.3 Moz at 5 g/t<br>
+          85 km from Lake Johnston &middot; Non-core gold rights
+        </div>
+        <div class="feed-arrow">&#8594; Additional high-grade feed for existing mills &mdash; no additional capex</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Step Controls -->
+  <div class="step-controls">
+    <button class="step-btn" id="prevBtn" disabled>&#9664;</button>
+    <div class="step-dots" id="stepDots">
+      <button class="step-dot active" data-step="1"></button>
+      <button class="step-dot" data-step="2"></button>
+      <button class="step-dot" data-step="3"></button>
+      <button class="step-dot" data-step="4"></button>
+    </div>
+    <button class="step-btn" id="nextBtn">&#9654;</button>
+    <span class="step-label" id="stepCounter">1 / 4</span>
+  </div>
+
+</div>
+
+<nav class="bottom-nav">
+  <a class="nav-btn primary" href="frs_company_snapshot.html"><span class="btn-icon">&#9670;</span> Company Snapshot</a>
+  <a class="nav-btn secondary" href="frs_tenement_timeline_map.html"><span class="btn-icon">&#8614;</span> Timeline Map</a>
+</nav>
+
+<div class="chart-tooltip" id="tooltip"></div>
+
+<script>
+(function(){
+
+  /* ══════════════════════════════════════
+     STEP DATA
+     ══════════════════════════════════════ */
+  const steps = [
+    {
+      title: 'Resource Discovery',
+      desc: 'In 12 months, FRS assembled 826,000 oz Au of JORC resources through 7 strategic acquisitions',
+      production: 0
+    },
+    {
+      title: 'Lake Johnston Mill',
+      desc: 'The $35M Lake Johnston acquisition transforms FRS from explorer to producer — targeting 100,000 oz Au per annum by 2027',
+      production: 100000
+    },
+    {
+      title: 'Edna May Potential',
+      desc: 'Edna May delivers a rare double — 991k oz of resources AND a 2.9 Mtpa mill, doubling production capacity to 200,000 oz/pa',
+      production: 200000
+    },
+    {
+      title: 'Bounty Potential',
+      desc: 'Bounty adds 421k oz of high-grade resource at 2.25 g/t — feeding existing mill infrastructure without additional capex',
+      production: 200000
+    }
+  ];
+
+  /* ══════════════════════════════════════
+     BAR DATA
+     ══════════════════════════════════════ */
+  const confirmedBars = [
+    { date:'Jun 2025',  oz:24000,   add:24000,   label:'Lady Lila' },
+    { date:'Aug 2025',  oz:78600,   add:54600,   label:'British Hill' },
+    { date:'Aug 2025',  oz:482400,  add:403800,  label:'North Ironcap+' },
+    { date:'Sep 2025',  oz:498900,  add:16500,   label:'Lady Lila P2' },
+    { date:'Sep 2025',  oz:581600,  add:82700,   label:'Burracoppin' },
+    { date:'Dec 2025',  oz:594000,  add:12400,   label:'Ada Ann P3' },
+    { date:'Mar 2026',  oz:826000,  add:232000,  label:'Karonie+LR+JR' },
+  ];
+  const potentialBars = [
+    { date:'Q3 2026', oz:1817000, add:991000, label:'Edna May',  step:3 },
+    { date:'2027',    oz:2238000, add:421000, label:'Bounty',    step:4 },
+  ];
+  const allBars = [...confirmedBars, ...potentialBars];
+
+  /* ══════════════════════════════════════
+     CHART LAYOUT
+     ══════════════════════════════════════ */
+  const N = allBars.length;
+  const W = 900, margin = {top:30, right:15, bottom:95, left:65};
+  const gapH = 12, topH = 110, bottomH = 290;
+  const plotW = W - margin.left - margin.right;
+  const plotH = topH + gapH + bottomH;
+  const H = margin.top + plotH + margin.bottom;
+
+  const barGap = plotW / N;
+  const barW = Math.min(barGap * 0.6, 70);
+
+  function barX(i){ return margin.left + barGap*i + barGap/2; }
+
+  const ozBreak = 900000, ozMax = 2500000;
+  function yL(oz){
+    if(oz<=ozBreak) return margin.top + topH + gapH + bottomH*(1 - oz/ozBreak);
+    return margin.top + topH*(1 - (oz-ozBreak)/(ozMax-ozBreak));
+  }
+
+  /* ══════════════════════════════════════
+     SVG
+     ══════════════════════════════════════ */
+  const svg = document.getElementById('growth-chart');
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const NS = 'http://www.w3.org/2000/svg';
+
+  function el(tag,attrs,parent){
+    const e=document.createElementNS(NS,tag);
+    for(const[k,v] of Object.entries(attrs||{})) e.setAttribute(k,v);
+    (parent||svg).appendChild(e); return e;
+  }
+  function txt(x,y,text,attrs,parent){
+    const t=el('text',Object.assign({x,y},attrs),parent);
+    if(String(text).includes('\n')){
+      String(text).split('\n').forEach((ln,i)=>{const ts=el('tspan',{x,dy:i?'1.2em':'0'},t);ts.textContent=ln;});
+    } else t.textContent=text;
+    return t;
+  }
+
+  // Defs
+  const defs=el('defs',{});
+  const gG=el('linearGradient',{id:'gg',x1:0,y1:0,x2:0,y2:1},defs);
+  el('stop',{offset:'0%','stop-color':'#E8C868'},gG);
+  el('stop',{offset:'100%','stop-color':'#B8860B'},gG);
+  function makeHatch(id,color){
+    const p=el('pattern',{id,patternUnits:'userSpaceOnUse',width:'7',height:'7',patternTransform:'rotate(45)'},defs);
+    el('line',{x1:0,y1:0,x2:0,y2:'7',stroke:color,'stroke-width':'2.5'},p);
+  }
+  makeHatch('hg','rgba(196,146,42,0.35)');
+
+  // Upper zone tint
+  el('rect',{x:margin.left,y:margin.top,width:plotW,height:topH,fill:'rgba(196,146,42,0.025)',rx:'2'});
+
+  // Grid — bottom ticks
+  [0,200000,400000,600000,826000].forEach(oz=>{
+    const y=yL(oz);
+    el('line',{x1:margin.left,y1:y,x2:W-margin.right,y2:y,stroke:'#E8E3DA','stroke-width':'1','stroke-dasharray':oz===0?'none':'4 4'});
+  });
+  // Grid — top ticks
+  [1000000,1500000,2000000,2500000].forEach(oz=>{
+    el('line',{x1:margin.left,y1:yL(oz),x2:W-margin.right,y2:yL(oz),stroke:'#E8E3DA','stroke-width':'1','stroke-dasharray':'4 4'});
+  });
+
+  // Axis break
+  const breakY=margin.top+topH;
+  el('rect',{x:margin.left-12,y:breakY-1,width:plotW+24,height:gapH+2,fill:'#FEFDFB'});
+  [margin.left, W-margin.right].forEach(x=>{
+    const zw=8,zh=gapH/2;
+    el('path',{d:`M${x-zw},${breakY} l${zw},${zh} l${zw},-${zh} l${-zw},${zh} l${-zw},-${zh}`,fill:'none',stroke:'#D4CCBF','stroke-width':'1.5'});
+  });
+
+  // Left axis
+  el('line',{x1:margin.left,y1:margin.top,x2:margin.left,y2:margin.top+topH,stroke:'#D4CCBF'});
+  el('line',{x1:margin.left,y1:margin.top+topH+gapH,x2:margin.left,y2:margin.top+plotH,stroke:'#D4CCBF'});
+  [...[0,200000,400000,600000,826000],...[1000000,1500000,2000000,2500000]].forEach(oz=>{
+    const y=yL(oz), is826=oz===826000;
+    el('line',{x1:margin.left-4,y1:y,x2:margin.left,y2:y,stroke:'#D4CCBF'});
+    const lbl=oz===0?'0':oz>=1000000?(oz/1000000).toFixed(1)+'M':(oz/1000)+'k';
+    txt(margin.left-8,y,lbl,{'text-anchor':'end','dominant-baseline':'central','font-family':is826?'DM Sans,sans-serif':'Source Sans 3,sans-serif','font-size':is826?'11':'10',fill:is826?'#C4922A':'#8C929E','font-weight':is826?'700':'500'});
+  });
+  const ltEl=el('text',{x:0,y:0,'text-anchor':'middle','font-family':'DM Sans,sans-serif','font-size':'10','font-weight':'600',fill:'#8C929E',transform:`translate(14,${margin.top+plotH/2}) rotate(-90)`});
+  ltEl.textContent='JORC Resource (oz Au)';
+
+  // Bottom axis
+  el('line',{x1:margin.left,y1:margin.top+plotH,x2:W-margin.right,y2:margin.top+plotH,stroke:'#D4CCBF'});
+
+  // TODAY divider (between bar 6 and bar 7)
+  const divX = margin.left + barGap*7 - barGap*0.15;
+  el('rect',{x:divX,y:margin.top,width:W-margin.right-divX,height:plotH,fill:'rgba(196,146,42,0.02)'});
+  el('line',{x1:divX,y1:margin.top-3,x2:divX,y2:margin.top+plotH,stroke:'#C4922A','stroke-width':'1.5','stroke-dasharray':'6 4',opacity:'0.35'});
+  txt(divX,margin.top-8,'TODAY',{'text-anchor':'middle','font-family':'Source Sans 3,sans-serif','font-size':'8','font-weight':'700',fill:'#C4922A',opacity:'0.5','letter-spacing':'1'});
+
+  /* ══════════════════════════════════════
+     BARS
+     ══════════════════════════════════════ */
+  const barsG = el('g',{});
+  const hitAreas = [];
+
+  // Confirmed bars (always visible)
+  confirmedBars.forEach((d,i)=>{
+    const cx=barX(i), bx=cx-barW/2, by=yL(d.oz), bh=yL(0)-by;
+    const g=el('g',{class:'bar-anim',style:`transform-origin:${cx}px ${yL(0)}px`},barsG);
+    el('rect',{x:bx,y:by,width:barW,height:bh,rx:'3',fill:'url(#gg)',stroke:'#9A6700','stroke-width':'0.5'},g);
+    if(d.add<d.oz){const ah=yL(d.oz-d.add)-by;el('rect',{x:bx,y:by,width:barW,height:Math.max(ah,2),rx:'3',fill:'#E8C868',opacity:'0.35'},g);}
+
+    const ozStr=d.oz>=1000000?(d.oz/1000000).toFixed(1)+'M':Math.round(d.oz/1000)+'k';
+    const isLast=i===confirmedBars.length-1;
+    txt(cx,by-(isLast?10:7),ozStr,{'text-anchor':'middle','font-family':'DM Sans,sans-serif','font-size':isLast?'13':'10','font-weight':'700',fill:isLast?'#C4922A':'#1A1E24',class:'label-anim'},barsG);
+    if(isLast) txt(cx,by+4,'oz Au',{'text-anchor':'middle','font-family':'Source Sans 3,sans-serif','font-size':'8','font-weight':'600',fill:'#C4922A',opacity:'0.5',class:'label-anim'},barsG);
+
+    const hit=el('rect',{x:bx-4,y:Math.min(by-20,margin.top),width:barW+8,height:yL(0)-Math.min(by-20,margin.top)+8,fill:'transparent',cursor:'pointer'},barsG);
+    hitAreas.push({el:hit,data:d});
+  });
+
+  // Potential bars (hidden initially, shown by step)
+  potentialBars.forEach((d,i)=>{
+    const idx=confirmedBars.length+i;
+    const cx=barX(idx), bx=cx-barW/2, by=yL(d.oz), prevOz=allBars[idx-1].oz;
+    const baseY=yL(prevOz), baseH=yL(0)-baseY;
+    const addH=baseY-by;
+
+    const g=el('g',{class:'bar-anim potential-bar','data-bar-step':d.step,style:`transform-origin:${cx}px ${yL(0)}px;display:none`},barsG);
+    el('rect',{x:bx,y:baseY,width:barW,height:baseH,rx:'3',fill:'url(#gg)',opacity:'0.15'},g);
+    el('rect',{x:bx,y:by,width:barW,height:addH,rx:'3',fill:'url(#hg)',stroke:'#C4922A','stroke-width':'1.5','stroke-dasharray':'6 3'},g);
+
+    const ozStr='~'+(d.oz>=1000000?(d.oz/1000000).toFixed(1)+'M':Math.round(d.oz/1000)+'k');
+    txt(cx,by-22,ozStr,{'text-anchor':'middle','font-family':'DM Sans,sans-serif','font-size':'12','font-weight':'700',fill:'#C4922A',opacity:'0.7',class:'label-anim','data-bar-step':d.step,style:'display:none'},barsG);
+    txt(cx,by-10,d.label,{'text-anchor':'middle','font-family':'Source Sans 3,sans-serif','font-size':'9','font-weight':'600',fill:'#8C929E',class:'label-anim','data-bar-step':d.step,style:'display:none'},barsG);
+
+    const hit=el('rect',{x:bx-4,y:Math.min(by-25,margin.top),width:barW+8,height:yL(0)-Math.min(by-25,margin.top)+8,fill:'transparent',cursor:'pointer','data-bar-step':d.step,style:'display:none'},barsG);
+    hitAreas.push({el:hit,data:d});
+  });
+
+  // Step line (confirmed only, always visible)
+  const cPts=confirmedBars.map((_,i)=>`${barX(i)},${yL(confirmedBars[i].oz)}`);
+  el('polyline',{points:cPts.join(' '),fill:'none',stroke:'#C4922A','stroke-width':'2.5','stroke-linejoin':'round',class:'step-line-anim'},barsG);
+  confirmedBars.forEach((_,i)=>el('circle',{cx:barX(i),cy:yL(confirmedBars[i].oz),r:i===confirmedBars.length-1?'4.5':'3',fill:'#C4922A',stroke:'#fff','stroke-width':'2',class:'label-anim'},barsG));
+
+  // Bottom labels
+  allBars.forEach((d,i)=>{
+    const cx=barX(i), isPot=i>=confirmedBars.length;
+    el('line',{x1:cx,y1:margin.top+plotH,x2:cx,y2:margin.top+plotH+5,stroke:'#D4CCBF','data-bar-step':isPot?d.step:undefined,style:isPot?'display:none':''});
+    txt(cx,margin.top+plotH+18,d.date,{'text-anchor':'middle','font-family':'Source Sans 3,sans-serif','font-size':'9','font-weight':'600',fill:isPot?'#8C929E':'#6B6560',class:'label-anim','data-bar-step':isPot?d.step:undefined,style:isPot?'display:none':''});
+    txt(cx,margin.top+plotH+30,d.label,{'text-anchor':'middle','font-family':'Source Sans 3,sans-serif','font-size':'8',fill:isPot?'#8C929E':'#6B6560',opacity:'0.7',class:'label-anim','data-bar-step':isPot?d.step:undefined,style:isPot?'display:none':''});
+  });
+
+  /* ══════════════════════════════════════
+     TOOLTIPS
+     ══════════════════════════════════════ */
+  const tooltip=document.getElementById('tooltip');
+  hitAreas.forEach(({el:hit,data:d})=>{
+    hit.addEventListener('mouseenter',()=>{
+      const ozStr=d.oz>=1000000?(d.oz/1000000).toFixed(2)+' Moz':(d.oz/1000).toLocaleString()+'k oz';
+      const addStr=d.add>=1000000?'+'+(d.add/1000000).toFixed(2)+' Moz':'+'+Math.round(d.add/1000).toLocaleString()+'k oz';
+      tooltip.innerHTML=`<div class="tt-date">${d.date||d.label}</div><div class="tt-oz">${ozStr}</div><div class="tt-add">${addStr} — ${d.label}</div>`;
+      tooltip.classList.add('visible');
+    });
+    hit.addEventListener('mousemove',e=>{tooltip.style.left=(e.clientX+14)+'px';tooltip.style.top=(e.clientY-10)+'px'});
+    hit.addEventListener('mouseleave',()=>tooltip.classList.remove('visible'));
+  });
+
+  // Animate confirmed bars on load
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    svg.querySelectorAll('.bar-anim:not(.potential-bar)').forEach((b,i)=>setTimeout(()=>b.classList.add('animate-in'),i*100));
+    const td=confirmedBars.length*100+150;
+    svg.querySelectorAll('.step-line-anim').forEach(l=>setTimeout(()=>l.classList.add('animate-in'),td));
+    svg.querySelectorAll('.label-anim:not([data-bar-step])').forEach((l,i)=>setTimeout(()=>l.classList.add('animate-in'),td+200+i*25));
+  }));
+
+  /* ══════════════════════════════════════
+     STEP CONTROLLER
+     ══════════════════════════════════════ */
+  let currentStep = 1;
+  const app = document.getElementById('app');
+  const titleEl = document.getElementById('stepTitle');
+  const descEl = document.getElementById('stepDesc');
+  const counterEl = document.getElementById('counterNum');
+  const counterBox = document.getElementById('prodCounter');
+  const noInfra = document.getElementById('noInfra');
+  const ljCard = document.getElementById('ljCard');
+  const emCard = document.getElementById('emCard');
+  const bountyCard = document.getElementById('bountyCard');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const dots = document.querySelectorAll('.step-dot');
+  const stepLabel = document.getElementById('stepCounter');
+
+  function animateCounter(from, to) {
+    const duration = 600;
+    const start = performance.now();
+    function tick(now) {
+      const p = Math.min((now - start) / duration, 1);
+      const ease = 1 - Math.pow(1 - p, 3);
+      const val = Math.round(from + (to - from) * ease);
+      counterEl.textContent = val.toLocaleString();
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function goToStep(n) {
+    const prev = currentStep;
+    currentStep = Math.max(1, Math.min(4, n));
+    app.setAttribute('data-step', currentStep);
+
+    const s = steps[currentStep - 1];
+    titleEl.textContent = s.title;
+    descEl.textContent = s.desc;
+    stepLabel.textContent = currentStep + ' / 4';
+
+    // Counter animation
+    const prevProd = steps[prev - 1].production;
+    if (s.production !== prevProd) {
+      animateCounter(prevProd, s.production);
+    }
+    counterBox.setAttribute('data-val', s.production);
+
+    // Cards visibility
+    noInfra.style.display = currentStep >= 2 ? 'none' : '';
+    ljCard.classList.toggle('visible', currentStep >= 2);
+    ljCard.style.display = currentStep >= 2 ? '' : 'none';
+    emCard.classList.toggle('visible', currentStep >= 3);
+    emCard.style.display = currentStep >= 3 ? '' : 'none';
+    bountyCard.classList.toggle('visible', currentStep >= 4);
+    bountyCard.style.display = currentStep >= 4 ? '' : 'none';
+
+    // Potential bars visibility
+    svg.querySelectorAll('[data-bar-step]').forEach(el => {
+      const step = +el.getAttribute('data-bar-step');
+      const show = currentStep >= step;
+      el.style.display = show ? '' : 'none';
+      if (show && el.classList.contains('bar-anim') && !el.classList.contains('animate-in')) {
+        el.classList.add('animate-in');
+      }
+      if (show && el.classList.contains('label-anim') && !el.classList.contains('animate-in')) {
+        el.classList.add('animate-in');
+      }
+    });
+
+    // Buttons
+    prevBtn.disabled = currentStep === 1;
+    nextBtn.disabled = currentStep === 4;
+
+    // Dots
+    dots.forEach((d, i) => d.classList.toggle('active', i + 1 === currentStep));
+  }
+
+  prevBtn.addEventListener('click', () => goToStep(currentStep - 1));
+  nextBtn.addEventListener('click', () => goToStep(currentStep + 1));
+  dots.forEach(d => d.addEventListener('click', () => goToStep(+d.dataset.step)));
+
+  // Keyboard
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); goToStep(currentStep + 1); }
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); goToStep(currentStep - 1); }
+  });
+
+  // Initialize
+  goToStep(1);
+
+})();
+</script>
+
+</body>
+</html>
