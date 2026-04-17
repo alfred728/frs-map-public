@@ -454,6 +454,61 @@ body::after {
   text-decoration:none;
 }
 #auth-gate a:hover{text-decoration:underline}
+
+/* ── Citation chips & Sources section ── */
+.cite{display:inline-block;font-size:9.5px;font-weight:700;font-family:var(--font-body);vertical-align:super;line-height:1;margin-left:4px;letter-spacing:0.3px}
+.cite a{display:inline-block;padding:1.5px 5px;border-radius:3px;background:rgba(27,122,61,0.1);color:var(--color-success);text-decoration:none;border:1px solid rgba(27,122,61,0.25);transition:background 0.12s,border-color 0.12s}
+.cite a:hover{background:rgba(27,122,61,0.18);border-color:rgba(27,122,61,0.5)}
+
+.col3-disclaimer{border:1px dashed var(--color-gold);background:rgba(196,146,42,0.06);border-radius:8px;padding:10px 14px;margin-bottom:14px}
+.col3-disclaimer .lbl{font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--color-gold-text);margin-bottom:4px}
+.col3-disclaimer .body{font-size:11.5px;line-height:1.55;color:var(--color-text-secondary)}
+
+.sources-section{background:var(--color-surface);border-top:1px solid var(--color-border);padding:var(--space-6) var(--space-6) var(--space-7);scroll-margin-top:80px}
+.sources-section .src-inner{max-width:1320px;margin:0 auto}
+.sources-section .src-head{margin-bottom:18px}
+.sources-section h2{font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--color-text);margin-bottom:6px;letter-spacing:-0.2px}
+.sources-section .src-summary{font-size:12.5px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:6px;max-width:780px}
+.sources-section .src-counts{font-size:11px;color:var(--color-text-muted);letter-spacing:0.4px;text-transform:uppercase;font-weight:600}
+.sources-section .src-counts .verified-num{color:var(--color-success)}
+.sources-section .src-counts .partial-num{color:var(--color-gold-text)}
+.sources-section details{border-top:1px solid var(--color-border-subtle);padding:0}
+.sources-section details:last-of-type{border-bottom:1px solid var(--color-border-subtle)}
+.sources-section summary{cursor:pointer;padding:11px 4px;font-family:var(--font-display);font-size:13.5px;font-weight:600;color:var(--color-text);list-style:none;display:flex;align-items:center;gap:10px}
+.sources-section summary::-webkit-details-marker{display:none}
+.sources-section summary::before{content:'\25B8';font-size:11px;color:var(--color-gold-text);transition:transform 0.15s;display:inline-block;width:12px}
+.sources-section details[open] summary::before{transform:rotate(90deg)}
+.sources-section summary .src-part-meta{margin-left:auto;font-size:11px;font-weight:400;color:var(--color-text-muted);letter-spacing:0.3px;font-family:var(--font-body)}
+.sources-section summary:hover{color:var(--color-gold-text)}
+.cite-entry{padding:11px 6px 13px 24px;border-top:1px dashed var(--color-border-subtle);display:grid;grid-template-columns:42px 1fr;gap:10px;align-items:start;scroll-margin-top:90px}
+.cite-entry:first-of-type{border-top:none}
+.cite-entry:target{background:rgba(27,122,61,0.08);border-radius:6px;outline:1px solid rgba(27,122,61,0.35);padding-left:18px}
+.cite-entry .ce-id{font-size:11.5px;font-weight:700;color:var(--color-success);font-family:var(--font-body);letter-spacing:0.5px;padding-top:1px}
+.cite-entry .ce-claim{font-size:12.5px;color:var(--color-text);line-height:1.55;margin-bottom:6px}
+.cite-entry .ce-verdict{display:inline-block;font-size:9px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;padding:2px 7px;border-radius:3px;margin-left:6px;vertical-align:1px}
+.cite-entry .ce-verdict.full{background:rgba(27,122,61,0.12);color:var(--color-success);border:1px solid rgba(27,122,61,0.3)}
+.cite-entry .ce-verdict.partial{background:rgba(196,146,42,0.12);color:var(--color-gold-text);border:1px solid rgba(196,146,42,0.35)}
+.cite-entry .ce-srcs{display:flex;flex-wrap:wrap;gap:4px}
+.cite-entry .ce-srcs a{display:inline-block;font-size:11px;color:var(--color-ui-blue-light);text-decoration:none;font-weight:500;padding:3px 9px;border:1px solid rgba(88,166,255,0.3);border-radius:4px;transition:all 0.15s}
+.cite-entry .ce-srcs a:hover{color:#fff;background:rgba(88,166,255,0.15);border-color:rgba(88,166,255,0.5)}
+.cite-entry .ce-srcs a::after{content:' \2197';opacity:0.7;font-size:10px}
+
+.appendix-table{width:100%;border-collapse:collapse;font-size:11.5px;margin-top:8px}
+.appendix-table th,.appendix-table td{text-align:left;padding:6px 10px;border-bottom:1px dashed var(--color-border-subtle)}
+.appendix-table th{background:var(--color-surface-secondary);font-weight:600;color:var(--color-text-secondary);font-size:10.5px;letter-spacing:0.4px;text-transform:uppercase}
+.appendix-table td.idsId{font-family:'SF Mono',Menlo,Consolas,monospace;color:var(--color-text-secondary);font-size:11px}
+.appendix-table td a{color:var(--color-ui-blue-light);text-decoration:none}
+.appendix-table td a:hover{text-decoration:underline}
+
+@media(max-width:600px){
+  .cite-entry{grid-template-columns:32px 1fr;gap:8px;padding:10px 4px 12px 14px}
+  .cite-entry:target{padding-left:10px}
+  .sources-section{padding:var(--space-5) var(--space-3) var(--space-6)}
+  .sources-section h2{font-size:16px}
+  .sources-section summary{font-size:12.5px}
+  .appendix-table{font-size:10.5px}
+  .appendix-table th,.appendix-table td{padding:5px 6px}
+}
 </style>
 </head>
 <body>
@@ -499,7 +554,7 @@ body::after {
       <div class="metric-section">
         <div class="section-title"><span class="icon">&#9646;</span> Tenements</div>
         <div class="big-stat">~67<span class="unit">licences</span></div>
-        <div class="stat-detail">Pre-acquisition baseline tenure across Forrestania &amp; Eastern Goldfields</div>
+        <div class="stat-detail">Pre-acquisition baseline tenure across Forrestania &amp; Eastern Goldfields<sup class="cite"><a href="#cite-S1" title="WA DMIRS / MINEDEX (authoritative)">S1</a></sup></div>
         <div class="tag-list">
           <span class="tag">Lady Lila</span>
           <span class="tag">Bonnie Vale</span>
@@ -512,7 +567,7 @@ body::after {
         <div class="resource-list">
           <div class="resource-item"><span class="res-name">Lady Lila</span><span class="res-oz">24,000 oz @ 1.38 g/t</span><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02947656" target="_blank" rel="noopener" style="font-size:9px;color:var(--color-ui-blue-light);text-decoration:none;margin-left:4px">&#8599;</a></div>
         </div>
-        <div class="stat-detail">Lady Lila inferred resource (13 May 2025)</div>
+        <div class="stat-detail">Lady Lila inferred resource (13 May 2025)<sup class="cite"><a href="#cite-S2" title="HotCopper thread">S2</a></sup></div>
         <div class="resource-bar">
           <div class="bar-track"><div class="bar-fill" style="width:3%"></div></div>
           <div class="bar-label">24k oz</div>
@@ -521,15 +576,15 @@ body::after {
 
       <div class="metric-section">
         <div class="section-title"><span class="icon">&#9881;</span> Plant &amp; Facilities</div>
-        <div class="stat-detail" style="color:#8b949e">No processing infrastructure or agreements</div>
+        <div class="stat-detail" style="color:#8b949e">No processing infrastructure or agreements<sup class="cite"><a href="#cite-S3" title="Annual Report (FY25) — idsId 03002818">S3</a></sup></div>
       </div>
 
       <div class="metric-section">
         <div class="section-title"><span class="icon">&#9650;</span> Production Profile</div>
         <span class="status-badge exploration">Exploration Stage</span>
-        <div class="stat-detail" style="margin-top:6px">Board reset underway &mdash; Geraghty appointed NED May 2025</div>
-        <div class="stat-detail">Cash position: ~$920K (30 Jun 2025)</div>
-        <div class="stat-detail">Net loss $1.4M for FY2025</div>
+        <div class="stat-detail" style="margin-top:6px">Board reset underway &mdash; Geraghty appointed NED May 2025<sup class="cite"><a href="#cite-S4" title="Mining Executive Joins Board — idsId 02948887">S4</a></sup></div>
+        <div class="stat-detail">Cash position: ~$920K (30 Jun 2025)<sup class="cite"><a href="#cite-S5" title="Annual Report (FY25) — idsId 03002818">S5</a></sup></div>
+        <div class="stat-detail">Net loss $1.4M for FY2025<sup class="cite"><a href="#cite-S6" title="Annual Report (FY25) — idsId 03002818">S6</a></sup></div>
       </div>
 
     </div>
@@ -547,10 +602,10 @@ body::after {
       <div class="metric-section">
         <div class="section-title"><span class="icon">&#9646;</span> Tenements</div>
         <div class="big-stat">~307<span class="unit">licences</span></div>
-        <div class="stat-detail">Rapid tenement expansion through aggressive acquisition across the Yilgarn Craton</div>
+        <div class="stat-detail">Rapid tenement expansion through aggressive acquisition across the Yilgarn Craton<sup class="cite"><a href="#cite-C1" title="WA DMIRS / MINEDEX (authoritative)">C1</a></sup></div>
         <button class="toggle-btn" data-label="Show Hubs" onclick="toggleSection(this,'hubs-apr26')">
           <span class="toggle-label">Show Hubs</span><span class="toggle-count"> &nbsp;(20)</span><span class="toggle-arrow"> ▼</span>
-        </button>
+        </button><sup class="cite"><a href="#cite-C2" title="Half Yearly Report — idsId 03071293">C2</a></sup>
         <div class="collapsible" id="hubs-apr26" style="display:none">
           <div class="tag-list">
             <span class="tag">Lady Magdalene</span>
@@ -580,23 +635,23 @@ body::after {
       <div class="metric-section">
         <div class="section-title"><span class="icon">&#9670;</span> JORC Resources</div>
         <div class="big-stat">826k<span class="unit">oz Au</span></div>
-        <div class="stat-detail">18.8 Mt &middot; 1.37 g/t avg &middot; 11 deposits &middot; ~34&times; resource growth</div>
+        <div class="stat-detail">18.8 Mt &middot; 1.37 g/t avg &middot; 11 deposits &middot; ~34&times; resource growth<sup class="cite"><a href="#cite-C3" title="Aggregation of D1–D11 below">C3</a></sup></div>
         <button class="toggle-btn" data-label="Show Deposits" onclick="toggleSection(this,'resources-apr26')">
           <span class="toggle-label">Show Deposits</span><span class="toggle-count"> &nbsp;(11)</span><span class="toggle-arrow"> ▼</span>
         </button>
         <div class="collapsible" id="resources-apr26" style="display:none">
         <div class="resource-list">
-          <div class="resource-item"><span class="res-name">Lady Magdalene <span class="tag" style="font-size:9px;padding:1px 5px;border-color:#d29922;color:#9a6700">Option</span></span><span class="res-oz">237k oz @ 1.32 g/t</span><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02978776" target="_blank" rel="noopener" style="font-size:9px;color:var(--color-ui-blue-light);text-decoration:none;margin-left:4px">&#8599;</a></div>
-          <div class="resource-item"><span class="res-name">North Ironcap <span class="tag" style="font-size:9px;padding:1px 5px;border-color:var(--color-success);color:var(--color-success)">FRS Owned</span></span><span class="res-oz">106k oz @ 1.37 g/t</span><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02980414" target="_blank" rel="noopener" style="font-size:9px;color:var(--color-ui-blue-light);text-decoration:none;margin-left:4px">&#8599;</a></div>
-          <div class="resource-item"><span class="res-name">Karonie <span class="tag" style="font-size:9px;padding:1px 5px;border-color:#f0883e;color:#bc4c00">Pending</span></span><span class="res-oz">111k oz @ 1.20 g/t</span><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03070645" target="_blank" rel="noopener" style="font-size:9px;color:var(--color-ui-blue-light);text-decoration:none;margin-left:4px">&#8599;</a></div>
-          <div class="resource-item"><span class="res-name">Johnson Range <span class="tag" style="font-size:9px;padding:1px 5px;border-color:var(--color-success);color:var(--color-success)">FRS Owned</span></span><span class="res-oz">104k oz @ 2.26 g/t</span><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03075506" target="_blank" rel="noopener" style="font-size:9px;color:var(--color-ui-blue-light);text-decoration:none;margin-left:4px">&#8599;</a></div>
-          <div class="resource-item"><span class="res-name">Burracoppin <span class="tag" style="font-size:9px;padding:1px 5px;border-color:var(--color-success);color:var(--color-success)">FRS Owned</span></span><span class="res-oz">83k oz @ 1.20 g/t</span><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02994408" target="_blank" rel="noopener" style="font-size:9px;color:var(--color-ui-blue-light);text-decoration:none;margin-left:4px">&#8599;</a></div>
-          <div class="resource-item"><span class="res-name">Lady Ada <span class="tag" style="font-size:9px;padding:1px 5px;border-color:#d29922;color:#9a6700">Option</span></span><span class="res-oz">60k oz @ 1.39 g/t</span><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02978776" target="_blank" rel="noopener" style="font-size:9px;color:var(--color-ui-blue-light);text-decoration:none;margin-left:4px">&#8599;</a></div>
-          <div class="resource-item"><span class="res-name">British Hill <span class="tag" style="font-size:9px;padding:1px 5px;border-color:var(--color-success);color:var(--color-success)">FRS Owned</span></span><span class="res-oz">55k oz @ 1.66 g/t</span><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02975789" target="_blank" rel="noopener" style="font-size:9px;color:var(--color-ui-blue-light);text-decoration:none;margin-left:4px">&#8599;</a></div>
-          <div class="resource-item"><span class="res-name">Lady Lila <span class="tag" style="font-size:9px;padding:1px 5px;border-color:var(--color-success);color:var(--color-success)">FRS Owned</span></span><span class="res-oz">41k oz @ 1.03 g/t</span><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02993900" target="_blank" rel="noopener" style="font-size:9px;color:var(--color-ui-blue-light);text-decoration:none;margin-left:4px">&#8599;</a></div>
-          <div class="resource-item"><span class="res-name">MacPhersons Reward <span class="tag" style="font-size:9px;padding:1px 5px;border-color:var(--color-success);color:var(--color-success)">FRS Owned</span></span><span class="res-oz">15k oz @ 1.51 g/t</span><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03060387" target="_blank" rel="noopener" style="font-size:9px;color:var(--color-ui-blue-light);text-decoration:none;margin-left:4px">&#8599;</a></div>
-          <div class="resource-item"><span class="res-name">Ada Ann <span class="tag" style="font-size:9px;padding:1px 5px;border-color:var(--color-success);color:var(--color-success)">FRS Owned</span></span><span class="res-oz">12k oz @ 1.67 g/t</span><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02981333" target="_blank" rel="noopener" style="font-size:9px;color:var(--color-ui-blue-light);text-decoration:none;margin-left:4px">&#8599;</a></div>
-          <div class="resource-item"><span class="res-name">Mt Palmer (tailings) <span class="tag" style="font-size:9px;padding:1px 5px;border-color:#656d76;color:#656d76">Minority</span></span><span class="res-oz">2k oz @ 0.63 g/t</span><a href="https://announcements.asx.com.au/asxpdf/20250728/pdf/06m6fxl448z5g1.pdf" target="_blank" rel="noopener" style="font-size:9px;color:var(--color-ui-blue-light);text-decoration:none;margin-left:4px">&#8599;</a></div>
+          <div class="resource-item"><span class="res-name">Lady Magdalene <span class="tag" style="font-size:9px;padding:1px 5px;border-color:#d29922;color:#9a6700">Option</span></span><span class="res-oz">237k oz @ 1.32 g/t</span><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02978776" target="_blank" rel="noopener" style="font-size:9px;color:var(--color-ui-blue-light);text-decoration:none;margin-left:4px">&#8599;</a><sup class="cite"><a href="#cite-D1" title="Option for Major Gold Project Acquisition — idsId 02978776">D1</a></sup></div>
+          <div class="resource-item"><span class="res-name">North Ironcap <span class="tag" style="font-size:9px;padding:1px 5px;border-color:var(--color-success);color:var(--color-success)">FRS Owned</span></span><span class="res-oz">106k oz @ 1.37 g/t</span><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02980414" target="_blank" rel="noopener" style="font-size:9px;color:var(--color-ui-blue-light);text-decoration:none;margin-left:4px">&#8599;</a><sup class="cite"><a href="#cite-D3" title="FRS Agrees to Acquire North Ironcap — idsId 02980414">D3</a></sup></div>
+          <div class="resource-item"><span class="res-name">Karonie <span class="tag" style="font-size:9px;padding:1px 5px;border-color:#f0883e;color:#bc4c00">Pending</span></span><span class="res-oz">111k oz @ 1.20 g/t</span><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03070645" target="_blank" rel="noopener" style="font-size:9px;color:var(--color-ui-blue-light);text-decoration:none;margin-left:4px">&#8599;</a><sup class="cite"><a href="#cite-D4" title="Eastern Goldfields Hub replacement — idsId 03076463">D4</a></sup></div>
+          <div class="resource-item"><span class="res-name">Johnson Range <span class="tag" style="font-size:9px;padding:1px 5px;border-color:var(--color-success);color:var(--color-success)">FRS Owned</span></span><span class="res-oz">104k oz @ 2.26 g/t</span><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03075506" target="_blank" rel="noopener" style="font-size:9px;color:var(--color-ui-blue-light);text-decoration:none;margin-left:4px">&#8599;</a><sup class="cite"><a href="#cite-D5" title="Johnson Range MRE — idsId 03075506">D5</a></sup></div>
+          <div class="resource-item"><span class="res-name">Burracoppin <span class="tag" style="font-size:9px;padding:1px 5px;border-color:var(--color-success);color:var(--color-success)">FRS Owned</span></span><span class="res-oz">83k oz @ 1.20 g/t</span><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02994408" target="_blank" rel="noopener" style="font-size:9px;color:var(--color-ui-blue-light);text-decoration:none;margin-left:4px">&#8599;</a><sup class="cite"><a href="#cite-D6" title="FRS Acquires Burracoppin — idsId 02994408">D6</a></sup></div>
+          <div class="resource-item"><span class="res-name">Lady Ada <span class="tag" style="font-size:9px;padding:1px 5px;border-color:#d29922;color:#9a6700">Option</span></span><span class="res-oz">60k oz @ 1.39 g/t</span><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02978776" target="_blank" rel="noopener" style="font-size:9px;color:var(--color-ui-blue-light);text-decoration:none;margin-left:4px">&#8599;</a><sup class="cite"><a href="#cite-D2" title="Option for Major Gold Project Acquisition — idsId 02978776">D2</a></sup></div>
+          <div class="resource-item"><span class="res-name">British Hill <span class="tag" style="font-size:9px;padding:1px 5px;border-color:var(--color-success);color:var(--color-success)">FRS Owned</span></span><span class="res-oz">55k oz @ 1.66 g/t</span><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02975789" target="_blank" rel="noopener" style="font-size:9px;color:var(--color-ui-blue-light);text-decoration:none;margin-left:4px">&#8599;</a><sup class="cite"><a href="#cite-D7" title="FRS Agree to Acquire British Hill — idsId 02975789">D7</a></sup></div>
+          <div class="resource-item"><span class="res-name">Lady Lila <span class="tag" style="font-size:9px;padding:1px 5px;border-color:var(--color-success);color:var(--color-success)">FRS Owned</span></span><span class="res-oz">41k oz @ 1.03 g/t</span><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02993900" target="_blank" rel="noopener" style="font-size:9px;color:var(--color-ui-blue-light);text-decoration:none;margin-left:4px">&#8599;</a><sup class="cite"><a href="#cite-D8" title="Lady Lila Drilling Results & Upgraded MRE — idsId 02993900">D8</a></sup></div>
+          <div class="resource-item"><span class="res-name">MacPhersons Reward <span class="tag" style="font-size:9px;padding:1px 5px;border-color:var(--color-success);color:var(--color-success)">FRS Owned</span></span><span class="res-oz">15k oz @ 1.51 g/t</span><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03060387" target="_blank" rel="noopener" style="font-size:9px;color:var(--color-ui-blue-light);text-decoration:none;margin-left:4px">&#8599;</a><sup class="cite"><a href="#cite-D9" title="Beacon Minerals 2025 Annual Report (Table 2, p.67)">D9</a></sup></div>
+          <div class="resource-item"><span class="res-name">Ada Ann <span class="tag" style="font-size:9px;padding:1px 5px;border-color:var(--color-success);color:var(--color-success)">FRS Owned</span></span><span class="res-oz">12k oz @ 1.67 g/t</span><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02981333" target="_blank" rel="noopener" style="font-size:9px;color:var(--color-ui-blue-light);text-decoration:none;margin-left:4px">&#8599;</a><sup class="cite"><a href="#cite-D10" title="Maiden Ada Ann MRE — idsId 02981276">D10</a></sup></div>
+          <div class="resource-item"><span class="res-name">Mt Palmer (tailings) <span class="tag" style="font-size:9px;padding:1px 5px;border-color:#656d76;color:#656d76">Minority</span></span><span class="res-oz">2k oz @ 0.63 g/t</span><a href="https://announcements.asx.com.au/asxpdf/20250728/pdf/06m6fxl448z5g1.pdf" target="_blank" rel="noopener" style="font-size:9px;color:var(--color-ui-blue-light);text-decoration:none;margin-left:4px">&#8599;</a><sup class="cite"><a href="#cite-D11" title="Kula Gold maiden resource (28 Jul 2025)">D11</a></sup></div>
         </div>
         <div class="resource-bar">
           <div class="bar-track"><div class="bar-fill" style="width:100%"></div></div>
@@ -609,31 +664,31 @@ body::after {
       <div class="metric-section">
         <div class="section-title"><span class="icon">&#9881;</span> Plant &amp; Facilities</div>
         <div class="plant-card">
-          <div class="plant-name">Lake Johnston Processing Plant</div>
-          <div class="plant-detail">1.5 Mtpa comminution &amp; flotation circuit (operational)</div>
-          <div class="plant-detail">CIL circuit upgrade to 3.2 Mtpa underway (Polaris Engineering, commissioning Nov 2026)</div>
-          <div class="plant-detail">86 km&sup2; mining leases &middot; Licensed to 2041</div>
-          <div class="plant-detail">Acquired from Horizon Minerals for $35M</div>
-          <div class="plant-detail">Completed 13 Feb 2026 &middot; Funded via $37M capital raise completed Jan 2026</div>
+          <div class="plant-name">Lake Johnston Processing Plant<sup class="cite"><a href="#cite-P1" title="Executed Sale Agreement — idsId 03046405">P1</a></sup></div>
+          <div class="plant-detail">1.5 Mtpa comminution &amp; flotation circuit (operational)<sup class="cite"><a href="#cite-P2" title="Mining.com.au (16 Feb 2026)">P2</a></sup></div>
+          <div class="plant-detail">CIL circuit upgrade to 3.2 Mtpa underway (Polaris Engineering, commissioning Nov 2026)<sup class="cite"><a href="#cite-P3" title="Polaris Appointed to Deliver CIL Plant — idsId 03076497">P3</a></sup></div>
+          <div class="plant-detail">86 km&sup2; mining leases &middot; Licensed to 2041<sup class="cite"><a href="#cite-P4" title="Mining.com.au (16 Feb 2026)">P4</a></sup></div>
+          <div class="plant-detail">Acquired from Horizon Minerals for $35M<sup class="cite"><a href="#cite-P5" title="HRZ: Divest Lake Johnston for $35M — idsId 03025775">P5</a></sup></div>
+          <div class="plant-detail">Completed 13 Feb 2026<sup class="cite"><a href="#cite-P6" title="HRZ: Lake Johnston Divestment Completed — idsId 03060294">P6</a></sup> &middot; Funded via $37M capital raise completed Jan 2026<sup class="cite"><a href="#cite-P7" title="FRS – Placement Completed and SPP Upscaled — idsId 03050863">P7</a></sup></div>
         </div>
-        <div class="stat-detail" style="margin-top:8px">ECI partners engaged: Polaris Engineering, RG Mining, PwC, OTOC, MBS Environmental</div>
+        <div class="stat-detail" style="margin-top:8px">ECI partners engaged: Polaris Engineering, RG Mining, PwC, OTOC, MBS Environmental<sup class="cite"><a href="#cite-P8" title="Executed Sale Agreement — idsId 03046405">P8</a></sup></div>
       </div>
 
       <div class="metric-section">
         <div class="section-title"><span class="icon">&#9650;</span> Production Profile</div>
         <span class="status-badge commissioning">Commissioning Phase</span>
-        <div class="stat-detail" style="margin-top:6px"><strong>First revenue:</strong> Westgold OPA executed 19 Feb 2026</div>
-        <div class="stat-detail">Gibraltar ore &rarr; Westgold Higginsville @ $48/dt</div>
-        <div class="stat-detail">$2M commencement payment received + $7.2M+ scheduled</div>
-        <div class="stat-detail">Total potential revenue up to ~$36M (if all parcels elected)</div>
-        <div class="stat-detail">Gibraltar acquired for $2.5M in FRS shares</div>
-        <div class="stat-detail" style="margin-top:6px"><strong>Cash:</strong> Up to ~$46M in unexercised deep-in-the-money options from the capital raising (~192M options @ $0.24)</div>
-        <div class="stat-detail"><strong>New Cornerstone Shareholders:</strong> Tim Roberts and Kerry Stokes</div>
+        <div class="stat-detail" style="margin-top:6px"><strong>First revenue:</strong> Westgold OPA executed 19 Feb 2026<sup class="cite"><a href="#cite-W1" title="Ore Purchase Agreement — idsId 03062336">W1</a></sup></div>
+        <div class="stat-detail">Gibraltar ore &rarr; Westgold Higginsville @ $48/dt<sup class="cite"><a href="#cite-W2" title="Ore Purchase Agreement — idsId 03062336">W2</a></sup></div>
+        <div class="stat-detail">$2M commencement payment received + $7.2M+ scheduled<sup class="cite"><a href="#cite-W3" title="Ore Purchase Agreement — idsId 03062336">W3</a></sup></div>
+        <div class="stat-detail">Total potential revenue up to ~$36M (if all parcels elected)<sup class="cite"><a href="#cite-W4" title="Ore Purchase Agreement — idsId 03062336">W4</a></sup></div>
+        <div class="stat-detail">Gibraltar acquired for $2.5M in FRS shares<sup class="cite"><a href="#cite-W5" title="Completion of Key Acquisitions — idsId 03076898">W5</a></sup></div>
+        <div class="stat-detail" style="margin-top:6px"><strong>Cash:</strong> Up to ~$46M in unexercised deep-in-the-money options from the capital raising (~192M options @ $0.24)<sup class="cite"><a href="#cite-O1" title="FRS Options Prospectus — idsId 03053672">O1</a></sup></div>
+        <div class="stat-detail"><strong>New Cornerstone Shareholders:</strong> Tim Roberts and Kerry Stokes<sup class="cite"><a href="#cite-O2" title="Form 603 — Tim Roberts — idsId 03050603">O2</a></sup></div>
       </div>
 
       <div class="metric-section">
         <div class="section-title"><span class="icon">&#9650;</span> Potential Divestments</div>
-        <div class="stat-detail" style="margin-top:6px"><strong>Wozi Niobium Project (Malawi):</strong> Acquired via Kula Gold acquisition. Early assay results encouraging (13m @ 1.69% Nb&#x2082;O&#x2085;), but the project is non-core to FRS&rsquo;s gold-focused strategy. FRS may look to divest this asset in future.</div>
+        <div class="stat-detail" style="margin-top:6px"><strong>Wozi Niobium Project (Malawi):</strong> Acquired via Kula Gold acquisition.<sup class="cite"><a href="#cite-X1" title="Kula Bid Implementation Deed — idsId 03009216">X1</a></sup> Early assay results encouraging (13m @ 1.69% Nb&#x2082;O&#x2085;)<sup class="cite"><a href="#cite-X2" title="High-Grade Niobium Results at Wozi — idsId 03077026">X2</a></sup>, but the project is non-core to FRS&rsquo;s gold-focused strategy. FRS may look to divest this asset in future.<sup class="cite"><a href="#cite-X3" title="High-Grade Niobium Results at Wozi — idsId 03077026">X3</a></sup></div>
       </div>
 
     </div>
@@ -647,6 +702,11 @@ body::after {
       <div class="col-date">How FRS resources connect to processing infrastructure</div>
     </div>
     <div class="col-body" style="padding:var(--space-4) var(--space-5)">
+
+      <div class="col3-disclaimer">
+        <div class="lbl">Public domain &middot; scenario only</div>
+        <div class="body">The acquisition opportunities below (Edna May, Bounty) are publicly flagged assets in close proximity to FRS tenements. Their resource and mill figures come from the current owners&rsquo; public disclosures &mdash; not FRS company guidance. The &ldquo;Possible Scenario&rdquo; totals are illustrative only.</div>
+      </div>
 
       <!-- Column headers -->
       <div class="flow-col-headers" style="display:grid;grid-template-columns:1fr 32px 1fr;margin-bottom:8px;padding:0 2px">
@@ -743,6 +803,347 @@ body::after {
 </div>
 </div>
 
+<section class="sources-section" id="sources">
+  <div class="src-inner">
+    <div class="src-head">
+      <h2>Sources &amp; Verification</h2>
+      <div class="src-summary">Every numeric and factual claim above was audited on 17 April 2026 against 584 ASX announcements (Oct 2021 &ndash; Apr 2026), the WA DMIRS tenement registry / MINEDEX, Beacon Minerals&rsquo; FY25 Annual Report, Kula Gold corporate disclosures, and independent industry coverage (Mining.com.au, SmallCaps, Mining Technology, TipRanks, HotCopper, Listcorp, MiningDataOnline).</div>
+      <div class="src-counts"><span class="verified-num">35 verified</span> &middot; <span class="partial-num">3 partially verified</span> &middot; 0 unsubstantiated</div>
+    </div>
+<details>
+<summary>Part 1 — Starting Point <span class="src-part-meta">S1–S6 &middot; 6 verified</span></summary>
+<div class="cite-entry" id="cite-S1">
+  <div class="ce-id">S1</div>
+  <div>
+    <div class="ce-claim">~67 licences (pre-acquisition baseline tenure across Forrestania & Eastern Goldfields, June 2025)<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://minedex.dmirs.wa.gov.au/" target="_blank" rel="noopener">WA DMIRS / MINEDEX (authoritative)</a><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03002818" target="_blank" rel="noopener">Annual Report (FY25) — idsId 03002818</a></div>
+  </div>
+</div>
+<div class="cite-entry" id="cite-S2">
+  <div class="ce-id">S2</div>
+  <div>
+    <div class="ce-claim">Lady Lila inferred resource: 24,000 oz @ 1.38 g/t (13 May 2025 maiden MRE)<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://hotcopper.com.au/threads/ann-lady-lila-drilling-and-new-tenement.8579796/" target="_blank" rel="noopener">HotCopper thread</a><a href="https://www.listcorp.com/asx/frs/forrestania-resources-limited/news/lady-lila-drilling-and-new-tenement-3188779.html" target="_blank" rel="noopener">Listcorp landing</a><a href="https://www.tipranks.com/news/company-announcements/forrestania-resources-advances-exploration-at-lady-lila-gold-prospect" target="_blank" rel="noopener">TipRanks coverage</a><a href="https://www.mining-technology.com/news/forrestania-resources-drilling-lady-lila-project/" target="_blank" rel="noopener">Mining Technology</a><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02993900" target="_blank" rel="noopener">Upgraded MRE — idsId 02993900</a></div>
+  </div>
+</div>
+<div class="cite-entry" id="cite-S3">
+  <div class="ce-id">S3</div>
+  <div>
+    <div class="ce-claim">No processing infrastructure or agreements (FY25 Annual Report PP&E note: total carrying value $3,043)<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03002818" target="_blank" rel="noopener">Annual Report (FY25) — idsId 03002818</a></div>
+  </div>
+</div>
+<div class="cite-entry" id="cite-S4">
+  <div class="ce-id">S4</div>
+  <div>
+    <div class="ce-claim">David Geraghty appointed Non-Executive Director on 16 May 2025<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02948887" target="_blank" rel="noopener">Mining Executive Joins Board — idsId 02948887</a><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02949073" target="_blank" rel="noopener">Initial Director's Interest Notice — idsId 02949073</a></div>
+  </div>
+</div>
+<div class="cite-entry" id="cite-S5">
+  <div class="ce-id">S5</div>
+  <div>
+    <div class="ce-claim">Cash and cash equivalents: $920,386 at 30 June 2025<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03002818" target="_blank" rel="noopener">Annual Report (FY25) — idsId 03002818</a></div>
+  </div>
+</div>
+<div class="cite-entry" id="cite-S6">
+  <div class="ce-id">S6</div>
+  <div>
+    <div class="ce-claim">Net loss for FY2025: $1,419,856<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03002818" target="_blank" rel="noopener">Annual Report (FY25) — idsId 03002818</a></div>
+  </div>
+</div>
+</details>
+<details>
+<summary>Part 2 — Current State <span class="src-part-meta">C1–C3 &middot; 2 verified &middot; 1 partial</span></summary>
+<div class="cite-entry" id="cite-C1">
+  <div class="ce-id">C1</div>
+  <div>
+    <div class="ce-claim">~307 licences (April 2026, aggressive expansion across the Yilgarn Craton)<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://minedex.dmirs.wa.gov.au/" target="_blank" rel="noopener">WA DMIRS / MINEDEX (authoritative)</a><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03071293" target="_blank" rel="noopener">Half Yearly Report — idsId 03071293</a></div>
+  </div>
+</div>
+<div class="cite-entry" id="cite-C2">
+  <div class="ce-id">C2</div>
+  <div>
+    <div class="ce-claim">20 named hubs across the portfolio (each individually attested in ASX releases; no single release enumerates all 20)<span class="ce-verdict partial">Partially verified</span></div>
+    <div class="ce-srcs"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03071293" target="_blank" rel="noopener">Half Yearly Report — idsId 03071293</a><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03076463" target="_blank" rel="noopener">Eastern Goldfields Hub replacement — idsId 03076463</a><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03076898" target="_blank" rel="noopener">Completion of Key Acquisitions — idsId 03076898</a></div>
+  </div>
+</div>
+<div class="cite-entry" id="cite-C3">
+  <div class="ce-id">C3</div>
+  <div>
+    <div class="ce-claim">826 koz · 18.8 Mt · 1.37 g/t · 11 deposits · ~34× growth (sum of per-deposit MREs reconciles within rounding)<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="#cite-D1" target="_blank" rel="noopener">Aggregation of D1–D11 below</a></div>
+  </div>
+</div>
+</details>
+<details>
+<summary>Part 3 — JORC Resources by Deposit <span class="src-part-meta">D1–D11 &middot; 11 verified</span></summary>
+<div class="cite-entry" id="cite-D1">
+  <div class="ce-id">D1</div>
+  <div>
+    <div class="ce-claim">Lady Magdalene (Option) — 237k oz @ 1.32 g/t (Indicated 42koz + Inferred 196koz; 5.6 Mt @ 1.32 g/t)<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02978776" target="_blank" rel="noopener">Option for Major Gold Project Acquisition — idsId 02978776</a></div>
+  </div>
+</div>
+<div class="cite-entry" id="cite-D2">
+  <div class="ce-id">D2</div>
+  <div>
+    <div class="ce-claim">Lady Ada (Option) — 60k oz @ 1.39 g/t (Indicated 28koz + Inferred 32koz; 1.35 Mt)<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02978776" target="_blank" rel="noopener">Option for Major Gold Project Acquisition — idsId 02978776</a></div>
+  </div>
+</div>
+<div class="cite-entry" id="cite-D3">
+  <div class="ce-id">D3</div>
+  <div>
+    <div class="ce-claim">North Ironcap (FRS Owned) — 106k oz @ 1.37 g/t (Inferred 2.412 Mt)<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02980414" target="_blank" rel="noopener">FRS Agrees to Acquire North Ironcap — idsId 02980414</a></div>
+  </div>
+</div>
+<div class="cite-entry" id="cite-D4">
+  <div class="ce-id">D4</div>
+  <div>
+    <div class="ce-claim">Karonie (Pending) — 111k oz @ 1.20 g/t (KZ5 + Parmelia + Taupo; 2.961 Mt)<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03076463" target="_blank" rel="noopener">Eastern Goldfields Hub replacement — idsId 03076463</a><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03070645" target="_blank" rel="noopener">Eastern Goldfields Hub — idsId 03070645</a></div>
+  </div>
+</div>
+<div class="cite-entry" id="cite-D5">
+  <div class="ce-id">D5</div>
+  <div>
+    <div class="ce-claim">Johnson Range (FRS Owned) — 104k oz @ 2.26 g/t (Indicated 31koz + Inferred 73koz; 1.43 Mt)<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03075506" target="_blank" rel="noopener">Johnson Range MRE — idsId 03075506</a></div>
+  </div>
+</div>
+<div class="cite-entry" id="cite-D6">
+  <div class="ce-id">D6</div>
+  <div>
+    <div class="ce-claim">Burracoppin (FRS Owned) — 83k oz @ 1.20 g/t (2.14 Mt at 0.55 g/t cut-off)<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02994408" target="_blank" rel="noopener">FRS Acquires Burracoppin — idsId 02994408</a></div>
+  </div>
+</div>
+<div class="cite-entry" id="cite-D7">
+  <div class="ce-id">D7</div>
+  <div>
+    <div class="ce-claim">British Hill (FRS Owned) — 55k oz @ 1.66 g/t (Indicated 31koz + Inferred 24koz; 1.025 Mt)<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02975789" target="_blank" rel="noopener">FRS Agree to Acquire British Hill — idsId 02975789</a></div>
+  </div>
+</div>
+<div class="cite-entry" id="cite-D8">
+  <div class="ce-id">D8</div>
+  <div>
+    <div class="ce-claim">Lady Lila (FRS Owned) — 41k oz @ 1.03 g/t (upgraded MRE; 1.222 Mt)<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02993900" target="_blank" rel="noopener">Lady Lila Drilling Results & Upgraded MRE — idsId 02993900</a></div>
+  </div>
+</div>
+<div class="cite-entry" id="cite-D9">
+  <div class="ce-id">D9</div>
+  <div>
+    <div class="ce-claim">MacPhersons Reward (FRS Owned) — 15k oz @ 1.51 g/t (post-FY25 mining residual; 316 kt)<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://minedocs.com/29/Beacon-Minerals-AR-06302025.pdf" target="_blank" rel="noopener">Beacon Minerals 2025 Annual Report (Table 2, p.67)</a><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03060473" target="_blank" rel="noopener">BCN: Sale of MacPhersons — idsId 03060473</a><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03077172" target="_blank" rel="noopener">BCN: Completion of Sale — idsId 03077172</a></div>
+  </div>
+</div>
+<div class="cite-entry" id="cite-D10">
+  <div class="ce-id">D10</div>
+  <div>
+    <div class="ce-claim">Ada Ann (FRS Owned) — 12k oz @ 1.67 g/t (231.6 kt Inferred at 0.5 g/t cut-off)<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02981276" target="_blank" rel="noopener">Maiden Ada Ann MRE — idsId 02981276</a><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02981333" target="_blank" rel="noopener">Updated MRE — idsId 02981333</a></div>
+  </div>
+</div>
+<div class="cite-entry" id="cite-D11">
+  <div class="ce-id">D11</div>
+  <div>
+    <div class="ce-claim">Mt Palmer tailings (Minority) — 2k oz @ 0.63 g/t (98,534 t Inferred; Kula Gold maiden estimate)<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://www.kulagold.com.au/2025/07/mt-palmer-gold-mine-tailings-maiden-jorc-resource-98534t-at-0-63g-t-gold/" target="_blank" rel="noopener">Kula Gold maiden resource (28 Jul 2025)</a><a href="https://www.miningweekly.com/article/forrestania-secures-full-ownership-of-mt-palmer-project-2026-02-02" target="_blank" rel="noopener">Mining Weekly (full ownership 2 Feb 2026)</a></div>
+  </div>
+</div>
+</details>
+<details>
+<summary>Part 4 — Plant & Facilities <span class="src-part-meta">P1–P8 &middot; 8 verified</span></summary>
+<div class="cite-entry" id="cite-P1">
+  <div class="ce-id">P1</div>
+  <div>
+    <div class="ce-claim">Lake Johnston Processing Plant acquisition completed<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03046405" target="_blank" rel="noopener">Executed Sale Agreement — idsId 03046405</a><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03060294" target="_blank" rel="noopener">HRZ: Divestment Completed — idsId 03060294</a></div>
+  </div>
+</div>
+<div class="cite-entry" id="cite-P2">
+  <div class="ce-id">P2</div>
+  <div>
+    <div class="ce-claim">1.5 Mtpa comminution & flotation circuit (operational; pre-CIL)<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://mining.com.au/lake-johnston-divestment-sees-end-of-horizon/" target="_blank" rel="noopener">Mining.com.au (16 Feb 2026)</a><a href="https://smallcaps.com.au/article/mineral-resources-lithium-processing-lake-johnston-plant-poseidon-nickel" target="_blank" rel="noopener">SmallCaps</a><a href="https://horizonminerals.com.au/lake-johnston-project-ni-li-cu-au/" target="_blank" rel="noopener">Horizon Minerals website</a><a href="https://miningdataonline.com/property/818/Lake-Johnston-Operation.aspx" target="_blank" rel="noopener">MiningDataOnline</a></div>
+  </div>
+</div>
+<div class="cite-entry" id="cite-P3">
+  <div class="ce-id">P3</div>
+  <div>
+    <div class="ce-claim">CIL upgrade to ~3.2 Mtpa (Polaris Engineering, commissioning Nov 2026)<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03076497" target="_blank" rel="noopener">Polaris Appointed to Deliver CIL Plant — idsId 03076497</a><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03076896" target="_blank" rel="noopener">Polaris amendment — idsId 03076896</a></div>
+  </div>
+</div>
+<div class="cite-entry" id="cite-P4">
+  <div class="ce-id">P4</div>
+  <div>
+    <div class="ce-claim">86 km² mining leases · Licensed to operate until 2041<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://mining.com.au/lake-johnston-divestment-sees-end-of-horizon/" target="_blank" rel="noopener">Mining.com.au (16 Feb 2026)</a><a href="https://smallcaps.com.au/article/mineral-resources-lithium-processing-lake-johnston-plant-poseidon-nickel" target="_blank" rel="noopener">SmallCaps</a><a href="https://miningdataonline.com/property/818/Lake-Johnston-Operation.aspx" target="_blank" rel="noopener">MiningDataOnline</a></div>
+  </div>
+</div>
+<div class="cite-entry" id="cite-P5">
+  <div class="ce-id">P5</div>
+  <div>
+    <div class="ce-claim">Acquired from Horizon Minerals for $35M total ($30M cash + $5M FRS shares)<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03025775" target="_blank" rel="noopener">HRZ: Divest Lake Johnston for $35M — idsId 03025775</a></div>
+  </div>
+</div>
+<div class="cite-entry" id="cite-P6">
+  <div class="ce-id">P6</div>
+  <div>
+    <div class="ce-claim">Acquisition completed 13 Feb 2026<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03060294" target="_blank" rel="noopener">HRZ: Lake Johnston Divestment Completed — idsId 03060294</a></div>
+  </div>
+</div>
+<div class="cite-entry" id="cite-P7">
+  <div class="ce-id">P7</div>
+  <div>
+    <div class="ce-claim">$37M capital raise (Tranche 1 $14M + Tranche 2 $18M + SPP $5M, completed Jan 2026)<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03050863" target="_blank" rel="noopener">FRS – Placement Completed and SPP Upscaled — idsId 03050863</a></div>
+  </div>
+</div>
+<div class="cite-entry" id="cite-P8">
+  <div class="ce-id">P8</div>
+  <div>
+    <div class="ce-claim">ECI partners engaged: Polaris Engineering, RG Mining, PwC, OTOC, MBS Environmental<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03046405" target="_blank" rel="noopener">Executed Sale Agreement — idsId 03046405</a></div>
+  </div>
+</div>
+</details>
+<details>
+<summary>Part 5 — Operations & Revenue <span class="src-part-meta">W1–W5 &middot; 4 verified &middot; 1 partial</span></summary>
+<div class="cite-entry" id="cite-W1">
+  <div class="ce-id">W1</div>
+  <div>
+    <div class="ce-claim">Westgold Ore Purchase Agreement executed 19 Feb 2026 (transition to gold producer)<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03062336" target="_blank" rel="noopener">Ore Purchase Agreement — idsId 03062336</a></div>
+  </div>
+</div>
+<div class="cite-entry" id="cite-W2">
+  <div class="ce-id">W2</div>
+  <div>
+    <div class="ce-claim">Gibraltar ore → Westgold Higginsville Hub @ $48 per dry tonne<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03062336" target="_blank" rel="noopener">Ore Purchase Agreement — idsId 03062336</a></div>
+  </div>
+</div>
+<div class="cite-entry" id="cite-W3">
+  <div class="ce-id">W3</div>
+  <div>
+    <div class="ce-claim">$2M commencement payment + $7.2M+ scheduled (release describes the $2M as payable on conditions; later release implies satisfied as ore moved)<span class="ce-verdict partial">Partially verified</span></div>
+    <div class="ce-srcs"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03062336" target="_blank" rel="noopener">Ore Purchase Agreement — idsId 03062336</a></div>
+  </div>
+</div>
+<div class="cite-entry" id="cite-W4">
+  <div class="ce-id">W4</div>
+  <div>
+    <div class="ce-claim">Up to ~$36M total potential revenue (4 parcels × 750 kdt × $48/dt)<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03062336" target="_blank" rel="noopener">Ore Purchase Agreement — idsId 03062336</a></div>
+  </div>
+</div>
+<div class="cite-entry" id="cite-W5">
+  <div class="ce-id">W5</div>
+  <div>
+    <div class="ce-claim">Gibraltar acquired for $2.5M in FRS shares (5-day VWAP) plus up to $2.7M milestone<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03076898" target="_blank" rel="noopener">Completion of Key Acquisitions — idsId 03076898</a></div>
+  </div>
+</div>
+</details>
+<details>
+<summary>Part 6 — Cash & Shareholder Structure <span class="src-part-meta">O1–O2 &middot; 2 verified</span></summary>
+<div class="cite-entry" id="cite-O1">
+  <div class="ce-id">O1</div>
+  <div>
+    <div class="ce-claim">~$46.1M unexercised options (192,207,796 New Options @ $0.24 strike)<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03053672" target="_blank" rel="noopener">FRS Options Prospectus — idsId 03053672</a></div>
+  </div>
+</div>
+<div class="cite-entry" id="cite-O2">
+  <div class="ce-id">O2</div>
+  <div>
+    <div class="ce-claim">Cornerstone shareholders: Tim Roberts (9.54%) and Kerry Stokes / Wroxby (9.54%) — both became substantial holders 16 Jan 2026<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03050603" target="_blank" rel="noopener">Form 603 — Tim Roberts — idsId 03050603</a><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03050692" target="_blank" rel="noopener">Form 603 — Wroxby/Stokes — idsId 03050692</a><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03051061" target="_blank" rel="noopener">SGH Limited Form 603 — idsId 03051061</a></div>
+  </div>
+</div>
+</details>
+<details>
+<summary>Part 7 — Potential Divestments <span class="src-part-meta">X1–X3 &middot; 2 verified &middot; 1 partial</span></summary>
+<div class="cite-entry" id="cite-X1">
+  <div class="ce-id">X1</div>
+  <div>
+    <div class="ce-claim">Wozi Niobium Project (Malawi) inherited via Kula Gold Ltd takeover<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03009216" target="_blank" rel="noopener">Kula Bid Implementation Deed — idsId 03009216</a><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03068766" target="_blank" rel="noopener">Completion of Kula Compulsory Acquisition — idsId 03068766</a><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03077026" target="_blank" rel="noopener">High-Grade Niobium Results at Wozi — idsId 03077026</a></div>
+  </div>
+</div>
+<div class="cite-entry" id="cite-X2">
+  <div class="ce-id">X2</div>
+  <div>
+    <div class="ce-claim">Drillhole 25WZRC012: 13m @ 1.69% Nb₂O₅ from 16m (incl. 1m @ 5.26% Nb₂O₅)<span class="ce-verdict full">Verified</span></div>
+    <div class="ce-srcs"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03077026" target="_blank" rel="noopener">High-Grade Niobium Results at Wozi — idsId 03077026</a></div>
+  </div>
+</div>
+<div class="cite-entry" id="cite-X3">
+  <div class="ce-id">X3</div>
+  <div>
+    <div class="ce-claim">Wozi non-core to gold strategy; "may divest" wording (release uses "unlock value / specialist partner / corporate options")<span class="ce-verdict partial">Partially verified</span></div>
+    <div class="ce-srcs"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03077026" target="_blank" rel="noopener">High-Grade Niobium Results at Wozi — idsId 03077026</a></div>
+  </div>
+</div>
+</details>
+<details>
+<summary>Appendix &mdash; Primary source PDF map <span class="src-part-meta">34 ASX announcements</span></summary>
+<div style="padding:8px 0 4px 0">
+  <table class="appendix-table">
+    <thead><tr><th>Source title</th><th>idsId</th><th>Date</th></tr></thead>
+    <tbody>
+      <tr><td>Annual Report (FY2025)</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03002818" target="_blank" rel="noopener">03002818</a></td><td>30 Sep 2025</td></tr>
+      <tr><td>Mining Executive Joins Board & Placement</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02948887" target="_blank" rel="noopener">02948887</a></td><td>16 May 2025</td></tr>
+      <tr><td>Initial Director's Interest Notice – Geraghty</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02949073" target="_blank" rel="noopener">02949073</a></td><td>16 May 2025</td></tr>
+      <tr><td>Q4 FY25 Quarterly Activities</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02972371" target="_blank" rel="noopener">02972371</a></td><td>24 Jul 2025</td></tr>
+      <tr><td>Half Yearly Report and Accounts</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03071293" target="_blank" rel="noopener">03071293</a></td><td>12 Mar 2026</td></tr>
+      <tr><td>Option for Major Gold Project Acquisition (Lady Magdalene + Lady Ada)</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02978776" target="_blank" rel="noopener">02978776</a></td><td>11 Aug 2025</td></tr>
+      <tr><td>FRS Agrees to Acquire North Ironcap</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02980414" target="_blank" rel="noopener">02980414</a></td><td>14 Aug 2025</td></tr>
+      <tr><td>Forrestania Expands Eastern Goldfields Hub (Karonie)</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03070645" target="_blank" rel="noopener">03070645</a></td><td>11 Mar 2026</td></tr>
+      <tr><td>Forrestania Expands Eastern Goldfields Hub – replacement</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03076463" target="_blank" rel="noopener">03076463</a></td><td>26 Mar 2026</td></tr>
+      <tr><td>Johnson Range MRE of 103,500 oz</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03075506" target="_blank" rel="noopener">03075506</a></td><td>25 Mar 2026</td></tr>
+      <tr><td>FRS Acquires Burracoppin Gold Project</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02994408" target="_blank" rel="noopener">02994408</a></td><td>12 Sep 2025</td></tr>
+      <tr><td>Agree to Acquire British Hill Gold Project</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02975789" target="_blank" rel="noopener">02975789</a></td><td>1 Aug 2025</td></tr>
+      <tr><td>Lady Lila Drilling Results and Upgraded MRE</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02993900" target="_blank" rel="noopener">02993900</a></td><td>11 Sep 2025</td></tr>
+      <tr><td>Maiden Ada Ann MRE</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02981276" target="_blank" rel="noopener">02981276</a></td><td>18 Aug 2025</td></tr>
+      <tr><td>Maiden Ada Ann MRE – Updated</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=02981333" target="_blank" rel="noopener">02981333</a></td><td>18 Aug 2025</td></tr>
+      <tr><td>BCN: Beacon Unlocks Value with Sale of MacPhersons</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03060473" target="_blank" rel="noopener">03060473</a></td><td>16 Feb 2026</td></tr>
+      <tr><td>BCN: Completion of Sale of MacPhersons Reward</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03077172" target="_blank" rel="noopener">03077172</a></td><td>30 Mar 2026</td></tr>
+      <tr><td>HRZ: Horizon to divest Lake Johnston for $35M</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03025775" target="_blank" rel="noopener">03025775</a></td><td>14 Nov 2025</td></tr>
+      <tr><td>Executed Sale Agreement of Lake Johnston Infrastructure</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03046405" target="_blank" rel="noopener">03046405</a></td><td>31 Dec 2025</td></tr>
+      <tr><td>HRZ: Lake Johnston Divestment for $35M Completed</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03060294" target="_blank" rel="noopener">03060294</a></td><td>13 Feb 2026</td></tr>
+      <tr><td>Forrestania Transitions to Gold Producer</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03072372" target="_blank" rel="noopener">03072372</a></td><td>16 Mar 2026</td></tr>
+      <tr><td>Polaris Appointed to Deliver Lake Johnston CIL Plant</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03076497" target="_blank" rel="noopener">03076497</a></td><td>27 Mar 2026</td></tr>
+      <tr><td>Polaris Appointed to Deliver Lake Johnston – amendment</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03076896" target="_blank" rel="noopener">03076896</a></td><td>27 Mar 2026</td></tr>
+      <tr><td>Engages Engineers for Gold Processing Infrastructure (Como)</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03062785" target="_blank" rel="noopener">03062785</a></td><td>20 Feb 2026</td></tr>
+      <tr><td>Ore Purchase Agreement Marks Transition to Gold Producer</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03062336" target="_blank" rel="noopener">03062336</a></td><td>19 Feb 2026</td></tr>
+      <tr><td>Placement Completed and SPP Upscaled</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03050863" target="_blank" rel="noopener">03050863</a></td><td>19 Jan 2026</td></tr>
+      <tr><td>Options Prospectus</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03053672" target="_blank" rel="noopener">03053672</a></td><td>29 Jan 2026</td></tr>
+      <tr><td>Becoming Substantial Holder – Tim Roberts</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03050603" target="_blank" rel="noopener">03050603</a></td><td>16 Jan 2026</td></tr>
+      <tr><td>Becoming Substantial Holder – Wroxby/ACE/Stokes</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03050692" target="_blank" rel="noopener">03050692</a></td><td>16 Jan 2026</td></tr>
+      <tr><td>SGH Limited Form 603</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03051061" target="_blank" rel="noopener">03051061</a></td><td>19 Jan 2026</td></tr>
+      <tr><td>Execution of Bid Implementation Deed to Acquire Kula Gold</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03009216" target="_blank" rel="noopener">03009216</a></td><td>14 Oct 2025</td></tr>
+      <tr><td>Completion of Kula Gold Compulsory Acquisition</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03068766" target="_blank" rel="noopener">03068766</a></td><td>5 Mar 2026</td></tr>
+      <tr><td>High-Grade Niobium Results at Wozi Project, Malawi</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03077026" target="_blank" rel="noopener">03077026</a></td><td>30 Mar 2026</td></tr>
+      <tr><td>Completion of Key Acquisitions & Results of General Meeting</td><td class="idsId"><a href="https://www.asx.com.au/asx/v2/statistics/displayAnnouncement.do?display=pdf&idsId=03076898" target="_blank" rel="noopener">03076898</a></td><td>27 Mar 2026</td></tr>
+    </tbody>
+  </table>
+</div>
+</details>
+  </div>
+</section>
+
 <script>
 function toggleSection(btn, id) {
   const el = document.getElementById(id);
@@ -758,6 +1159,26 @@ function toggleSection(btn, id) {
     btn.classList.remove('open');
   }
 }
+
+// Auto-expand the parent <details> in the Sources section when a citation chip is clicked
+document.addEventListener('click', function(e){
+  const a = e.target.closest('a[href^="#cite-"]');
+  if(!a) return;
+  const tgt = document.querySelector(a.getAttribute('href'));
+  if(!tgt) return;
+  const det = tgt.closest('details');
+  if(det && !det.open) det.open = true;
+});
+
+// On initial page load with a #cite-XX hash, open the parent <details> and scroll into view
+(function(){
+  if(!location.hash.startsWith('#cite-')) return;
+  const tgt = document.querySelector(location.hash);
+  if(!tgt) return;
+  const det = tgt.closest('details');
+  if(det) det.open = true;
+  setTimeout(function(){ tgt.scrollIntoView({behavior:'smooth', block:'center'}); }, 120);
+})();
 </script>
 
 
