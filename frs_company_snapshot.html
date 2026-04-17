@@ -128,6 +128,7 @@ body::after {
 }
 .col-card[data-phase="jun25"] .col-header::before{background:var(--color-phase-1)}
 .col-card[data-phase="mar26"] .col-header::before{background:var(--color-phase-4)}
+.col-card[data-phase="future"] .col-header::before{background:var(--color-gold)}
 
 .col-header .phase-label{
   font-size:14px;
@@ -138,6 +139,7 @@ body::after {
 }
 .col-card[data-phase="jun25"] .phase-label{color:var(--color-phase-1)}
 .col-card[data-phase="mar26"] .phase-label{color:var(--color-phase-4)}
+.col-card[data-phase="future"] .phase-label{color:var(--color-gold)}
 
 .col-header .col-title{
   font-size:18px;
@@ -162,6 +164,15 @@ body::after {
 /* Phase-specific bar fills */
 .col-card[data-phase="jun25"] .bar-fill{background:var(--color-phase-1)}
 .col-card[data-phase="mar26"] .bar-fill{background:var(--color-phase-4)}
+.col-card[data-phase="future"] .bar-fill{background:var(--color-gold)}
+
+/* Future card spans full width and uses gold accent */
+.col-card[data-phase="future"]{
+  grid-column:1/-1;
+  border-style:dashed;
+  border-color:var(--color-gold);
+  background:linear-gradient(180deg,rgba(196,146,42,0.04) 0%,var(--color-surface) 30%);
+}
 
 /* Production profile */
 .production-stat{
@@ -623,6 +634,107 @@ body::after {
       <div class="metric-section">
         <div class="section-title"><span class="icon">&#9650;</span> Potential Divestments</div>
         <div class="stat-detail" style="margin-top:6px"><strong>Wozi Niobium Project (Malawi):</strong> Acquired via Kula Gold acquisition. Early assay results encouraging (13m @ 1.69% Nb&#x2082;O&#x2085;), but the project is non-core to FRS&rsquo;s gold-focused strategy. FRS may look to divest this asset in future.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─── Column 3: Production Pathway (Flow Diagram) ─── -->
+  <div class="col-card" data-phase="future">
+    <div class="col-header">
+      <div class="phase-label">Strategic Analysis</div>
+      <div class="col-title">Production Pathway</div>
+      <div class="col-date">How FRS resources connect to processing infrastructure</div>
+    </div>
+    <div class="col-body" style="padding:var(--space-4) var(--space-5)">
+
+      <!-- Column headers -->
+      <div class="flow-col-headers" style="display:grid;grid-template-columns:1fr 32px 1fr;margin-bottom:8px;padding:0 2px">
+        <div style="font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--color-text-muted);text-align:center">Resources</div><div></div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--color-text-muted);text-align:center">Infrastructure</div>
+      </div>
+
+      <!-- Row 0: Westgold OPA (underway) -->
+      <div class="flow-row" style="display:grid;grid-template-columns:1fr 32px 1fr;align-items:stretch;margin-bottom:10px">
+        <div style="background:rgba(27,122,61,0.04);border:1.5px solid rgba(27,122,61,0.25);border-radius:8px;padding:12px 14px">
+          <div style="font-family:var(--font-display);font-size:12px;font-weight:700;color:var(--color-text)">Gibraltar Stockpile <span style="font-size:8px;padding:2px 6px;border-radius:6px;background:rgba(27,122,61,0.1);color:#1B7A3D;font-weight:700;margin-left:3px">UNDERWAY</span></div>
+          <div style="font-size:10px;color:var(--color-text-secondary);line-height:1.5;margin-top:3px">Ore haulage commenced Mar 2026<br>Gibraltar acquired for $2.5M in FRS shares</div>
+        </div>
+        <div class="flow-arrow" style="display:flex;align-items:center;justify-content:center"><span style="color:var(--color-text-muted);font-size:18px;opacity:0.5">&#10132;</span></div>
+        <div style="background:rgba(27,122,61,0.04);border:1.5px solid rgba(27,122,61,0.25);border-radius:8px;padding:12px 14px">
+          <div style="font-family:var(--font-display);font-size:12px;font-weight:700;color:var(--color-text)">Westgold Higginsville <span style="font-size:8px;padding:2px 6px;border-radius:6px;background:rgba(27,122,61,0.1);color:#1B7A3D;font-weight:700;margin-left:3px">OPA EXECUTED</span></div>
+          <div style="font-size:10px;color:var(--color-text-secondary);line-height:1.5;margin-top:3px">Toll treatment @ $48/dt<br>OPA executed 19 Feb 2026</div>
+        </div>
+      </div>
+
+      <!-- Row 1: Lake Johnston (existing) -->
+      <div class="flow-row" style="display:grid;grid-template-columns:1fr 32px 1fr;align-items:stretch;margin-bottom:10px">
+        <div style="background:rgba(34,102,204,0.04);border:1.5px solid rgba(34,102,204,0.25);border-radius:8px;padding:12px 14px">
+          <div style="font-family:var(--font-display);font-size:12px;font-weight:700;color:var(--color-text)">Current JORC Resources <span style="font-size:8px;padding:2px 6px;border-radius:6px;background:rgba(34,102,204,0.1);color:#2266CC;font-weight:700;margin-left:3px">EXISTING</span></div>
+          <div style="font-family:var(--font-display);font-size:22px;font-weight:700;color:#2266CC;margin-top:3px">826,000 oz</div>
+          <div style="font-size:10px;color:var(--color-text-secondary);line-height:1.5;margin-top:3px">11 deposits &middot; 18.8 Mt &middot; 1.37 g/t avg<br>Excludes exploration upside from 307 licences &amp; 60,000m CY2026 drilling program</div>
+        </div>
+        <div class="flow-arrow" style="display:flex;align-items:center;justify-content:center"><span style="color:var(--color-text-muted);font-size:18px;opacity:0.5">&#10132;</span></div>
+        <div style="background:rgba(34,102,204,0.04);border:1.5px solid rgba(34,102,204,0.25);border-radius:8px;padding:12px 14px">
+          <div style="font-family:var(--font-display);font-size:12px;font-weight:700;color:var(--color-text)">Lake Johnston Mill <span style="font-size:8px;padding:2px 6px;border-radius:6px;background:rgba(34,102,204,0.1);color:#2266CC;font-weight:700;margin-left:3px">EXISTING</span></div>
+          <div style="font-family:var(--font-display);font-size:22px;font-weight:700;color:#2266CC;margin-top:3px">3.2 Mtpa</div>
+          <div style="font-size:10px;color:var(--color-text-secondary);line-height:1.5;margin-top:3px">CIL circuit &middot; Commissioning Nov 2026<br>Acquired $35M &middot; Licensed to 2041</div>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div style="position:relative;margin:12px 0 16px;border-top:2px dashed var(--color-border)">
+        <span style="position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:var(--color-surface);padding:0 12px;font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--color-gold-text)">Potential Acquisition Strategy</span>
+      </div>
+
+      <!-- Row 2: Edna May -->
+      <div class="flow-row" style="display:grid;grid-template-columns:1fr 32px 1fr;align-items:stretch;margin-bottom:10px">
+        <div style="background:rgba(196,146,42,0.04);border:1.5px dashed rgba(196,146,42,0.35);border-radius:8px;padding:12px 14px">
+          <div style="font-family:var(--font-display);font-size:12px;font-weight:700;color:var(--color-text)">Edna May Resources <span style="font-size:8px;padding:2px 6px;border-radius:6px;background:rgba(196,146,42,0.1);color:var(--color-gold-text);font-weight:700;margin-left:3px">POTENTIAL ACQUISITION</span></div>
+          <div style="font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--color-gold-text);margin-top:3px">+991,000 oz</div>
+          <div style="font-size:10px;color:var(--color-text-secondary);line-height:1.5;margin-top:3px">950k oz @ 1.0 g/t + 41k Greenfinch<br>Open pit cutback opportunity<br>Ramelius sale process Q2-Q3 2026</div>
+        </div>
+        <div class="flow-arrow" style="display:flex;align-items:center;justify-content:center"><span style="color:var(--color-text-muted);font-size:18px;opacity:0.3">&#10132;</span></div>
+        <div style="background:rgba(196,146,42,0.04);border:1.5px dashed rgba(196,146,42,0.35);border-radius:8px;padding:12px 14px">
+          <div style="font-family:var(--font-display);font-size:12px;font-weight:700;color:var(--color-text)">Edna May Mill <span style="font-size:8px;padding:2px 6px;border-radius:6px;background:rgba(196,146,42,0.1);color:var(--color-gold-text);font-weight:700;margin-left:3px">POTENTIAL ACQUISITION</span></div>
+          <div style="font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--color-gold-text);margin-top:3px">2.9 Mtpa</div>
+          <div style="font-size:10px;color:var(--color-text-secondary);line-height:1.5;margin-top:3px">CIL circuit &middot; C&amp;M since Apr 2025<br>FRS encircled with Burracoppin tenure</div>
+        </div>
+      </div>
+
+      <!-- Row 3: Bounty -->
+      <div class="flow-row" style="display:grid;grid-template-columns:1fr 32px 1fr;align-items:stretch;margin-bottom:0">
+        <div style="background:rgba(196,146,42,0.04);border:1.5px dashed rgba(196,146,42,0.35);border-radius:8px;padding:12px 14px">
+          <div style="font-family:var(--font-display);font-size:12px;font-weight:700;color:var(--color-text)">Bounty Gold Mine <span style="font-size:8px;padding:2px 6px;border-radius:6px;background:rgba(196,146,42,0.1);color:var(--color-gold-text);font-weight:700;margin-left:3px">POTENTIAL ACQUISITION</span></div>
+          <div style="font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--color-gold-text);margin-top:3px">+421,000 oz</div>
+          <div style="font-size:10px;color:var(--color-text-secondary);line-height:1.5;margin-top:3px">421k oz @ 2.25 g/t &middot; Hist. ~1.3 Moz<br>Non-core gold rights (Covalent JV)</div>
+        </div>
+        <div class="flow-arrow" style="display:flex;align-items:center;justify-content:center"><span style="color:var(--color-text-muted);font-size:18px;opacity:0.2">&#10132;</span></div>
+        <div style="background:var(--color-surface-secondary);border:1px dashed var(--color-border);border-radius:8px;padding:12px 14px">
+          <div style="font-family:var(--font-display);font-size:12px;font-weight:700;color:var(--color-text)">Feeds Existing Mills</div>
+          <div style="font-size:10px;color:var(--color-text-secondary);line-height:1.5;margin-top:3px">85 km from Lake Johnston<br>Gold rights separable by commodity</div>
+          <div style="font-size:10px;color:var(--color-gold-text);font-weight:600;margin-top:5px">&#8594; No additional processing infrastructure required</div>
+        </div>
+      </div>
+
+      <!-- Possible Scenario -->
+      <div style="margin-top:18px;padding-top:14px;border-top:2px solid var(--color-border-subtle)">
+        <div style="text-align:center;margin-bottom:10px">
+          <span style="font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--color-gold-text);background:rgba(196,146,42,0.08);padding:3px 12px;border-radius:8px;border:1px dashed rgba(196,146,42,0.3)">Possible Scenario</span>
+        </div>
+        <div class="flow-scenario-grid" style="display:grid;grid-template-columns:1fr 32px 1fr">
+          <div style="border-radius:8px;padding:12px;text-align:center;background:linear-gradient(135deg,rgba(196,146,42,0.04),rgba(34,102,204,0.03))">
+            <div style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--color-text-secondary)">Possible Resource Base</div>
+            <div style="font-family:var(--font-display);font-size:24px;font-weight:700;color:var(--color-gold-text);margin-top:2px">~2.2 Moz</div>
+            <div style="font-size:10px;color:var(--color-text-secondary);margin-top:1px">826k existing + 1.4M potential<br><em style="opacity:0.7">Excludes exploration upside</em></div>
+          </div>
+          <div></div>
+          <div style="border-radius:8px;padding:12px;text-align:center;background:linear-gradient(135deg,rgba(196,146,42,0.04),rgba(34,102,204,0.03))">
+            <div style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--color-text-secondary)">Possible Processing</div>
+            <div style="font-family:var(--font-display);font-size:24px;font-weight:700;color:#2266CC;margin-top:2px">6.1 Mtpa</div>
+            <div style="font-size:10px;color:var(--color-text-secondary);margin-top:1px">3.2 existing + 2.9 potential</div>
+          </div>
+        </div>
       </div>
 
     </div>
