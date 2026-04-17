@@ -111,7 +111,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, .big-stat, .prod-value, .col-title, .lp-title, .lp-mst-text, .summary-header {
+h1, h2, h3, .big-stat, .prod-value, .col-title, .lp-title, .summary-header {
   font-family: var(--font-display);
 }
 
