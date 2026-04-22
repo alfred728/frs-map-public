@@ -813,7 +813,7 @@ body.story-mode #show-all-btn{display:inline-block!important}
     <div class="strategy-stats">~307 tenements &middot; 826k oz JORC resource &middot; 1.5 Mtpa Lake Johnston (3.2 Mtpa post-CIL)</div>
     <div class="strategy-prompt" style="display:none">Select acquisition target</div>
     <div id="strategy-tabs">
-      <button class="strategy-tab active" data-cat="primary">Primary Acquisition Targets</button>
+      <button class="strategy-tab active" data-cat="primary">Primary Targets</button>
       <button class="strategy-tab" data-cat="other">Other Listed Companies</button>
       <button class="strategy-tab" data-cat="orefeed">Ore Feed Strategy</button>
     </div>
@@ -829,10 +829,11 @@ body.story-mode #show-all-btn{display:inline-block!important}
     <div class="orefeed-mill-summary" id="orefeed-mill-summary"></div>
     <div id="orefeed-route-list"></div>
     <div class="orefeed-context-note">Gibraltar &rarr; Westgold Higginsville toll treating route shown for context (25% profit share)</div>
+    <div class="orefeed-disclaimer" style="margin-top:12px;padding:10px 12px;font-size:10px;font-style:italic;color:#8b949e;border-top:1px solid #30363d;line-height:1.5">This is for visualisation only on the basis of resources to the mills and should not be constituted as anything more than an example.</div>
   </div>
   <div id="target-analysis" style="display:none">
     <div class="target-nav">
-      <span id="target-back">&larr; Back to targets</span>
+      <span id="target-back">&larr; Back to other targets</span>
       <span id="target-counter"></span>
       <span id="target-prev">&#9666;</span>
       <span id="target-next">&#9656;</span>
@@ -4592,39 +4593,42 @@ function renderTargetAnalysis(t, idx) {
   var html = '<div class="target-title">' + t.name + '</div>';
   if (t.owner) html += '<div class="target-owner-badge">' + t.owner + (t.code ? ' (ASX: '+t.code+')' : '') + '</div>';
 
-  // Metrics grid
-  html += '<div class="target-metrics-grid">';
-  if (t.oz > 0) html += '<div class="target-metric-box"><div class="target-metric-label">JORC Resource</div><div class="target-metric-value highlight">' + fmtOz(t.oz) + ' oz</div></div>';
-  if (t.grade > 0) html += '<div class="target-metric-box"><div class="target-metric-label">Grade</div><div class="target-metric-value">' + t.grade.toFixed(2) + ' g/t</div></div>';
-  if (t.mill) html += '<div class="target-metric-box"><div class="target-metric-label">Processing</div><div class="target-metric-value">' + t.mill + '</div></div>';
-  html += '<div class="target-metric-box"><div class="target-metric-label">Status</div><div class="target-metric-value">' + t.status + '</div></div>';
-  if (t.historicalProd) html += '<div class="target-metric-box"><div class="target-metric-label">Historical</div><div class="target-metric-value">' + t.historicalProd + '</div></div>';
-  if (t.cmCost) html += '<div class="target-metric-box"><div class="target-metric-label">C&M Cost</div><div class="target-metric-value">' + t.cmCost + '</div></div>';
-  if (t.impairment) html += '<div class="target-metric-box"><div class="target-metric-label">Impairment</div><div class="target-metric-value">' + t.impairment + '</div></div>';
+  var isOther = (currentTargetCategory === 'other');
 
-  html += '</div>';
-
-  // Deposit breakdown (clickable to highlight tenements)
-  if (t.deposits && t.deposits.length > 0) {
-    html += '<div class="target-section-title">Resource Deposits <span style="font-weight:400;font-size:9px;color:#8b949e">(click to highlight on map)</span></div>';
-    html += '<div class="deposit-list">';
-    t.deposits.forEach(function(d, di) {
-      var ozStr = d.oz > 0 ? fmtOz(d.oz) + ' oz' : '—';
-      var tenStr = d.tenements.join(', ');
-      html += '<div class="deposit-row" data-deposit-idx="' + di + '" style="cursor:pointer;padding:6px 8px;margin:2px 0;border-radius:4px;border:1px solid #30363d;background:#161b22;transition:background 0.15s"' +
-        ' onmouseover="this.style.background=\'#21262d\'" onmouseout="this.style.background=\'#161b22\'">' +
-        '<div style="display:flex;justify-content:space-between;align-items:center">' +
-        '<span style="font-weight:600;font-size:11px;color:#e6edf3">' + d.name + '</span>' +
-        '<span style="font-size:11px;color:#f0883e;font-weight:700">' + ozStr + '</span>' +
-        '</div>' +
-        '<div style="font-size:9px;color:#8b949e;margin-top:2px">' + d.tonnes + ' @ ' + d.grade + ' &middot; ' + tenStr + '</div>' +
-        (d.note ? '<div style="font-size:9px;color:#6e7681;margin-top:1px;font-style:italic">' + d.note + '</div>' : '') +
-        '</div>';
-    });
+  if (!isOther) {
+    // Metrics grid (hidden on Other Listed Companies tab)
+    html += '<div class="target-metrics-grid">';
+    if (t.oz > 0) html += '<div class="target-metric-box"><div class="target-metric-label">JORC Resource</div><div class="target-metric-value highlight">' + fmtOz(t.oz) + ' oz</div></div>';
+    if (t.grade > 0) html += '<div class="target-metric-box"><div class="target-metric-label">Grade</div><div class="target-metric-value">' + t.grade.toFixed(2) + ' g/t</div></div>';
+    if (t.mill) html += '<div class="target-metric-box"><div class="target-metric-label">Processing</div><div class="target-metric-value">' + t.mill + '</div></div>';
+    html += '<div class="target-metric-box"><div class="target-metric-label">Status</div><div class="target-metric-value">' + t.status + '</div></div>';
+    if (t.historicalProd) html += '<div class="target-metric-box"><div class="target-metric-label">Historical</div><div class="target-metric-value">' + t.historicalProd + '</div></div>';
+    if (t.cmCost) html += '<div class="target-metric-box"><div class="target-metric-label">C&M Cost</div><div class="target-metric-value">' + t.cmCost + '</div></div>';
+    if (t.impairment) html += '<div class="target-metric-box"><div class="target-metric-label">Impairment</div><div class="target-metric-value">' + t.impairment + '</div></div>';
     html += '</div>';
+
+    // Deposit breakdown (hidden on Other Listed Companies tab)
+    if (t.deposits && t.deposits.length > 0) {
+      html += '<div class="target-section-title">Resource Deposits <span style="font-weight:400;font-size:9px;color:#8b949e">(click to highlight on map)</span></div>';
+      html += '<div class="deposit-list">';
+      t.deposits.forEach(function(d, di) {
+        var ozStr = d.oz > 0 ? fmtOz(d.oz) + ' oz' : '—';
+        var tenStr = d.tenements.join(', ');
+        html += '<div class="deposit-row" data-deposit-idx="' + di + '" style="cursor:pointer;padding:6px 8px;margin:2px 0;border-radius:4px;border:1px solid #30363d;background:#161b22;transition:background 0.15s"' +
+          ' onmouseover="this.style.background=\'#21262d\'" onmouseout="this.style.background=\'#161b22\'">' +
+          '<div style="display:flex;justify-content:space-between;align-items:center">' +
+          '<span style="font-weight:600;font-size:11px;color:#e6edf3">' + d.name + '</span>' +
+          '<span style="font-size:11px;color:#f0883e;font-weight:700">' + ozStr + '</span>' +
+          '</div>' +
+          '<div style="font-size:9px;color:#8b949e;margin-top:2px">' + d.tonnes + ' @ ' + d.grade + ' &middot; ' + tenStr + '</div>' +
+          (d.note ? '<div style="font-size:9px;color:#6e7681;margin-top:1px;font-style:italic">' + d.note + '</div>' : '') +
+          '</div>';
+      });
+      html += '</div>';
+    }
   }
 
-  // Sale process timeline
+  // Sale process timeline (shown on both tabs)
   if (t.saleTimeline && t.saleTimeline.length > 0) {
     html += '<div class="target-section-title">Sale Process Timeline</div>';
     html += '<div class="target-timeline-section">';
@@ -4635,31 +4639,29 @@ function renderTargetAnalysis(t, idx) {
     html += '</div>';
   }
 
-  // Note
-  if (t.note) {
+  // Note / callout (hidden on Other Listed Companies tab)
+  if (!isOther && t.note) {
     var noteRefs = t.noteSrc ? srcRefs(t.noteSrc, t.sources) : '';
     html += '<div class="target-note">' + t.note + noteRefs + '</div>';
   }
 
-  // FRS Strategic Fit
-  if (t.fitPoints && t.fitPoints.length > 0) {
-    html += '<div class="target-section-title">FRS Strategic Fit</div>';
+  // Key points — combined fit + risk, filtered to drop acquisition/market-cap bullets
+  var ACQ_RE = /(acquisition|acquire|takeover|take\s?over|M&A|bolt[-\s]?on|market\s?cap|buyout|take\s?private|corporate\s?action|takeout)/i;
+  var keyPoints = [];
+  if (t.fitPoints) t.fitPoints.forEach(function(p){
+    var txt = typeof p === 'string' ? p : p.text;
+    var src = (typeof p === 'object') ? p.src : null;
+    if (!ACQ_RE.test(txt)) keyPoints.push({ text: txt, src: src });
+  });
+  if (t.riskPoints) t.riskPoints.forEach(function(r){
+    if (!ACQ_RE.test(r.text)) keyPoints.push({ text: r.text, src: r.src });
+  });
+  if (keyPoints.length > 0) {
+    html += '<div class="target-section-title">Key points</div>';
     html += '<ul class="target-fit-list">';
-    t.fitPoints.forEach(function(p) {
-      var txt = typeof p === 'string' ? p : p.text;
-      var refs = (typeof p === 'object' && p.src) ? srcRefs(p.src, t.sources) : '';
-      html += '<li class="target-fit-item">' + txt + refs + '</li>';
-    });
-    html += '</ul>';
-  }
-
-  // Key Risks
-  if (t.riskPoints && t.riskPoints.length > 0) {
-    html += '<div class="target-section-title">Key Risks</div>';
-    html += '<ul class="target-risk-list">';
-    t.riskPoints.forEach(function(r) {
-      var refs = r.src ? srcRefs(r.src, t.sources) : '';
-      html += '<li class="target-risk-item' + (r.severity === 'medium' ? ' medium' : '') + '">' + r.text + refs + '</li>';
+    keyPoints.forEach(function(p){
+      var refs = p.src ? srcRefs(p.src, t.sources) : '';
+      html += '<li class="target-fit-item">' + p.text + refs + '</li>';
     });
     html += '</ul>';
   }
