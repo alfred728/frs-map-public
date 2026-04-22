@@ -396,10 +396,10 @@ input:focus-visible {
   to   { opacity: 1; transform: translateX(0); }
 }
 
-/* Timeline bar slide-up reveal */
+/* Timeline bar reveal — opacity only so the bar never ends up offscreen if the animation is skipped (e.g. prefers-reduced-motion, backgrounded tabs) */
 @keyframes slideUpReveal {
-  from { opacity: 0; transform: translateY(100%); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 /* Gold shimmer for highlight moments */
